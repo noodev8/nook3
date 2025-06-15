@@ -656,81 +656,92 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
 
               const SizedBox(height: 40),
 
-              // Action Buttons
-              Row(
+              // Action Buttons with sophisticated styling
+              Column(
                 children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: OutlinedButton(
-                        onPressed: () {
-                          // Add this buffet and go back to select another
-                          _addToCart();
-                          Navigator.pop(context); // Go back to buffet selection
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF3498DB),
-                          side: BorderSide(color: const Color(0xFF3498DB), width: 2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          backgroundColor: Colors.white,
+                  // Add & Select Another Button
+                  Container(
+                    width: double.infinity,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF3498DB).withValues(alpha: 0.2),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                          spreadRadius: 0,
                         ),
-                        child: Text(
-                          'Add & Select Another',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      ],
+                    ),
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        // Add this buffet and go back to select another
+                        _addToCart();
+                        Navigator.pop(context); // Go back to buffet selection
+                      },
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF3498DB),
+                        side: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        backgroundColor: Colors.white,
+                      ),
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                        size: 20,
+                      ),
+                      label: Text(
+                        'Add & Select Another Buffet',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF27AE60).withValues(alpha: 0.3),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: ElevatedButton(
-                        onPressed: _addToCart,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF27AE60),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          elevation: 0,
+
+                  const SizedBox(height: 16),
+
+                  // Add to Cart Button
+                  Container(
+                    width: double.infinity,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF27AE60).withValues(alpha: 0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                          spreadRadius: 0,
                         ),
-                        child: Text(
-                          'Add to Cart\n£${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.center,
+                      ],
+                    ),
+                    child: ElevatedButton.icon(
+                      onPressed: _addToCart,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF27AE60),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                      ),
+                      icon: Icon(
+                        Icons.shopping_cart_outlined,
+                        size: 20,
+                      ),
+                      label: Text(
+                        'Add to Cart - £${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
                         ),
                       ),
                     ),

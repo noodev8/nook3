@@ -115,11 +115,67 @@ class BuffetSelectionScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40),
 
-              // Classic Buffet
+              // Classic Buffet section header
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      const Color(0xFF27AE60).withValues(alpha: 0.1),
+                      const Color(0xFF27AE60).withValues(alpha: 0.05),
+                      Colors.transparent,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF27AE60),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.restaurant_outlined,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Classic Buffet - Great Value',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF2C3E50),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Classic Buffet with enhanced styling
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFF27AE60).withValues(alpha: 0.3),
+                    width: 2,
+                  ),
                   boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF27AE60).withValues(alpha: 0.15),
+                      blurRadius: 25,
+                      offset: const Offset(0, 10),
+                      spreadRadius: 0,
+                    ),
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 20,
@@ -293,13 +349,69 @@ class BuffetSelectionScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 40),
 
-              // Enhanced Buffet
+              // Enhanced Buffet section header
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      const Color(0xFFE67E22).withValues(alpha: 0.1),
+                      const Color(0xFFE67E22).withValues(alpha: 0.05),
+                      Colors.transparent,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE67E22),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.star_outline,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Enhanced Buffet - Most Popular',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF2C3E50),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Enhanced Buffet with enhanced styling
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFFE67E22).withValues(alpha: 0.3),
+                    width: 2,
+                  ),
                   boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFE67E22).withValues(alpha: 0.15),
+                      blurRadius: 25,
+                      offset: const Offset(0, 10),
+                      spreadRadius: 0,
+                    ),
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 20,
@@ -483,13 +595,69 @@ class BuffetSelectionScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 40),
 
-              // Deluxe Buffet
+              // Deluxe Buffet section header
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      const Color(0xFF9B59B6).withValues(alpha: 0.1),
+                      const Color(0xFF9B59B6).withValues(alpha: 0.05),
+                      Colors.transparent,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF9B59B6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.diamond_outlined,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Deluxe Buffet - Premium',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF2C3E50),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Deluxe Buffet with enhanced styling
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFF9B59B6).withValues(alpha: 0.3),
+                    width: 2,
+                  ),
                   boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF9B59B6).withValues(alpha: 0.15),
+                      blurRadius: 25,
+                      offset: const Offset(0, 10),
+                      spreadRadius: 0,
+                    ),
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 20,
