@@ -83,308 +83,661 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA), // Soft off-white background
       appBar: AppBar(
-        title: Text('${widget.buffetType} Buffet'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        title: Text(
+          '${widget.buffetType} Buffet',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF2C3E50), // Deep charcoal
+            letterSpacing: 0.5,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF2C3E50),
+        elevation: 0,
+        shadowColor: Colors.black.withValues(alpha: 0.1),
+        surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
+              // Header with sophisticated styling
               Text(
                 'Customize Your ${widget.buffetType} Buffet',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ),
-              ),
-              Text(
-                '£${widget.pricePerHead.toStringAsFixed(2)} per person',
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w600,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF2C3E50), // Deep charcoal
+                  letterSpacing: -0.5,
+                  height: 1.2,
                 ),
               ),
               const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue.shade200),
-                ),
-                child: const Text(
-                  'Note: You can order multiple buffets with different department labels. Minimum 5 total buffet portions required across all buffets in your order.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.blue,
-                    fontStyle: FontStyle.italic,
-                  ),
+              Text(
+                '£${widget.pricePerHead.toStringAsFixed(2)} per person',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 18,
+                  color: const Color(0xFF27AE60), // Green for pricing
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 32),
-              
-              Expanded(
-                child: ListView(
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8F9FA),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE9ECEF)),
+                ),
+                child: Row(
                   children: [
-                    // Number of People
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Number of People:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: _numberOfPeople > 1 ? () {
-                                    setState(() {
-                                      _numberOfPeople--;
-                                    });
-                                  } : null,
-                                  icon: const Icon(Icons.remove_circle_outline),
-                                  iconSize: 32,
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    '$_numberOfPeople',
-                                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: _numberOfPeople < 50 ? () {
-                                    setState(() {
-                                      _numberOfPeople++;
-                                    });
-                                  } : null,
-                                  icon: const Icon(Icons.add_circle_outline),
-                                  iconSize: 32,
-                                ),
-                                const Spacer(),
-                                Text(
-                                  'Total: £${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.info_outline,
+                        color: const Color(0xFF3498DB),
+                        size: 20,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    
-                    // Deluxe Format Selection (only for Deluxe buffet)
-                    if (widget.buffetType == 'Deluxe') ...[
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Deluxe Format:',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              ...['Mixed (75% Sandwiches)', 'All Sandwiches', 'All Wraps'].map((format) {
-                                return RadioListTile<String>(
-                                  title: Text(format),
-                                  value: format.split(' ')[0],
-                                  groupValue: _deluxeFormat,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _deluxeFormat = value!;
-                                    });
-                                  },
-                                );
-                              }).toList(),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                    
-                    // Remove Items
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Customize Items:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'Uncheck items you don\'t want (minimum 1 required)',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            const SizedBox(height: 16),
-                            ..._includedItems.entries.map((entry) {
-                              return CheckboxListTile(
-                                title: Text(entry.key),
-                                value: entry.value,
-                                onChanged: (value) {
-                                  final selectedCount = _includedItems.values.where((v) => v).length;
-                                  if (selectedCount > 1 || value == true) {
-                                    setState(() {
-                                      _includedItems[entry.key] = value!;
-                                    });
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('At least one item must remain selected')),
-                                    );
-                                  }
-                                },
-                              );
-                            }).toList(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    
-                    // Department Label
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Department Label (Optional):',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextField(
-                              onChanged: (value) {
-                                _departmentLabel = value;
-                              },
-                              decoration: const InputDecoration(
-                                hintText: 'e.g., Marketing Team, Sales Department',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    
-                    // Notes
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Special Notes (Optional):',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextField(
-                              onChanged: (value) {
-                                _notes = value;
-                              },
-                              maxLines: 3,
-                              decoration: const InputDecoration(
-                                hintText: 'Any special requirements or notes...',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'You can order multiple buffets with different department labels. Minimum 5 total buffet portions required across all buffets in your order.',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF2C3E50),
+                          height: 1.4,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              
+              const SizedBox(height: 40),
+
+              // Number of People
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Number of People:',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF2C3E50),
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Column(
+                          children: [
+                            // Number controls row
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: _numberOfPeople > 1
+                                        ? const Color(0xFF3498DB).withValues(alpha: 0.1)
+                                        : const Color(0xFFF8F9FA),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: _numberOfPeople > 1 ? () {
+                                      setState(() {
+                                        _numberOfPeople--;
+                                      });
+                                    } : null,
+                                    icon: Icon(
+                                      Icons.remove_circle_outline,
+                                      color: _numberOfPeople > 1
+                                          ? const Color(0xFF3498DB)
+                                          : const Color(0xFFBDC3C7),
+                                    ),
+                                    iconSize: 28,
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: const Color(0xFFE9ECEF), width: 2),
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: const Color(0xFFF8F9FA),
+                                  ),
+                                  child: Text(
+                                    '$_numberOfPeople',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: const Color(0xFF2C3E50),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: _numberOfPeople < 50
+                                        ? const Color(0xFF3498DB).withValues(alpha: 0.1)
+                                        : const Color(0xFFF8F9FA),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: _numberOfPeople < 50 ? () {
+                                      setState(() {
+                                        _numberOfPeople++;
+                                      });
+                                    } : null,
+                                    icon: Icon(
+                                      Icons.add_circle_outline,
+                                      color: _numberOfPeople < 50
+                                          ? const Color(0xFF3498DB)
+                                          : const Color(0xFFBDC3C7),
+                                    ),
+                                    iconSize: 28,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            // Total price display
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF27AE60).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                'Total: £${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF27AE60),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 24),
+
+              // Deluxe Format Selection (only for Deluxe buffet)
+              if (widget.buffetType == 'Deluxe') ...[
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                        spreadRadius: 0,
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Deluxe Format:',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF2C3E50),
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ...['Mixed (75% Sandwiches)', 'All Sandwiches', 'All Wraps'].map((format) {
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: _deluxeFormat == format.split(' ')[0]
+                                      ? const Color(0xFF9B59B6)
+                                      : const Color(0xFFE9ECEF),
+                                  width: 2,
+                                ),
+                                color: _deluxeFormat == format.split(' ')[0]
+                                    ? const Color(0xFF9B59B6).withValues(alpha: 0.1)
+                                    : Colors.white,
+                              ),
+                              child: RadioListTile<String>(
+                                title: Text(
+                                  format,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF2C3E50),
+                                  ),
+                                ),
+                                value: format.split(' ')[0],
+                                groupValue: _deluxeFormat,
+                                activeColor: const Color(0xFF9B59B6),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _deluxeFormat = value!;
+                                  });
+                                },
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+
+              // Customize Items
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Customize Items:',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF2C3E50),
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Uncheck items you don\'t want (minimum 1 required)',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF7F8C8D),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ..._includedItems.entries.map((entry) {
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: entry.value
+                                    ? const Color(0xFF27AE60).withValues(alpha: 0.3)
+                                    : const Color(0xFFE9ECEF),
+                                width: 1,
+                              ),
+                              color: entry.value
+                                  ? const Color(0xFF27AE60).withValues(alpha: 0.05)
+                                  : const Color(0xFFF8F9FA),
+                            ),
+                            child: CheckboxListTile(
+                              title: Text(
+                                entry.key,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF2C3E50),
+                                ),
+                              ),
+                              value: entry.value,
+                              activeColor: const Color(0xFF27AE60),
+                              onChanged: (value) {
+                                final selectedCount = _includedItems.values.where((v) => v).length;
+                                if (selectedCount > 1 || value == true) {
+                                  setState(() {
+                                    _includedItems[entry.key] = value!;
+                                  });
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'At least one item must remain selected',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      backgroundColor: const Color(0xFFE74C3C),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Department Label
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Department Label (Optional):',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF2C3E50),
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          onChanged: (value) {
+                            _departmentLabel = value;
+                          },
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF2C3E50),
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'e.g., Marketing Team, Sales Department',
+                            hintStyle: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF7F8C8D),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFF8F9FA),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Notes
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Special Notes (Optional):',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF2C3E50),
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          onChanged: (value) {
+                            _notes = value;
+                          },
+                          maxLines: 3,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF2C3E50),
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Any special requirements or notes...',
+                            hintStyle: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF7F8C8D),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFF8F9FA),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 40),
 
               // Action Buttons
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        // Add this buffet and go back to select another
-                        _addToCart();
-                        Navigator.pop(context); // Go back to buffet selection
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.green,
-                        side: const BorderSide(color: Colors.green, width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
-                      child: const Text(
-                        'Add & Select Another',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      child: OutlinedButton(
+                        onPressed: () {
+                          // Add this buffet and go back to select another
+                          _addToCart();
+                          Navigator.pop(context); // Go back to buffet selection
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF3498DB),
+                          side: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          backgroundColor: Colors.white,
+                        ),
+                        child: Text(
+                          'Add & Select Another',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: _addToCart,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF27AE60).withValues(alpha: 0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
-                      child: Text(
-                        'Add to Cart\n£${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center,
+                      child: ElevatedButton(
+                        onPressed: _addToCart,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF27AE60),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          'Add to Cart\n£${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 32), // Extra padding at bottom
             ],
           ),
         ),
