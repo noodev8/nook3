@@ -49,11 +49,20 @@ class BuffetSelectionScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'For 5 or more people • Mix and match different buffets',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.green.shade200),
+                ),
+                child: const Text(
+                  'Order multiple buffets with different department labels. Minimum 5 total buffet portions required across all buffets.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.green,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               const SizedBox(height: 32),

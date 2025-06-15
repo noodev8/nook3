@@ -38,14 +38,10 @@ class OrderStatusScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
                     // Success Icon
                     Container(
                       width: 120,
@@ -220,57 +216,52 @@ class OrderStatusScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              
-              // Action Buttons
-              Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () => _goToMainMenu(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 32),
+
+                          // Action Buttons
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: () => _goToMainMenu(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Place Another Order',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                         ),
                       ),
-                      child: const Text(
-                        'Place Another Order',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        // TODO: Implement order tracking/history
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Order tracking feature coming soon!')),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.green,
-                        side: const BorderSide(color: Colors.green, width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          // TODO: Implement order tracking/history
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Order tracking feature coming soon!')),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.green,
+                          side: const BorderSide(color: Colors.green, width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Track This Order',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                         ),
                       ),
-                      child: const Text(
-                        'Track This Order',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
                     ),
-                  ),
-                ],
-              ),
+                    const SizedBox(height: 24), // Extra bottom padding
             ],
           ),
         ),

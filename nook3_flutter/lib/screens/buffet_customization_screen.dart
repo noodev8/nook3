@@ -28,7 +28,7 @@ class BuffetCustomizationScreen extends StatefulWidget {
 }
 
 class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
-  int _numberOfPeople = 5;
+  int _numberOfPeople = 1; // Changed to allow 1+ people per buffet
   String _departmentLabel = '';
   String _notes = '';
   String _deluxeFormat = 'Mixed'; // For Deluxe buffet only
@@ -111,6 +111,23 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue.shade200),
+                ),
+                child: const Text(
+                  'Note: You can order multiple buffets with different department labels. Minimum 5 total buffet portions required across all buffets in your order.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.blue,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
               const SizedBox(height: 32),
               
               Expanded(
@@ -134,7 +151,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                             Row(
                               children: [
                                 IconButton(
-                                  onPressed: _numberOfPeople > 5 ? () {
+                                  onPressed: _numberOfPeople > 1 ? () {
                                     setState(() {
                                       _numberOfPeople--;
                                     });
@@ -322,25 +339,51 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
               ),
               
               const SizedBox(height: 24),
-              
-              // Add to Cart Button
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _addToCart,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+
+              // Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // Add this buffet and go back to select another
+                        _addToCart();
+                        Navigator.pop(context); // Go back to buffet selection
+                      },
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.green,
+                        side: const BorderSide(color: Colors.green, width: 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text(
+                        'Add & Select Another',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
-                  child: Text(
-                    'Add to Cart - £${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _addToCart,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: Text(
+                        'Add to Cart\n£${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),

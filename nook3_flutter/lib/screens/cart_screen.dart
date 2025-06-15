@@ -50,6 +50,16 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
+  int _getTotalBuffetPortions() {
+    int total = 0;
+    for (var item in _cartItems) {
+      if (item['type'] == 'Buffet') {
+        total += item['numberOfPeople'] as int;
+      }
+    }
+    return total;
+  }
+
   void _proceedToDelivery() {
     if (_cartItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -57,7 +67,30 @@ class _CartScreenState extends State<CartScreen> {
       );
       return;
     }
-    
+
+    // Check minimum buffet requirement
+    int totalBuffetPortions = _getTotalBuffetPortions();
+    bool hasBuffets = _cartItems.any((item) => item['type'] == 'Buffet');
+
+    if (hasBuffets && totalBuffetPortions < 5) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Minimum Order Required'),
+          content: Text(
+            'Buffet orders require a minimum of 5 portions total.\n\nYou currently have $totalBuffetPortions buffet portions.\nPlease add ${5 - totalBuffetPortions} more portions or remove buffet items.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -268,7 +301,7 @@ class _CartScreenState extends State<CartScreen> {
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
+                          color: Colors.grey.withValues(alpha: 0.3),
                           spreadRadius: 1,
                           blurRadius: 5,
                           offset: const Offset(0, -3),
@@ -277,6 +310,49 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     child: Column(
                       children: [
+                        // Buffet Summary
+                        if (_getTotalBuffetPortions() > 0) ...[
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: _getTotalBuffetPortions() >= 5
+                                  ? Colors.green.shade50
+                                  : Colors.orange.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: _getTotalBuffetPortions() >= 5
+                                    ? Colors.green.shade200
+                                    : Colors.orange.shade200,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _getTotalBuffetPortions() >= 5
+                                      ? Icons.check_circle
+                                      : Icons.warning,
+                                  color: _getTotalBuffetPortions() >= 5
+                                      ? Colors.green
+                                      : Colors.orange,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Buffet Portions: ${_getTotalBuffetPortions()} ${_getTotalBuffetPortions() >= 5 ? '(Minimum met)' : '(Need ${5 - _getTotalBuffetPortions()} more)'}',
+                                    style: TextStyle(
+                                      color: _getTotalBuffetPortions() >= 5
+                                          ? Colors.green
+                                          : Colors.orange,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
