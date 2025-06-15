@@ -41,116 +41,357 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA), // Soft off-white background
       appBar: AppBar(
-        title: Text(_isLogin ? 'Login' : 'Register'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        title: Text(
+          _isLogin ? 'Login' : 'Register',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF2C3E50), // Deep charcoal
+            letterSpacing: 0.5,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF2C3E50),
+        elevation: 0,
+        shadowColor: Colors.black.withValues(alpha: 0.1),
+        surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo
+              const SizedBox(height: 40),
+
+              // Logo with sophisticated styling
               Container(
-                width: 80,
-                height: 80,
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  borderRadius: BorderRadius.circular(40),
-                  border: Border.all(color: Colors.green, width: 2),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFF2C3E50),
+                      const Color(0xFF34495E),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(50),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 0,
+                    ),
+                  ],
                 ),
                 child: const Icon(
                   Icons.restaurant,
-                  size: 40,
-                  color: Colors.green,
+                  size: 50,
+                  color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 32),
-              
-              // Title
+              const SizedBox(height: 40),
+
+              // Title with sophisticated typography
               Text(
                 _isLogin ? 'Welcome Back!' : 'Create Account',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF2C3E50), // Deep charcoal
+                  letterSpacing: -0.5,
+                  height: 1.2,
                 ),
               ),
-              const SizedBox(height: 32),
-              
-              // Name field (only for register)
-              if (!_isLogin) ...[
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Full Name',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person),
+              const SizedBox(height: 8),
+              Text(
+                _isLogin
+                    ? 'Sign in to access your account and order history'
+                    : 'Join us to enjoy personalized ordering and exclusive offers',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF7F8C8D), // Muted gray
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 48),
+
+              // Form fields container
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                      spreadRadius: 0,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      children: [
+                        // Name field (only for register)
+                        if (!_isLogin) ...[
+                          TextField(
+                            controller: _nameController,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF2C3E50),
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Full Name',
+                              labelStyle: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFF7F8C8D),
+                              ),
+                              prefixIcon: Container(
+                                margin: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  Icons.person_outline,
+                                  color: const Color(0xFF3498DB),
+                                  size: 20,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                              ),
+                              filled: true,
+                              fillColor: const Color(0xFFF8F9FA),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+
+                        // Email field
+                        TextField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF2C3E50),
+                          ),
+                          decoration: InputDecoration(
+                            labelText: 'Email Address',
+                            labelStyle: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF7F8C8D),
+                            ),
+                            prefixIcon: Container(
+                              margin: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF27AE60).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.email_outlined,
+                                color: const Color(0xFF27AE60),
+                                size: 20,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFF8F9FA),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Password field
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF2C3E50),
+                          ),
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF7F8C8D),
+                            ),
+                            prefixIcon: Container(
+                              margin: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF9B59B6).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: const Color(0xFF9B59B6),
+                                size: 20,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFF8F9FA),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
-              ],
-              
-              // Email field
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
-                ),
-                keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: 16),
-              
-              // Password field
-              TextField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 32),
-              
-              // Submit button
-              SizedBox(
+              const SizedBox(height: 40),
+
+              // Submit button with sophisticated styling
+              Container(
                 width: double.infinity,
                 height: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF27AE60).withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
                 child: ElevatedButton(
                   onPressed: _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: const Color(0xFF27AE60),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                     ),
+                    elevation: 0,
                   ),
                   child: Text(
-                    _isLogin ? 'Login' : 'Register',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    _isLogin ? 'Sign In' : 'Create Account',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              
-              // Toggle mode
-              TextButton(
-                onPressed: _toggleMode,
-                child: Text(
-                  _isLogin 
-                    ? "Don't have an account? Register here"
-                    : "Already have an account? Login here",
-                  style: const TextStyle(color: Colors.green),
+              const SizedBox(height: 24),
+
+              // Toggle mode with sophisticated styling
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8F9FA),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE9ECEF)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _isLogin
+                          ? "Don't have an account? "
+                          : "Already have an account? ",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF7F8C8D),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: _toggleMode,
+                      child: Text(
+                        _isLogin ? 'Register here' : 'Login here',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF3498DB),
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
-              
-              // Skip login
+              const SizedBox(height: 24),
+
+              // Skip login with sophisticated styling
               TextButton(
                 onPressed: () {
                   Navigator.pushReplacement(
@@ -158,11 +399,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     MaterialPageRoute(builder: (context) => const MainMenuScreen()),
                   );
                 },
-                child: const Text(
-                  'Skip for now',
-                  style: TextStyle(color: Colors.grey),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text(
+                  'Continue as Guest',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF7F8C8D),
+                  ),
                 ),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
