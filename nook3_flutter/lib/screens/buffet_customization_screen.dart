@@ -714,7 +714,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF27AE60).withValues(alpha: 0.3),
+                          color: const Color(0xFF3498DB).withValues(alpha: 0.3),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                           spreadRadius: 0,
@@ -724,7 +724,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                     child: ElevatedButton.icon(
                       onPressed: _addToCart,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF27AE60),
+                        backgroundColor: const Color(0xFF3498DB),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),

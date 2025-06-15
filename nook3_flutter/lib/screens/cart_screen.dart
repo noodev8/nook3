@@ -105,28 +105,60 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA), // Soft off-white background
       appBar: AppBar(
-        title: const Text('Your Cart'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        title: Text(
+          'Your Cart',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF2C3E50), // Deep charcoal
+            letterSpacing: 0.5,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF2C3E50),
+        elevation: 0,
+        shadowColor: Colors.black.withValues(alpha: 0.1),
+        surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
         child: _cartItems.isEmpty
-            ? const Center(
+            ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.shopping_cart_outlined,
-                      size: 80,
-                      color: Colors.grey,
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(
+                        Icons.shopping_cart_outlined,
+                        size: 80,
+                        color: const Color(0xFF7F8C8D),
+                      ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     Text(
                       'Your cart is empty',
                       style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
+                        fontFamily: 'Poppins',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF2C3E50),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Add some delicious items to get started',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF7F8C8D),
                       ),
                     ),
                   ],
@@ -140,153 +172,234 @@ class _CartScreenState extends State<CartScreen> {
                       itemCount: _cartItems.length,
                       itemBuilder: (context, index) {
                         final item = _cartItems[index];
-                        return Card(
+                        return Container(
                           margin: const EdgeInsets.only(bottom: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${item['type']} - ${item['variant']}',
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
+                                spreadRadius: 0,
+                              ),
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.04),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                                spreadRadius: 0,
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            child: Padding(
+                              padding: const EdgeInsets.all(24.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${item['type']} - ${item['variant']}',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w700,
+                                                color: const Color(0xFF2C3E50),
+                                                letterSpacing: -0.3,
+                                              ),
+                                            ),
+                                            if (item['type'] == 'Buffet') ...[
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                '${item['numberOfPeople']} people × £${item['pricePerHead'].toStringAsFixed(2)}',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: const Color(0xFF7F8C8D),
+                                                ),
+                                              ),
+                                            ] else ...[
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                'Quantity: ${item['quantity']}',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: const Color(0xFF7F8C8D),
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFF8F9FA),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: IconButton(
+                                          onPressed: () => _removeItem(index),
+                                          icon: const Icon(Icons.delete_outline),
+                                          color: const Color(0xFFE74C3C),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  if (item['departmentLabel'] != null && item['departmentLabel'].isNotEmpty) ...[
+                                    const SizedBox(height: 12),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: const Color(0xFF3498DB).withValues(alpha: 0.2),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Department: ${item['departmentLabel']}',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          color: const Color(0xFF3498DB),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+
+                                  if (item['notes'] != null && item['notes'].isNotEmpty) ...[
+                                    const SizedBox(height: 12),
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF8F9FA),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: const Color(0xFFE0E6ED),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Notes: ${item['notes']}',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          fontStyle: FontStyle.italic,
+                                          color: const Color(0xFF7F8C8D),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+
+                                  if (item['deluxeFormat'] != null) ...[
+                                    const SizedBox(height: 12),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF9B59B6).withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: const Color(0xFF9B59B6).withValues(alpha: 0.2),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Format: ${item['deluxeFormat']}',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          color: const Color(0xFF9B59B6),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+
+                                  if (item['includedItems'] != null) ...[
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      'Included Items:',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF2C3E50),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Wrap(
+                                      spacing: 6,
+                                      runSpacing: 6,
+                                      children: (item['includedItems'] as List<String>).map((itemName) {
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF27AE60).withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(
+                                              color: const Color(0xFF27AE60).withValues(alpha: 0.2),
+                                              width: 1,
                                             ),
                                           ),
-                                          if (item['type'] == 'Buffet') ...[
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              '${item['numberOfPeople']} people × £${item['pricePerHead'].toStringAsFixed(2)}',
-                                              style: const TextStyle(color: Colors.grey),
+                                          child: Text(
+                                            itemName,
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 11,
+                                              color: const Color(0xFF27AE60),
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                          ] else ...[
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              'Quantity: ${item['quantity']}',
-                                              style: const TextStyle(color: Colors.grey),
-                                            ),
-                                          ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ],
+
+                                  const SizedBox(height: 16),
+
+                                  // Elegant divider
+                                  Container(
+                                    height: 1,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.transparent,
+                                          const Color(0xFFE0E6ED),
+                                          Colors.transparent,
                                         ],
                                       ),
                                     ),
-                                    IconButton(
-                                      onPressed: () => _removeItem(index),
-                                      icon: const Icon(Icons.delete_outline),
-                                      color: Colors.red,
-                                    ),
-                                  ],
-                                ),
-                                
-                                if (item['departmentLabel'] != null && item['departmentLabel'].isNotEmpty) ...[
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade100,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      'Department: ${item['departmentLabel']}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
                                   ),
-                                ],
-                                
-                                if (item['notes'] != null && item['notes'].isNotEmpty) ...[
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade100,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      'Notes: ${item['notes']}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                
-                                if (item['deluxeFormat'] != null) ...[
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.purple.shade100,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      'Format: ${item['deluxeFormat']}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.purple,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                
-                                if (item['includedItems'] != null) ...[
-                                  const SizedBox(height: 8),
-                                  const Text(
-                                    'Included Items:',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Wrap(
-                                    spacing: 4,
-                                    runSpacing: 4,
-                                    children: (item['includedItems'] as List<String>).map((itemName) {
-                                      return Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: Colors.green.shade100,
-                                          borderRadius: BorderRadius.circular(4),
+                                  const SizedBox(height: 16),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '£${item['type'] == 'Buffet' ? item['totalPrice'].toStringAsFixed(2) : ((item['price'] ?? 15.0) * (item['quantity'] ?? 1)).toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF2C3E50),
                                         ),
-                                        child: Text(
-                                          itemName,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
+                                      ),
+                                    ],
                                   ),
                                 ],
-                                
-                                const SizedBox(height: 12),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '£${item['type'] == 'Buffet' ? item['totalPrice'].toStringAsFixed(2) : ((item['price'] ?? 15.0) * (item['quantity'] ?? 1)).toStringAsFixed(2)}',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         );
@@ -294,55 +407,72 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                   
-                  // Total and Checkout
+                  // Total and Checkout with sophisticated styling
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.3),
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: const Offset(0, -3),
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 20,
+                          offset: const Offset(0, -8),
+                          spreadRadius: 0,
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 6,
+                          offset: const Offset(0, -2),
+                          spreadRadius: 0,
                         ),
                       ],
                     ),
                     child: Column(
                       children: [
-                        // Buffet Summary
+                        // Buffet Summary with sophisticated styling
                         if (_getTotalBuffetPortions() > 0) ...[
                           Container(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color: _getTotalBuffetPortions() >= 5
-                                  ? Colors.green.shade50
-                                  : Colors.orange.shade50,
-                              borderRadius: BorderRadius.circular(8),
+                                  ? const Color(0xFF27AE60).withValues(alpha: 0.1)
+                                  : const Color(0xFFE67E22).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: _getTotalBuffetPortions() >= 5
-                                    ? Colors.green.shade200
-                                    : Colors.orange.shade200,
+                                    ? const Color(0xFF27AE60).withValues(alpha: 0.3)
+                                    : const Color(0xFFE67E22).withValues(alpha: 0.3),
+                                width: 1,
                               ),
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  _getTotalBuffetPortions() >= 5
-                                      ? Icons.check_circle
-                                      : Icons.warning,
-                                  color: _getTotalBuffetPortions() >= 5
-                                      ? Colors.green
-                                      : Colors.orange,
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: _getTotalBuffetPortions() >= 5
+                                        ? const Color(0xFF27AE60)
+                                        : const Color(0xFFE67E22),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    _getTotalBuffetPortions() >= 5
+                                        ? Icons.check_circle
+                                        : Icons.warning,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
                                     'Buffet Portions: ${_getTotalBuffetPortions()} ${_getTotalBuffetPortions() >= 5 ? '(Minimum met)' : '(Need ${5 - _getTotalBuffetPortions()} more)'}',
                                     style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
                                       color: _getTotalBuffetPortions() >= 5
-                                          ? Colors.green
-                                          : Colors.orange,
+                                          ? const Color(0xFF27AE60)
+                                          : const Color(0xFFE67E22),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -350,45 +480,69 @@ class _CartScreenState extends State<CartScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                         ],
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'Total:',
                               style: TextStyle(
+                                fontFamily: 'Poppins',
                                 fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF2C3E50),
                               ),
                             ),
                             Text(
                               '£${_calculateTotal().toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF2C3E50),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-                        SizedBox(
+                        const SizedBox(height: 20),
+                        Container(
                           width: double.infinity,
                           height: 56,
-                          child: ElevatedButton(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF3498DB).withValues(alpha: 0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                                spreadRadius: 0,
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton.icon(
                             onPressed: _proceedToDelivery,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
+                              backgroundColor: const Color(0xFF3498DB),
                               foregroundColor: Colors.white,
+                              elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            child: const Text(
+                            icon: Icon(
+                              Icons.local_shipping_outlined,
+                              size: 20,
+                            ),
+                            label: Text(
                               'Proceed to Delivery Options',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.3,
+                              ),
                             ),
                           ),
                         ),

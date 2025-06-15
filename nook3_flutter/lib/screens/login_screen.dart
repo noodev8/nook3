@@ -322,29 +322,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF27AE60).withValues(alpha: 0.3),
+                      color: const Color(0xFF3498DB).withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                       spreadRadius: 0,
                     ),
                   ],
                 ),
-                child: ElevatedButton(
+                child: ElevatedButton.icon(
                   onPressed: _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF27AE60),
+                    backgroundColor: const Color(0xFF3498DB),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                     elevation: 0,
                   ),
-                  child: Text(
+                  icon: Icon(
+                    _isLogin ? Icons.login_outlined : Icons.person_add_outlined,
+                    size: 20,
+                  ),
+                  label: Text(
                     _isLogin ? 'Sign In' : 'Create Account',
                     style: TextStyle(
                       fontFamily: 'Poppins',
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
+                      letterSpacing: 0.3,
                     ),
                   ),
                 ),
