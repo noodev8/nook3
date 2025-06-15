@@ -18,73 +18,111 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // App Logo/Branding
+              // Hero Header with Logo
               Container(
-                width: 120,
-                height: 120,
+                width: double.infinity,
+                height: 250,
                 decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  borderRadius: BorderRadius.circular(60),
-                  border: Border.all(color: Colors.green, width: 3),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.green.shade400,
+                      Colors.green.shade600,
+                    ],
+                  ),
                 ),
-                child: const Icon(
-                  Icons.restaurant,
-                  size: 60,
-                  color: Colors.green,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Logo Image
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(60),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(60),
+                        child: Image.asset(
+                          'assets/images/Nook-Logo-500x500.jpg',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(60),
+                              ),
+                              child: const Icon(
+                                Icons.restaurant,
+                                size: 60,
+                                color: Colors.green,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'The Nook of Welshpool',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const Text(
+                      'Fresh Buffets & Share Boxes',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 32),
-              
-              // App Title
-              const Text(
-                'The Nook of Welshpool',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              
-              // Subtitle
-              const Text(
-                'Fresh Buffets & Share Boxes',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              
-              // Address
-              const Text(
-                '42 High Street, Welshpool, SY21 7JQ',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 48),
-              
-              // Description
-              const Text(
-                'Order delicious buffets for collection or delivery.\nShare Boxes for 1-4 people or Buffets for 5+ people.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 48),
+
+              // Content Section
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Address
+                    const Text(
+                      '42 High Street, Welshpool, SY21 7JQ',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Description
+                    const Text(
+                      'Order delicious buffets for collection or delivery.\nShare Boxes for 1-4 people or Buffets for 5+ people.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
               
               // Login Button
               SizedBox(
@@ -136,16 +174,19 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
-              
-              // Contact Info
-              const Text(
-                'Call us: 07551428162',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
+                    const SizedBox(height: 32),
+
+                    // Contact Info
+                    const Text(
+                      'Call us: 07551428162',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
               ),
             ],
           ),

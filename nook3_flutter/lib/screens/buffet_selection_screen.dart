@@ -70,68 +70,111 @@ class BuffetSelectionScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () => _selectBuffet(context, 'Classic', 9.90),
                         borderRadius: BorderRadius.circular(16),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Image Header
+                            Container(
+                              height: 120,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.blue.shade300,
+                                    Colors.blue.shade500,
+                                  ],
+                                ),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                                child: Image.asset(
+                                  'assets/images/Nook-Buffet-2.jpg',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.blue.shade300,
+                                            Colors.blue.shade500,
+                                          ],
+                                        ),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.restaurant_menu,
+                                          size: 40,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            // Content
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    width: 60,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade100,
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: const Icon(
-                                      Icons.restaurant_menu,
-                                      size: 30,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  const Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Classic Buffet',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                  Row(
+                                    children: [
+                                      const Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Classic Buffet',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              '£9.90 per head',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          '£9.90 per head',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                      const Icon(Icons.arrow_forward_ios),
+                                    ],
                                   ),
-                                  const Icon(Icons.arrow_forward_ios),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Main Items:',
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text('Sandwiches: Egg Mayo & Cress, Ham Salad, Cheese & Onion, Tuna Mayo, Beef Salad'),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    'Sides:',
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text('Quiche, Cocktail Sausages, Sausage Rolls, Cheese & Onion Rolls, Pork Pies, Scotch Eggs, Tortillas/Dips, Assortment of Cakes'),
                                 ],
                               ),
-                              const SizedBox(height: 16),
-                              const Text(
-                                'Main Items:',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text('Sandwiches: Egg Mayo & Cress, Ham Salad, Cheese & Onion, Tuna Mayo, Beef Salad'),
-                              const SizedBox(height: 12),
-                              const Text(
-                                'Sides:',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text('Quiche, Cocktail Sausages, Sausage Rolls, Cheese & Onion Rolls, Pork Pies, Scotch Eggs, Tortillas/Dips, Assortment of Cakes'),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -146,73 +189,116 @@ class BuffetSelectionScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () => _selectBuffet(context, 'Enhanced', 10.90),
                         borderRadius: BorderRadius.circular(16),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Image Header
+                            Container(
+                              height: 120,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.orange.shade300,
+                                    Colors.orange.shade500,
+                                  ],
+                                ),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                                child: Image.asset(
+                                  'assets/images/Nook-Buffet-3.jpg',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.orange.shade300,
+                                            Colors.orange.shade500,
+                                          ],
+                                        ),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.star,
+                                          size: 40,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            // Content
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    width: 60,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      color: Colors.orange.shade100,
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: const Icon(
-                                      Icons.star,
-                                      size: 30,
-                                      color: Colors.orange,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  const Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Enhanced Buffet',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                  Row(
+                                    children: [
+                                      const Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Enhanced Buffet',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              '£10.90 per head',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          '£10.90 per head',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                      const Icon(Icons.arrow_forward_ios),
+                                    ],
                                   ),
-                                  const Icon(Icons.arrow_forward_ios),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Everything in Classic PLUS:',
+                                    style: TextStyle(fontWeight: FontWeight.w600, color: Colors.orange),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Additional Sandwiches:',
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text('Coronation Chicken'),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    'Additional Sides:',
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text('Vegetable sticks & Dips, Cheese/Pineapple/Grapes, Bread Sticks, Pickles, Coleslaw'),
                                 ],
                               ),
-                              const SizedBox(height: 16),
-                              const Text(
-                                'Everything in Classic PLUS:',
-                                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.orange),
-                              ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                'Additional Sandwiches:',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text('Coronation Chicken'),
-                              const SizedBox(height: 12),
-                              const Text(
-                                'Additional Sides:',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text('Vegetable sticks & Dips, Cheese/Pineapple/Grapes, Bread Sticks, Pickles, Coleslaw'),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -227,89 +313,132 @@ class BuffetSelectionScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () => _selectBuffet(context, 'Deluxe', 13.90),
                         borderRadius: BorderRadius.circular(16),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Image Header
+                            Container(
+                              height: 120,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.purple.shade300,
+                                    Colors.purple.shade500,
+                                  ],
+                                ),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                                child: Image.asset(
+                                  'assets/images/Nook-Buffet-4.jpg',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.purple.shade300,
+                                            Colors.purple.shade500,
+                                          ],
+                                        ),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.diamond,
+                                          size: 40,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            // Content
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Row(
+                                    children: [
+                                      const Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Deluxe Buffet',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              '£13.90 per head',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Icon(Icons.arrow_forward_ios),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Premium Selection:',
+                                    style: TextStyle(fontWeight: FontWeight.w600, color: Colors.purple),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Sandwiches:',
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text('Ham & Mustard, Coronation Chicken & Baby Gem, Egg & Cress, Beef/Horseradish/Tomato/Rocket, Cheese & Onion, Turkey & Cranberry, Chicken/Bacon/Chive Mayo'),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    'Premium Sides:',
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text('Greek Salad, Potato Salad, Tomato & Mozzarella Skewers, Fresh Vegetables, Premium Dips, and much more...'),
+                                  const SizedBox(height: 12),
                                   Container(
-                                    width: 60,
-                                    height: 60,
+                                    padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: Colors.purple.shade100,
-                                      borderRadius: BorderRadius.circular(30),
+                                      color: Colors.purple.shade50,
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: const Icon(
-                                      Icons.diamond,
-                                      size: 30,
-                                      color: Colors.purple,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  const Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Deluxe Buffet',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          '£13.90 per head',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
+                                    child: const Text(
+                                      'Choose: Mixed (75% Sandwiches), All Sandwiches, or All Wraps',
+                                      style: TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.purple,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
-                                  const Icon(Icons.arrow_forward_ios),
                                 ],
                               ),
-                              const SizedBox(height: 16),
-                              const Text(
-                                'Premium Selection:',
-                                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.purple),
-                              ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                'Sandwiches:',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text('Ham & Mustard, Coronation Chicken & Baby Gem, Egg & Cress, Beef/Horseradish/Tomato/Rocket, Cheese & Onion, Turkey & Cranberry, Chicken/Bacon/Chive Mayo'),
-                              const SizedBox(height: 12),
-                              const Text(
-                                'Premium Sides:',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text('Greek Salad, Potato Salad, Tomato & Mozzarella Skewers, Fresh Vegetables, Premium Dips, and much more...'),
-                              const SizedBox(height: 12),
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.purple.shade50,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Text(
-                                  'Choose: Mixed (75% Sandwiches), All Sandwiches, or All Wraps',
-                                  style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.purple,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

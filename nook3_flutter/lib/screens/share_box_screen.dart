@@ -97,49 +97,92 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                     });
                   },
                   borderRadius: BorderRadius.circular(16),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.orange.shade100,
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: const Icon(
-                                Icons.lunch_dining,
-                                size: 25,
-                                color: Colors.orange,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            const Expanded(
-                              child: Text(
-                                'Traditional Share Box',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Image Header
+                      Container(
+                        height: 100,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.orange.shade300,
+                              Colors.orange.shade500,
+                            ],
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                          child: Image.asset(
+                            'assets/images/Nook-Buffet-1.jpg',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.orange.shade300,
+                                      Colors.orange.shade500,
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.lunch_dining,
+                                    size: 40,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+
+                      // Content
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: Text(
+                                    'Traditional Share Box',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                if (_selectedType == 'Traditional')
+                                  const Icon(Icons.check_circle, color: Colors.green),
+                              ],
                             ),
-                            if (_selectedType == 'Traditional')
-                              const Icon(Icons.check_circle, color: Colors.green),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Includes:',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text('• Mixed Sandwiches (various fillings)\n• Assorted Crisps\n• Picky Bits selection\n• Daily specials (Pork Pie, Quiche, etc.)'),
                           ],
                         ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Includes:',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text('• Mixed Sandwiches (various fillings)\n• Assorted Crisps\n• Picky Bits selection\n• Daily specials (Pork Pie, Quiche, etc.)'),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -162,49 +205,92 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                     });
                   },
                   borderRadius: BorderRadius.circular(16),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.green.shade100,
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: const Icon(
-                                Icons.eco,
-                                size: 25,
-                                color: Colors.green,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            const Expanded(
-                              child: Text(
-                                'Vegetarian Share Box',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Image Header
+                      Container(
+                        height: 100,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.green.shade300,
+                              Colors.green.shade500,
+                            ],
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                          child: Image.asset(
+                            'assets/images/Nook-Buffet-3.jpg',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.green.shade300,
+                                      Colors.green.shade500,
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.eco,
+                                    size: 40,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+
+                      // Content
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: Text(
+                                    'Vegetarian Share Box',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                if (_selectedType == 'Vegetarian')
+                                  const Icon(Icons.check_circle, color: Colors.green),
+                              ],
                             ),
-                            if (_selectedType == 'Vegetarian')
-                              const Icon(Icons.check_circle, color: Colors.green),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Includes:',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text('• Vegetarian Sandwiches\n• Assorted Crisps\n• Vegetarian Picky Bits\n• Vegetarian daily specials (Quiche, etc.)'),
                           ],
                         ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Includes:',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text('• Vegetarian Sandwiches\n• Assorted Crisps\n• Vegetarian Picky Bits\n• Vegetarian daily specials (Quiche, etc.)'),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
