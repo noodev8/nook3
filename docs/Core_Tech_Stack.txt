@@ -1,0 +1,13 @@
+Flutter - Mobile App
+Node.js - Server
+Express.js - Server
+Resend - Emails
+JWT - Auth
+BCrypt - Auth
+Visual Studio Code - IDE
+Claude - AI Dev
+Augment - AI Dev
+ChatGPT - AI Dev
+Next.js - Website
+Tailwind - Website CSS
+
