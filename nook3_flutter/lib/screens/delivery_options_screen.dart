@@ -113,7 +113,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
+        shadowColor: Colors.black.withOpacity( 0.1),
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
@@ -145,26 +145,26 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                         border: Border.all(
                           color: _selectedOption == 'Collection'
                               ? const Color(0xFF3498DB)
-                              : const Color(0xFF3498DB).withValues(alpha: 0.3),
+                              : const Color(0xFF3498DB).withOpacity( 0.3),
                           width: 2,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: _selectedOption == 'Collection'
-                                ? const Color(0xFF3498DB).withValues(alpha: 0.25)
-                                : const Color(0xFF3498DB).withValues(alpha: 0.15),
+                                ? const Color(0xFF3498DB).withOpacity( 0.25)
+                                : const Color(0xFF3498DB).withOpacity( 0.15),
                             blurRadius: 25,
                             offset: const Offset(0, 10),
                             spreadRadius: 0,
                           ),
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
+                            color: Colors.black.withOpacity( 0.08),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                             spreadRadius: 0,
                           ),
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: Colors.black.withOpacity( 0.04),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                             spreadRadius: 0,
@@ -192,10 +192,10 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                       width: 60,
                                       height: 60,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                                        color: const Color(0xFF3498DB).withOpacity( 0.1),
                                         borderRadius: BorderRadius.circular(30),
                                         border: Border.all(
-                                          color: const Color(0xFF3498DB).withValues(alpha: 0.2),
+                                          color: const Color(0xFF3498DB).withOpacity( 0.2),
                                           width: 2,
                                         ),
                                       ),
@@ -306,26 +306,26 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                         border: Border.all(
                           color: _selectedOption == 'Delivery'
                               ? const Color(0xFFE67E22)
-                              : const Color(0xFFE67E22).withValues(alpha: 0.3),
+                              : const Color(0xFFE67E22).withOpacity( 0.3),
                           width: 2,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: _selectedOption == 'Delivery'
-                                ? const Color(0xFFE67E22).withValues(alpha: 0.25)
-                                : const Color(0xFFE67E22).withValues(alpha: 0.15),
+                                ? const Color(0xFFE67E22).withOpacity( 0.25)
+                                : const Color(0xFFE67E22).withOpacity( 0.15),
                             blurRadius: 25,
                             offset: const Offset(0, 10),
                             spreadRadius: 0,
                           ),
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
+                            color: Colors.black.withOpacity( 0.08),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                             spreadRadius: 0,
                           ),
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: Colors.black.withOpacity( 0.04),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                             spreadRadius: 0,
@@ -353,10 +353,10 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                       width: 60,
                                       height: 60,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFE67E22).withValues(alpha: 0.1),
+                                        color: const Color(0xFFE67E22).withOpacity( 0.1),
                                         borderRadius: BorderRadius.circular(30),
                                         border: Border.all(
-                                          color: const Color(0xFFE67E22).withValues(alpha: 0.2),
+                                          color: const Color(0xFFE67E22).withOpacity( 0.2),
                                           width: 2,
                                         ),
                                       ),
@@ -497,7 +497,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.08),
+                                    color: Colors.black.withOpacity( 0.08),
                                     blurRadius: 12,
                                     offset: const Offset(0, 4),
                                     spreadRadius: 0,
@@ -517,7 +517,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                         Container(
                                           padding: const EdgeInsets.all(12),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                                            color: const Color(0xFF3498DB).withOpacity( 0.1),
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: Icon(
@@ -552,7 +552,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.08),
+                                    color: Colors.black.withOpacity( 0.08),
                                     blurRadius: 12,
                                     offset: const Offset(0, 4),
                                     spreadRadius: 0,
@@ -572,7 +572,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                         Container(
                                           padding: const EdgeInsets.all(12),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFFE67E22).withValues(alpha: 0.1),
+                                            color: const Color(0xFFE67E22).withOpacity( 0.1),
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: Icon(
@@ -656,8 +656,8 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                   boxShadow: [
                     BoxShadow(
                       color: _selectedOption.isNotEmpty
-                          ? const Color(0xFF3498DB).withValues(alpha: 0.3)
-                          : Colors.black.withValues(alpha: 0.1),
+                          ? const Color(0xFF3498DB).withOpacity( 0.3)
+                          : Colors.black.withOpacity( 0.1),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                       spreadRadius: 0,

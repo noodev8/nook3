@@ -120,7 +120,7 @@ class _CartScreenState extends State<CartScreen> {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
+        shadowColor: Colors.black.withOpacity( 0.1),
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
@@ -178,13 +178,13 @@ class _CartScreenState extends State<CartScreen> {
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
+                                color: Colors.black.withOpacity( 0.08),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                                 spreadRadius: 0,
                               ),
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.04),
+                                color: Colors.black.withOpacity( 0.04),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                                 spreadRadius: 0,
@@ -260,10 +260,10 @@ class _CartScreenState extends State<CartScreen> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                                        color: const Color(0xFF3498DB).withOpacity( 0.1),
                                         borderRadius: BorderRadius.circular(8),
                                         border: Border.all(
-                                          color: const Color(0xFF3498DB).withValues(alpha: 0.2),
+                                          color: const Color(0xFF3498DB).withOpacity( 0.2),
                                           width: 1,
                                         ),
                                       ),
@@ -308,10 +308,10 @@ class _CartScreenState extends State<CartScreen> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF9B59B6).withValues(alpha: 0.1),
+                                        color: const Color(0xFF9B59B6).withOpacity( 0.1),
                                         borderRadius: BorderRadius.circular(8),
                                         border: Border.all(
-                                          color: const Color(0xFF9B59B6).withValues(alpha: 0.2),
+                                          color: const Color(0xFF9B59B6).withOpacity( 0.2),
                                           width: 1,
                                         ),
                                       ),
@@ -346,10 +346,10 @@ class _CartScreenState extends State<CartScreen> {
                                         return Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFF27AE60).withValues(alpha: 0.1),
+                                            color: const Color(0xFF27AE60).withOpacity( 0.1),
                                             borderRadius: BorderRadius.circular(6),
                                             border: Border.all(
-                                              color: const Color(0xFF27AE60).withValues(alpha: 0.2),
+                                              color: const Color(0xFF27AE60).withOpacity( 0.2),
                                               width: 1,
                                             ),
                                           ),
@@ -414,13 +414,13 @@ class _CartScreenState extends State<CartScreen> {
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
+                          color: Colors.black.withOpacity( 0.08),
                           blurRadius: 20,
                           offset: const Offset(0, -8),
                           spreadRadius: 0,
                         ),
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
+                          color: Colors.black.withOpacity( 0.04),
                           blurRadius: 6,
                           offset: const Offset(0, -2),
                           spreadRadius: 0,
@@ -435,13 +435,13 @@ class _CartScreenState extends State<CartScreen> {
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color: _getTotalBuffetPortions() >= 5
-                                  ? const Color(0xFF27AE60).withValues(alpha: 0.1)
-                                  : const Color(0xFFE67E22).withValues(alpha: 0.1),
+                                  ? const Color(0xFF27AE60).withOpacity( 0.1)
+                                  : const Color(0xFFE67E22).withOpacity( 0.1),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: _getTotalBuffetPortions() >= 5
-                                    ? const Color(0xFF27AE60).withValues(alpha: 0.3)
-                                    : const Color(0xFFE67E22).withValues(alpha: 0.3),
+                                    ? const Color(0xFF27AE60).withOpacity( 0.3)
+                                    : const Color(0xFFE67E22).withOpacity( 0.3),
                                 width: 1,
                               ),
                             ),
@@ -514,7 +514,7 @@ class _CartScreenState extends State<CartScreen> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF3498DB).withValues(alpha: 0.3),
+                                color: const Color(0xFF3498DB).withOpacity( 0.3),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                                 spreadRadius: 0,

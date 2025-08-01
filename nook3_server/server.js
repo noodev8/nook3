@@ -69,9 +69,7 @@ app.use((err, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 The Nook API Server running on port ${PORT}`);
-  console.log(`📍 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app;

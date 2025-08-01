@@ -37,7 +37,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.15),
+                      color: Colors.black.withOpacity( 0.15),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
@@ -55,13 +55,13 @@ class WelcomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(70),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
+                            color: Colors.black.withOpacity( 0.3),
                             blurRadius: 25,
                             offset: const Offset(0, 12),
                             spreadRadius: 0,
                           ),
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.15),
+                            color: Colors.black.withOpacity( 0.15),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                             spreadRadius: 0,
@@ -109,7 +109,7 @@ class WelcomeScreen extends StatelessWidget {
                         fontFamily: 'Poppins',
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: Colors.white.withOpacity( 0.9),
                         height: 1.4,
                       ),
                       textAlign: TextAlign.center,
@@ -138,7 +138,7 @@ class WelcomeScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                              color: const Color(0xFF3498DB).withOpacity( 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
@@ -170,13 +170,13 @@ class WelcomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
+                            color: Colors.black.withOpacity( 0.08),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                             spreadRadius: 0,
                           ),
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: Colors.black.withOpacity( 0.04),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                             spreadRadius: 0,
@@ -222,7 +222,7 @@ class WelcomeScreen extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF27AE60).withValues(alpha: 0.1),
+                                          color: const Color(0xFF27AE60).withOpacity( 0.1),
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         child: Icon(
@@ -249,7 +249,7 @@ class WelcomeScreen extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFFE67E22).withValues(alpha: 0.1),
+                                          color: const Color(0xFFE67E22).withOpacity( 0.1),
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         child: Icon(
@@ -288,7 +288,7 @@ class WelcomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF27AE60).withValues(alpha: 0.3),
+                            color: const Color(0xFF27AE60).withOpacity( 0.3),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                             spreadRadius: 0,
@@ -340,7 +340,7 @@ class WelcomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: Colors.black.withOpacity( 0.04),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                             spreadRadius: 0,
@@ -398,7 +398,7 @@ class WelcomeScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF9B59B6).withValues(alpha: 0.1),
+                              color: const Color(0xFF9B59B6).withOpacity( 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(

@@ -65,7 +65,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
+        shadowColor: Colors.black.withOpacity( 0.1),
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
@@ -106,26 +106,26 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   border: Border.all(
                     color: _selectedType == 'Traditional'
                         ? const Color(0xFFE67E22)
-                        : const Color(0xFFE67E22).withValues(alpha: 0.3),
+                        : const Color(0xFFE67E22).withOpacity( 0.3),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: _selectedType == 'Traditional'
-                          ? const Color(0xFFE67E22).withValues(alpha: 0.25)
-                          : const Color(0xFFE67E22).withValues(alpha: 0.15),
+                          ? const Color(0xFFE67E22).withOpacity( 0.25)
+                          : const Color(0xFFE67E22).withOpacity( 0.15),
                       blurRadius: 25,
                       offset: const Offset(0, 10),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: Colors.black.withOpacity( 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
+                      color: Colors.black.withOpacity( 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -174,7 +174,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                           colors: [
-                                            const Color(0xFFE67E22).withValues(alpha: 0.8),
+                                            const Color(0xFFE67E22).withOpacity( 0.8),
                                             const Color(0xFFD35400),
                                           ],
                                         ),
@@ -202,7 +202,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       Colors.transparent,
-                                      Colors.black.withValues(alpha: 0.3),
+                                      Colors.black.withOpacity( 0.3),
                                     ],
                                     stops: const [0.6, 1.0],
                                   ),
@@ -326,26 +326,26 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   border: Border.all(
                     color: _selectedType == 'Vegetarian'
                         ? const Color(0xFF27AE60)
-                        : const Color(0xFF27AE60).withValues(alpha: 0.3),
+                        : const Color(0xFF27AE60).withOpacity( 0.3),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: _selectedType == 'Vegetarian'
-                          ? const Color(0xFF27AE60).withValues(alpha: 0.25)
-                          : const Color(0xFF27AE60).withValues(alpha: 0.15),
+                          ? const Color(0xFF27AE60).withOpacity( 0.25)
+                          : const Color(0xFF27AE60).withOpacity( 0.15),
                       blurRadius: 25,
                       offset: const Offset(0, 10),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: Colors.black.withOpacity( 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
+                      color: Colors.black.withOpacity( 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -394,7 +394,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                           colors: [
-                                            const Color(0xFF27AE60).withValues(alpha: 0.8),
+                                            const Color(0xFF27AE60).withOpacity( 0.8),
                                             const Color(0xFF229954),
                                           ],
                                         ),
@@ -422,7 +422,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       Colors.transparent,
-                                      Colors.black.withValues(alpha: 0.3),
+                                      Colors.black.withOpacity( 0.3),
                                     ],
                                     stops: const [0.6, 1.0],
                                   ),
@@ -624,8 +624,8 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   boxShadow: [
                     BoxShadow(
                       color: _selectedType.isNotEmpty
-                          ? const Color(0xFF27AE60).withValues(alpha: 0.3)
-                          : Colors.black.withValues(alpha: 0.1),
+                          ? const Color(0xFF27AE60).withOpacity( 0.3)
+                          : Colors.black.withOpacity( 0.1),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                       spreadRadius: 0,

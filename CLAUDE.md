@@ -195,3 +195,8 @@ When extending this codebase:
 - iOS: Swift-based with proper provisioning setup needed
 - App icons configured via flutter_launcher_icons
 - No CI/CD pipeline currently configured
+
+## Development Environment
+
+### Server Configuration
+- Express port is 3013

@@ -65,7 +65,7 @@ class MainMenuScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: const Color(0xFFE67E22).withValues(alpha: 0.1),
+              color: const Color(0xFFE67E22).withOpacity( 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -97,10 +97,10 @@ class MainMenuScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: accentColor.withValues(alpha: 0.05),
+        color: accentColor.withOpacity( 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: accentColor.withValues(alpha: 0.2),
+          color: accentColor.withOpacity( 0.2),
           width: 1,
         ),
       ),
@@ -160,7 +160,7 @@ class MainMenuScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
+        shadowColor: Colors.black.withOpacity( 0.1),
         surfaceTintColor: Colors.transparent,
         actions: [
           Container(
@@ -221,7 +221,7 @@ class MainMenuScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: Colors.white.withOpacity( 0.15),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Icon(
@@ -245,7 +245,7 @@ class MainMenuScreen extends StatelessWidget {
                     'Fresh Buffets & Share Boxes',
                     style: TextStyle(
                       fontFamily: 'Poppins',
-                      color: Colors.white.withValues(alpha: 0.8),
+                      color: Colors.white.withOpacity( 0.8),
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
@@ -345,7 +345,7 @@ class MainMenuScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.15),
+                      color: Colors.black.withOpacity( 0.15),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
@@ -364,13 +364,13 @@ class MainMenuScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(40),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
+                              color: Colors.black.withOpacity( 0.3),
                               blurRadius: 20,
                               offset: const Offset(0, 8),
                               spreadRadius: 0,
                             ),
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.15),
+                              color: Colors.black.withOpacity( 0.15),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                               spreadRadius: 0,
@@ -420,7 +420,7 @@ class MainMenuScreen extends StatelessWidget {
                           fontFamily: 'Poppins',
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: Colors.white.withOpacity( 0.9),
                           height: 1.4,
                         ),
                         textAlign: TextAlign.center,
@@ -431,7 +431,7 @@ class MainMenuScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
+                          color: Colors.white.withOpacity( 0.15),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -440,7 +440,7 @@ class MainMenuScreen extends StatelessWidget {
                             fontFamily: 'Poppins',
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white.withValues(alpha: 0.95),
+                            color: Colors.white.withOpacity( 0.95),
                             height: 1.3,
                           ),
                           textAlign: TextAlign.center,
@@ -486,8 +486,8 @@ class MainMenuScreen extends StatelessWidget {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      const Color(0xFFE67E22).withValues(alpha: 0.1),
-                      const Color(0xFFE67E22).withValues(alpha: 0.05),
+                      const Color(0xFFE67E22).withOpacity( 0.1),
+                      const Color(0xFFE67E22).withOpacity( 0.05),
                       Colors.transparent,
                     ],
                   ),
@@ -526,24 +526,24 @@ class MainMenuScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFFE67E22).withValues(alpha: 0.3),
+                    color: const Color(0xFFE67E22).withOpacity( 0.3),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFE67E22).withValues(alpha: 0.15),
+                      color: const Color(0xFFE67E22).withOpacity( 0.15),
                       blurRadius: 25,
                       offset: const Offset(0, 10),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: Colors.black.withOpacity( 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
+                      color: Colors.black.withOpacity( 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -621,7 +621,7 @@ class MainMenuScreen extends StatelessWidget {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       Colors.transparent,
-                                      Colors.black.withValues(alpha: 0.3),
+                                      Colors.black.withOpacity( 0.3),
                                     ],
                                     stops: const [0.6, 1.0],
                                   ),
@@ -732,7 +732,7 @@ class MainMenuScreen extends StatelessWidget {
                                   color: const Color(0xFFF8F9FA),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: const Color(0xFFE67E22).withValues(alpha: 0.2),
+                                    color: const Color(0xFFE67E22).withOpacity( 0.2),
                                     width: 1,
                                   ),
                                 ),
@@ -805,7 +805,7 @@ class MainMenuScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF3498DB).withValues(alpha: 0.3),
+                            color: const Color(0xFF3498DB).withOpacity( 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -851,8 +851,8 @@ class MainMenuScreen extends StatelessWidget {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      const Color(0xFF3498DB).withValues(alpha: 0.1),
-                      const Color(0xFF3498DB).withValues(alpha: 0.05),
+                      const Color(0xFF3498DB).withOpacity( 0.1),
+                      const Color(0xFF3498DB).withOpacity( 0.05),
                       Colors.transparent,
                     ],
                   ),
@@ -891,24 +891,24 @@ class MainMenuScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFF3498DB).withValues(alpha: 0.3),
+                    color: const Color(0xFF3498DB).withOpacity( 0.3),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF3498DB).withValues(alpha: 0.15),
+                      color: const Color(0xFF3498DB).withOpacity( 0.15),
                       blurRadius: 25,
                       offset: const Offset(0, 10),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: Colors.black.withOpacity( 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
+                      color: Colors.black.withOpacity( 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -986,7 +986,7 @@ class MainMenuScreen extends StatelessWidget {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       Colors.transparent,
-                                      Colors.black.withValues(alpha: 0.3),
+                                      Colors.black.withOpacity( 0.3),
                                     ],
                                     stops: const [0.6, 1.0],
                                   ),
@@ -1096,7 +1096,7 @@ class MainMenuScreen extends StatelessWidget {
                                   color: const Color(0xFFF8F9FA),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: const Color(0xFF3498DB).withValues(alpha: 0.2),
+                                    color: const Color(0xFF3498DB).withOpacity( 0.2),
                                     width: 1,
                                   ),
                                 ),
@@ -1158,7 +1158,7 @@ class MainMenuScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF27AE60).withValues(alpha: 0.1),
+                            color: const Color(0xFF27AE60).withOpacity( 0.1),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(
@@ -1200,7 +1200,7 @@ class MainMenuScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE67E22).withValues(alpha: 0.1),
+                            color: const Color(0xFFE67E22).withOpacity( 0.1),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(

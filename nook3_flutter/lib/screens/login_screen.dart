@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
+        shadowColor: Colors.black.withOpacity( 0.1),
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
@@ -83,13 +83,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.15),
+                      color: Colors.black.withOpacity( 0.15),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: Colors.black.withOpacity( 0.08),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -138,13 +138,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: Colors.black.withOpacity( 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
+                      color: Colors.black.withOpacity( 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -180,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 margin: const EdgeInsets.all(12),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                                  color: const Color(0xFF3498DB).withOpacity( 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Icon(
@@ -231,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               margin: const EdgeInsets.all(12),
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF27AE60).withValues(alpha: 0.1),
+                                color: const Color(0xFF27AE60).withOpacity( 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(
@@ -281,7 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               margin: const EdgeInsets.all(12),
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF9B59B6).withValues(alpha: 0.1),
+                                color: const Color(0xFF9B59B6).withOpacity( 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(
@@ -322,7 +322,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF3498DB).withValues(alpha: 0.3),
+                      color: const Color(0xFF3498DB).withOpacity( 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                       spreadRadius: 0,
