@@ -15,8 +15,90 @@ import 'cart_screen.dart';
 import '../services/auth_service.dart';
 import '../services/store_info_service.dart';
 
-class MainMenuScreen extends StatelessWidget {
+class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({super.key});
+  
+  @override
+  State<MainMenuScreen> createState() => _MainMenuScreenState();
+}
+
+class _MainMenuScreenState extends State<MainMenuScreen> {
+  bool _showAdvert = true;
+
+  Widget _buildAdvertBanner() {
+    if (!_showAdvert) return const SizedBox.shrink();
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            // Advert image
+            Image.asset(
+              'assets/images/Leaflet-1.png',
+              width: double.infinity,
+              height: 120,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 120,
+                  color: const Color(0xFFF8F9FA),
+                  child: const Center(
+                    child: Text(
+                      'Special Offers Available',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF27AE60),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            // Close button
+            Positioned(
+              top: 8,
+              right: 8,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _showAdvert = false;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   void _showStoreInfo(BuildContext context) async {
     // Show dialog with loading state first
@@ -326,6 +408,9 @@ class MainMenuScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
+
+              // Promotional advert banner
+              _buildAdvertBanner(),
 
               // Welcome message with sophisticated styling
               Text(
