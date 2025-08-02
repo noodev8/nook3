@@ -37,6 +37,7 @@ Return Codes:
 
 const express = require('express');
 const router = express.Router();
+const db = require('../utils/database');
 
 // Main buffet items endpoint - handles all buffet item operations
 router.post('/', async (req, res) => {
@@ -69,8 +70,23 @@ router.post('/', async (req, res) => {
           });
         }
 
-        // Return buffet items based on type
-        const buffetItems = getBuffetItemsByType(buffet_type);
+        // Map buffet type to category ID
+        const categoryIdMap = {
+          'Classic': 3,
+          'Enhanced': 4,
+          'Deluxe': 5
+        };
+        
+        const categoryId = categoryIdMap[buffet_type];
+        if (!categoryId) {
+          return res.status(400).json({
+            return_code: 'INVALID_BUFFET_TYPE',
+            message: 'Invalid buffet type. Valid types: Classic, Enhanced, Deluxe'
+          });
+        }
+
+        // Query database for actual menu items for this category
+        const buffetItems = await getBuffetItemsFromDatabase(categoryId);
         
         return res.json({
           return_code: 'SUCCESS',
@@ -93,9 +109,50 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Helper function to get buffet items by type
-function getBuffetItemsByType(buffetType) {
-  const baseItems = [
+// Database function to get buffet items for a specific category
+async function getBuffetItemsFromDatabase(categoryId) {
+  try {
+    const query = `
+      SELECT 
+        mi.id,
+        mi.name,
+        mi.description,
+        mi.item_type,
+        mi.is_vegetarian,
+        cmi.is_default_included as is_default
+      FROM category_menu_items cmi
+      JOIN menu_items mi ON mi.id = cmi.menu_item_id
+      WHERE cmi.category_id = $1 
+        AND mi.is_active = true
+      ORDER BY mi.name ASC
+    `;
+    
+    const result = await db.query(query, [categoryId]);
+    
+    if (result.rows && result.rows.length > 0) {
+      return result.rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        description: row.description || '',
+        item_type: row.item_type || '',
+        is_vegetarian: row.is_vegetarian || false,
+        is_default: row.is_default || true
+      }));
+    } else {
+      // If no database items found, return fallback items
+      console.log(`No menu items found in database for category ${categoryId}, using fallback`);
+      return getFallbackItems();
+    }
+  } catch (error) {
+    console.error('Database error in getBuffetItemsFromDatabase:', error);
+    // Return fallback items if database query fails
+    return getFallbackItems();
+  }
+}
+
+// Fallback items when database is unavailable or empty
+function getFallbackItems() {
+  return [
     { id: 1, name: 'Sandwiches', description: 'Mixed sandwich selection', is_default: true },
     { id: 2, name: 'Quiche', description: 'Freshly baked quiche', is_default: true },
     { id: 3, name: 'Cocktail Sausages', description: 'Mini cocktail sausages', is_default: true },
@@ -105,33 +162,6 @@ function getBuffetItemsByType(buffetType) {
     { id: 7, name: 'Tortillas/Dips', description: 'Tortilla chips with dips', is_default: true },
     { id: 8, name: 'Cakes', description: 'Assorted cakes and desserts', is_default: true }
   ];
-
-  const enhancedItems = [
-    { id: 9, name: 'Vegetable Sticks & Dips', description: 'Fresh vegetable sticks with dips', is_default: true },
-    { id: 10, name: 'Cheese/Pineapple/Grapes', description: 'Cheese and fruit platter', is_default: true },
-    { id: 11, name: 'Bread Sticks', description: 'Crispy bread sticks', is_default: true },
-    { id: 12, name: 'Pickles', description: 'Assorted pickles', is_default: true },
-    { id: 13, name: 'Coleslaw', description: 'Fresh coleslaw', is_default: true }
-  ];
-
-  const deluxeItems = [
-    { id: 14, name: 'Greek Salad', description: 'Traditional Greek salad', is_default: true },
-    { id: 15, name: 'Potato Salad', description: 'Creamy potato salad', is_default: true },
-    { id: 16, name: 'Tomato & Mozzarella Skewers', description: 'Caprese skewers', is_default: true },
-    { id: 17, name: 'Fresh Vegetables', description: 'Seasonal fresh vegetables', is_default: true },
-    { id: 18, name: 'Premium Dips', description: 'Selection of premium dips', is_default: true }
-  ];
-
-  switch (buffetType) {
-    case 'Classic':
-      return baseItems;
-    case 'Enhanced':
-      return [...baseItems, ...enhancedItems];
-    case 'Deluxe':
-      return [...baseItems, ...enhancedItems, ...deluxeItems];
-    default:
-      return baseItems;
-  }
 }
 
 module.exports = router;
