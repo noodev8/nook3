@@ -392,8 +392,11 @@ router.post('/forgot-password', async (req, res) => {
 
     // If user doesn't exist, return generic response
     if (!user || user.is_anonymous) {
+      console.log('User not found or anonymous - returning generic response without sending email');
       return res.json(genericResponse);
     }
+    
+    console.log('User found - proceeding to send reset email');
 
     // Generate reset token
     const resetToken = generateToken('reset');
