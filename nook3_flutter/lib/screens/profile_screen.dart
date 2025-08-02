@@ -191,11 +191,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (shouldLogout == true) {
       await AuthService.logout();
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-        (route) => false,
-      );
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (route) => false,
+        );
+      }
     }
   }
 
@@ -257,9 +259,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () async {
+                  final navigator = Navigator.of(context);
                   await AuthService.logout();
-                  Navigator.pushAndRemoveUntil(
-                    context,
+                  if (!mounted) return;
+                  navigator.pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const LoginScreen()),
                     (route) => false,
                   );
