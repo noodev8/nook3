@@ -250,13 +250,10 @@ async function getOrCreateCartOrder(user_id, session_id) {
   let cartOrder = await getCartOrderForUser(user_id, session_id);
   
   if (!cartOrder) {
-    // Create new cart order with temporary order number
-    const tempOrderNumber = `CART-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-    
+    // Create new cart order (order_number column removed from schema)
     cartOrder = await db.createOrder({
       app_user_id: user_id || null,
       guest_email: session_id || null, // Using guest_email field for session_id temporarily
-      order_number: tempOrderNumber, // Temporary order number for cart
       total_amount: 0,
       order_status: 'cart',
       delivery_type: 'pending',
