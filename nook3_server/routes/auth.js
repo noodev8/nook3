@@ -100,7 +100,9 @@ router.post('/login', async (req, res) => {
     }
 
     // Find user
+    console.log('Looking up user by email...');
     const user = await db.findUserByEmail(email);
+    console.log('User lookup result:', user ? 'User found' : 'User not found');
     if (!user) {
       return res.status(401).json({
         return_code: 'INVALID_CREDENTIALS',
@@ -325,7 +327,9 @@ router.post('/resend-verification', async (req, res) => {
       });
     }
 
+    console.log('Looking up user by email...');
     const user = await db.findUserByEmail(email);
+    console.log('User lookup result:', user ? 'User found' : 'User not found');
     
     // Generic response to prevent user enumeration
     const genericResponse = {
@@ -376,7 +380,9 @@ router.post('/forgot-password', async (req, res) => {
       });
     }
 
+    console.log('Looking up user by email...');
     const user = await db.findUserByEmail(email);
+    console.log('User lookup result:', user ? 'User found' : 'User not found');
     
     // Generic response to prevent user enumeration
     const genericResponse = {
