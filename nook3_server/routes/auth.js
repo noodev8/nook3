@@ -364,8 +364,10 @@ router.post('/resend-verification', async (req, res) => {
  * Forgot password
  */
 router.post('/forgot-password', async (req, res) => {
+  console.log('=== FORGOT PASSWORD ROUTE STARTED ===');
   try {
     const { email } = req.body;
+    console.log('Email received:', email);
 
     if (!email) {
       return res.status(400).json({
@@ -408,10 +410,13 @@ router.post('/forgot-password', async (req, res) => {
       console.log('Password reset email sent successfully with message ID:', emailResult.messageId);
     }
 
+    console.log('=== FORGOT PASSWORD ROUTE COMPLETED SUCCESSFULLY ===');
     res.json(genericResponse);
 
   } catch (error) {
+    console.error('=== FORGOT PASSWORD ROUTE ERROR ===');
     console.error('Forgot password error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({
       return_code: 'SERVER_ERROR',
       message: 'Internal server error'
