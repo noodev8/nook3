@@ -55,29 +55,40 @@ class _AuthWrapperState extends State<AuthWrapper> {
   }
 
   Future<void> _checkAuthStatus() async {
+    // Initialize AuthService to load saved login state
+    await AuthService.initialize();
+    
     // Check if user has valid auth token
     if (AuthService.isLoggedIn) {
-      // Validate the token with server
-      final isValid = await AuthService.validateToken();
-      
-      if (isValid) {
-        // Token is valid - go to main menu
+      // Validate the token with server (only for real users, not guests)
+      if (AuthService.currentUser?.isAnonymous == false && AuthService.authToken != null) {
+        final isValid = await AuthService.validateToken();
+        
+        if (isValid) {
+          // Token is valid - go to main menu
+          setState(() {
+            _homeScreen = const MainMenuScreen();
+            _isLoading = false;
+          });
+        } else {
+          // Token expired - go to login
+          await AuthService.logout(); // Clear local data
+          setState(() {
+            _homeScreen = const LoginScreen();
+            _isLoading = false;
+          });
+        }
+      } else {
+        // Guest user or valid session - go to main menu
         setState(() {
           _homeScreen = const MainMenuScreen();
           _isLoading = false;
         });
-      } else {
-        // Token expired - go to login
-        await AuthService.logout(); // Clear local data
-        setState(() {
-          _homeScreen = const LoginScreen();
-          _isLoading = false;
-        });
       }
     } else {
-      // No auth token - go to welcome screen
+      // No saved auth state - go to login screen (skip welcome)
       setState(() {
-        _homeScreen = const WelcomeScreen();
+        _homeScreen = const LoginScreen();
         _isLoading = false;
       });
     }

@@ -1,9 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   // Server configuration
   static const String baseUrl = 'https://nook.noodev8.com/api/auth';
+  
+  // SharedPreferences keys
+  static const String _authTokenKey = 'auth_token';
+  static const String _userDataKey = 'user_data';
   
   // User model
   static User? _currentUser;
@@ -13,6 +18,46 @@ class AuthService {
   static User? get currentUser => _currentUser;
   static String? get authToken => _authToken;
   static bool get isLoggedIn => _authToken != null && _currentUser != null;
+
+  /// Initialize auth service - loads saved login state
+  static Future<void> initialize() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    // Load saved auth token
+    _authToken = prefs.getString(_authTokenKey);
+    
+    // Load saved user data
+    final userDataString = prefs.getString(_userDataKey);
+    if (userDataString != null) {
+      try {
+        final userData = jsonDecode(userDataString);
+        _currentUser = User.fromJson(userData);
+      } catch (e) {
+        // If user data is corrupted, clear it
+        await _clearStoredAuthData();
+      }
+    }
+  }
+
+  /// Save auth data to persistent storage
+  static Future<void> _saveAuthData() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    if (_authToken != null) {
+      await prefs.setString(_authTokenKey, _authToken!);
+    }
+    
+    if (_currentUser != null) {
+      await prefs.setString(_userDataKey, jsonEncode(_currentUser!.toJson()));
+    }
+  }
+
+  /// Clear stored auth data
+  static Future<void> _clearStoredAuthData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_authTokenKey);
+    await prefs.remove(_userDataKey);
+  }
 
   /// Register new user
   static Future<AuthResult> register({
@@ -77,6 +122,9 @@ class AuthService {
       if (data['return_code'] == 'SUCCESS') {
         _authToken = data['token'];
         _currentUser = User.fromJson(data['user']);
+        
+        // Save auth data to persistent storage
+        await _saveAuthData();
         
         return AuthResult(
           success: true,
@@ -292,6 +340,8 @@ class AuthService {
   static Future<void> logout() async {
     _currentUser = null;
     _authToken = null;
+    // Clear persistent storage
+    await _clearStoredAuthData();
   }
 
   /// Continue as guest (anonymous user)
@@ -309,6 +359,9 @@ class AuthService {
     
     // No auth token for anonymous users
     _authToken = null;
+
+    // Save guest data to persistent storage
+    await _saveAuthData();
 
     return AuthResult(
       success: true,
