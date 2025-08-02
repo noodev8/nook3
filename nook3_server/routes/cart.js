@@ -250,11 +250,13 @@ async function getOrCreateCartOrder(user_id, session_id) {
   let cartOrder = await getCartOrderForUser(user_id, session_id);
   
   if (!cartOrder) {
-    // Create new cart order
+    // Create new cart order with temporary order number
+    const tempOrderNumber = `CART-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    
     cartOrder = await db.createOrder({
       app_user_id: user_id || null,
       guest_email: session_id || null, // Using guest_email field for session_id temporarily
-      order_number: null, // Use database ID instead of generated text
+      order_number: tempOrderNumber, // Temporary order number for cart
       total_amount: 0,
       order_status: 'cart',
       delivery_type: 'pending',
@@ -290,7 +292,7 @@ function calculateCartTotal(cartItems) {
   return cartItems.reduce((total, item) => total + (item.total_price || 0), 0);
 }
 
-// Note: For cart items, we use the database ID instead of generating order numbers
-// Order numbers will be generated only when the cart is converted to an actual order
+// Note: Cart items use temporary order numbers that will be replaced with proper order numbers
+// when the cart is converted to an actual order during checkout
 
 module.exports = router;
