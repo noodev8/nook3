@@ -10,7 +10,9 @@ Shows what's included in each option and allows quantity selection.
 import 'package:flutter/material.dart';
 import 'cart_screen.dart';
 import 'profile_screen.dart';
-import '../services/category_service.dart';\nimport '../services/cart_service.dart';\nimport '../services/auth_service.dart';
+import '../services/category_service.dart';
+import '../services/cart_service.dart';
+import '../services/auth_service.dart';
 
 class ShareBoxScreen extends StatefulWidget {
   const ShareBoxScreen({super.key});
