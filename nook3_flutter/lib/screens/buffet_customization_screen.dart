@@ -13,6 +13,7 @@ This screen allows users to customize their selected buffet by:
 import 'package:flutter/material.dart';
 import 'cart_screen.dart';
 import '../services/category_service.dart';
+import '../services/cart_service.dart';
 
 class BuffetCustomizationScreen extends StatefulWidget {
   final String buffetType;
@@ -34,9 +35,11 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
   String _notes = '';
   String _deluxeFormat = 'Mixed'; // For Deluxe buffet only
   bool _isLoadingItems = true;
+  bool _isAddingToCart = false;
   
-  // Items loaded from database
-  Map<String, bool> _includedItems = {};
+  // Items loaded from database - now stores item info with IDs
+  List<BuffetMenuItem> _availableItems = [];
+  Map<int, bool> _selectedItems = {}; // Maps item ID to selected status
 
   @override
   void initState() {
@@ -47,52 +50,116 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
   Future<void> _loadBuffetItems() async {
     try {
       final items = await CategoryService.getBuffetItems(widget.buffetType);
+      // Convert the Map<String, bool> to List<BuffetMenuItem> with fallback IDs
+      final List<BuffetMenuItem> menuItems = [];
+      int fallbackId = 1000; // Start with high number for fallback items
+      
+      items.forEach((name, isSelected) {
+        menuItems.add(BuffetMenuItem(
+          id: fallbackId++, // Fallback ID since we don't have real IDs yet
+          name: name,
+          isSelected: isSelected,
+        ));
+      });
+      
       setState(() {
-        _includedItems = items;
+        _availableItems = menuItems;
+        _selectedItems = {for (var item in menuItems) item.id: item.isSelected};
         _isLoadingItems = false;
       });
     } catch (e) {
       // Use fallback items if loading fails
+      final fallbackItems = CategoryService.getFallbackBuffetItems();
+      final List<BuffetMenuItem> menuItems = [];
+      int fallbackId = 1000;
+      
+      fallbackItems.forEach((name, isSelected) {
+        menuItems.add(BuffetMenuItem(
+          id: fallbackId++,
+          name: name,
+          isSelected: isSelected,
+        ));
+      });
+      
       setState(() {
-        _includedItems = CategoryService.getFallbackBuffetItems();
+        _availableItems = menuItems;
+        _selectedItems = {for (var item in menuItems) item.id: item.isSelected};
         _isLoadingItems = false;
       });
     }
   }
 
-  void _addToCart() {
-    final selectedItems = _includedItems.entries
+  void _addToCart() async {
+    final selectedItemIds = _selectedItems.entries
         .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
     
-    if (selectedItems.isEmpty) {
+    if (selectedItemIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('At least one item must be selected')),
       );
       return;
     }
-    
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CartScreen(
-          items: [
-            {
-              'type': 'Buffet',
-              'variant': widget.buffetType,
-              'numberOfPeople': _numberOfPeople,
-              'pricePerHead': widget.pricePerHead,
-              'totalPrice': _numberOfPeople * widget.pricePerHead,
-              'includedItems': selectedItems,
-              'departmentLabel': _departmentLabel,
-              'notes': _notes,
-              'deluxeFormat': widget.buffetType == 'Deluxe' ? _deluxeFormat : null,
-            }
-          ],
-        ),
-      ),
-    );
+
+    setState(() {
+      _isAddingToCart = true;
+    });
+
+    try {
+      // Map buffet type to category ID
+      final categoryId = _getCategoryId(widget.buffetType);
+      
+      // Generate session ID for guest users (we'll add user management later)
+      final sessionId = CartService.generateSessionId();
+      
+      // Add to cart via API
+      final result = await CartService.addToCart(
+        sessionId: sessionId,
+        categoryId: categoryId,
+        quantity: _numberOfPeople,
+        unitPrice: widget.pricePerHead,
+        departmentLabel: _departmentLabel.isNotEmpty ? _departmentLabel : null,
+        notes: _notes.isNotEmpty ? _notes : null,
+        deluxeFormat: widget.buffetType == 'Deluxe' ? _deluxeFormat : null,
+        includedItemIds: selectedItemIds,
+      );
+
+      if (result.success) {
+        // Navigate to cart screen (it will load from database)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CartScreen(sessionId: sessionId),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message)),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add to cart: $e')),
+      );
+    } finally {
+      setState(() {
+        _isAddingToCart = false;
+      });
+    }
+  }
+
+  int _getCategoryId(String buffetType) {
+    switch (buffetType) {
+      case 'Classic':
+        return 3;
+      case 'Enhanced':
+        return 4;
+      case 'Deluxe':
+        return 5;
+      default:
+        return 3; // Default to Classic
+    }
   }
 
   @override
@@ -401,24 +468,25 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                                 ),
                               )
                             : Column(
-                                children: _includedItems.entries.map((entry) {
+                                children: _availableItems.map((item) {
+                          final isSelected = _selectedItems[item.id] ?? false;
                           return Container(
                             margin: const EdgeInsets.only(bottom: 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: entry.value
+                                color: isSelected
                                     ? const Color.fromARGB(77, 39, 174, 96)
                                     : const Color(0xFFE9ECEF),
                                 width: 1,
                               ),
-                              color: entry.value
+                              color: isSelected
                                   ? const Color.fromARGB(13, 39, 174, 96)
                                   : const Color(0xFFF8F9FA),
                             ),
                             child: CheckboxListTile(
                               title: Text(
-                                entry.key,
+                                item.name,
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontSize: 16,
@@ -426,13 +494,13 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                                   color: const Color(0xFF2C3E50),
                                 ),
                               ),
-                              value: entry.value,
+                              value: isSelected,
                               activeColor: const Color(0xFF27AE60),
                               onChanged: (value) {
-                                final selectedCount = _includedItems.values.where((v) => v).length;
+                                final selectedCount = _selectedItems.values.where((v) => v).length;
                                 if (selectedCount > 1 || value == true) {
                                   setState(() {
-                                    _includedItems[entry.key] = value!;
+                                    _selectedItems[item.id] = value!;
                                   });
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -638,7 +706,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                   ],
                 ),
                 child: ElevatedButton.icon(
-                  onPressed: _addToCart,
+                  onPressed: _isAddingToCart ? null : _addToCart,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3498DB),
                     foregroundColor: Colors.white,
@@ -647,12 +715,23 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                     ),
                     elevation: 0,
                   ),
-                  icon: Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 20,
-                  ),
+                  icon: _isAddingToCart 
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Icon(
+                        Icons.shopping_cart_outlined,
+                        size: 20,
+                      ),
                   label: Text(
-                    'Add to Cart - £${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
+                    _isAddingToCart 
+                      ? 'Adding to Cart...'
+                      : 'Add to Cart - £${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
@@ -669,4 +748,17 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
       ),
     );
   }
+}
+
+/// Buffet menu item model
+class BuffetMenuItem {
+  final int id;
+  final String name;
+  final bool isSelected;
+
+  BuffetMenuItem({
+    required this.id,
+    required this.name,
+    required this.isSelected,
+  });
 }

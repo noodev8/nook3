@@ -9,13 +9,16 @@ and provides navigation to delivery options and checkout.
 
 import 'package:flutter/material.dart';
 import 'delivery_options_screen.dart';
+import '../services/cart_service.dart';
 
 class CartScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> items;
+  final int? userId;
+  final String? sessionId;
 
   const CartScreen({
     super.key,
-    required this.items,
+    this.userId,
+    this.sessionId,
   });
 
   @override
@@ -23,39 +26,98 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  late List<Map<String, dynamic>> _cartItems;
+  List<CartItem> _cartItems = [];
+  bool _isLoading = true;
+  bool _isDeleting = false;
+  double _totalAmount = 0.0;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _cartItems = List.from(widget.items);
+    _loadCart();
+  }
+
+  Future<void> _loadCart() async {
+    try {
+      final result = await CartService.getCart(
+        userId: widget.userId,
+        sessionId: widget.sessionId,
+      );
+
+      if (result.success) {
+        setState(() {
+          _cartItems = result.cartItems ?? [];
+          _totalAmount = result.totalAmount ?? 0.0;
+          _isLoading = false;
+          _errorMessage = null;
+        });
+      } else {
+        setState(() {
+          _errorMessage = result.message;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load cart: $e';
+        _isLoading = false;
+      });
+    }
   }
 
   double _calculateTotal() {
-    double total = 0;
-    for (var item in _cartItems) {
-      if (item['type'] == 'Buffet') {
-        total += item['totalPrice'] ?? 0;
-      } else {
-        // Share Box - price would be set from API
-        total += (item['price'] ?? 15.0) * (item['quantity'] ?? 1);
-      }
-    }
-    return total;
+    return _totalAmount; // Use the total from API
   }
 
-  void _removeItem(int index) {
+  Future<void> _removeItem(int index) async {
+    if (_isDeleting) return;
+
+    final item = _cartItems[index];
+    
     setState(() {
-      _cartItems.removeAt(index);
+      _isDeleting = true;
     });
+
+    try {
+      final result = await CartService.deleteCartItem(
+        userId: widget.userId,
+        sessionId: widget.sessionId,
+        orderCategoryId: item.orderCategoryId,
+      );
+
+      if (result.success) {
+        setState(() {
+          _cartItems = result.cartItems ?? [];
+          _totalAmount = result.totalAmount ?? 0.0;
+          _isDeleting = false;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Item removed from cart')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message)),
+        );
+        setState(() {
+          _isDeleting = false;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to remove item: $e')),
+      );
+      setState(() {
+        _isDeleting = false;
+      });
+    }
   }
 
   int _getTotalBuffetPortions() {
     int total = 0;
     for (var item in _cartItems) {
-      if (item['type'] == 'Buffet') {
-        total += item['numberOfPeople'] as int;
-      }
+      total += item.quantity; // All cart items are buffets with quantity = number of people
     }
     return total;
   }
@@ -124,46 +186,108 @@ class _CartScreenState extends State<CartScreen> {
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
-        child: _cartItems.isEmpty
+        child: _isLoading
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8F9FA),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Icon(
-                        Icons.shopping_cart_outlined,
-                        size: 80,
-                        color: const Color(0xFF7F8C8D),
+                    CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        const Color(0xFF27AE60),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     Text(
-                      'Your cart is empty',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF2C3E50),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Add some delicious items to get started',
+                      'Loading your cart...',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 16,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                         color: const Color(0xFF7F8C8D),
                       ),
                     ),
                   ],
                 ),
               )
+            : _errorMessage != null
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 80,
+                          color: const Color(0xFFE74C3C),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Error loading cart',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF2C3E50),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _errorMessage!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF7F8C8D),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          onPressed: _loadCart,
+                          child: Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  )
+                : _cartItems.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF8F9FA),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Icon(
+                                Icons.shopping_cart_outlined,
+                                size: 80,
+                                color: const Color(0xFF7F8C8D),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'Your cart is empty',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF2C3E50),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Add some delicious items to get started',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFF7F8C8D),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
             : Column(
                 children: [
                   Expanded(
@@ -206,7 +330,7 @@ class _CartScreenState extends State<CartScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              '${item['type']} - ${item['variant']}',
+                                              'Buffet - ${item.categoryName}',
                                               style: TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontSize: 18,
@@ -215,29 +339,16 @@ class _CartScreenState extends State<CartScreen> {
                                                 letterSpacing: -0.3,
                                               ),
                                             ),
-                                            if (item['type'] == 'Buffet') ...[
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                '${item['numberOfPeople']} people × £${item['pricePerHead'].toStringAsFixed(2)}',
-                                                style: TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: const Color(0xFF7F8C8D),
-                                                ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              '${item.quantity} people × £${item.unitPrice.toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color: const Color(0xFF7F8C8D),
                                               ),
-                                            ] else ...[
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                'Quantity: ${item['quantity']}',
-                                                style: TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: const Color(0xFF7F8C8D),
-                                                ),
-                                              ),
-                                            ],
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -247,7 +358,7 @@ class _CartScreenState extends State<CartScreen> {
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         child: IconButton(
-                                          onPressed: () => _removeItem(index),
+                                          onPressed: _isDeleting ? null : () => _removeItem(index),
                                           icon: const Icon(Icons.delete_outline),
                                           color: const Color(0xFFE74C3C),
                                         ),
@@ -255,7 +366,7 @@ class _CartScreenState extends State<CartScreen> {
                                     ],
                                   ),
 
-                                  if (item['departmentLabel'] != null && item['departmentLabel'].isNotEmpty) ...[
+                                  if (item.departmentLabel != null && item.departmentLabel!.isNotEmpty) ...[
                                     const SizedBox(height: 12),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -268,7 +379,7 @@ class _CartScreenState extends State<CartScreen> {
                                         ),
                                       ),
                                       child: Text(
-                                        'Department: ${item['departmentLabel']}',
+                                        'Department: ${item.departmentLabel}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 12,
@@ -279,7 +390,7 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                   ],
 
-                                  if (item['notes'] != null && item['notes'].isNotEmpty) ...[
+                                  if (item.notes != null && item.notes!.isNotEmpty && !item.notes!.contains('Metadata:')) ...[
                                     const SizedBox(height: 12),
                                     Container(
                                       padding: const EdgeInsets.all(12),
@@ -292,7 +403,7 @@ class _CartScreenState extends State<CartScreen> {
                                         ),
                                       ),
                                       child: Text(
-                                        'Notes: ${item['notes']}',
+                                        'Notes: ${item.notes}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 12,
@@ -303,7 +414,7 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                   ],
 
-                                  if (item['deluxeFormat'] != null) ...[
+                                  if (item.deluxeFormat != null) ...[
                                     const SizedBox(height: 12),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -316,7 +427,7 @@ class _CartScreenState extends State<CartScreen> {
                                         ),
                                       ),
                                       child: Text(
-                                        'Format: ${item['deluxeFormat']}',
+                                        'Format: ${item.deluxeFormat}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 12,
@@ -327,7 +438,7 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                   ],
 
-                                  if (item['includedItems'] != null) ...[
+                                  if (item.includedItems.isNotEmpty) ...[
                                     const SizedBox(height: 12),
                                     Text(
                                       'Included Items:',
@@ -342,7 +453,7 @@ class _CartScreenState extends State<CartScreen> {
                                     Wrap(
                                       spacing: 6,
                                       runSpacing: 6,
-                                      children: (item['includedItems'] as List<String>).map((itemName) {
+                                      children: item.includedItems.map((menuItem) {
                                         return Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                           decoration: BoxDecoration(
@@ -354,7 +465,7 @@ class _CartScreenState extends State<CartScreen> {
                                             ),
                                           ),
                                           child: Text(
-                                            itemName,
+                                            menuItem.name,
                                             style: TextStyle(
                                               fontFamily: 'Poppins',
                                               fontSize: 11,
@@ -388,7 +499,7 @@ class _CartScreenState extends State<CartScreen> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '£${item['type'] == 'Buffet' ? item['totalPrice'].toStringAsFixed(2) : ((item['price'] ?? 15.0) * (item['quantity'] ?? 1)).toStringAsFixed(2)}',
+                                        '£${item.totalPrice.toStringAsFixed(2)}',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 20,

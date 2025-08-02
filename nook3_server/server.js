@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 const authRoutes = require('./routes/auth');
 const categoriesRoutes = require('./routes/categories');
 const buffetItemsRoutes = require('./routes/buffet-items');
+const cartRoutes = require('./routes/cart');
 
 // Middleware
 app.use(cors());
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/buffet-items', buffetItemsRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Basic health check route
 app.get('/', (req, res) => {
