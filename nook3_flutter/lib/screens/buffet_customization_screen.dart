@@ -38,7 +38,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
   bool _isAddingToCart = false;
   
   // Items loaded from database - now stores item info with IDs
-  List<BuffetMenuItem> _availableItems = [];
+  List<BuffetItem> _availableItems = [];
   Map<int, bool> _selectedItems = {}; // Maps item ID to selected status
 
   @override
@@ -49,41 +49,20 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
   
   Future<void> _loadBuffetItems() async {
     try {
-      final items = await CategoryService.getBuffetItems(widget.buffetType);
-      // Convert the Map<String, bool> to List<BuffetMenuItem> with fallback IDs
-      final List<BuffetMenuItem> menuItems = [];
-      int fallbackId = 1000; // Start with high number for fallback items
-      
-      items.forEach((name, isSelected) {
-        menuItems.add(BuffetMenuItem(
-          id: fallbackId++, // Fallback ID since we don't have real IDs yet
-          name: name,
-          isSelected: isSelected,
-        ));
-      });
+      final items = await CategoryService.getBuffetItemsWithIds(widget.buffetType);
       
       setState(() {
-        _availableItems = menuItems;
-        _selectedItems = {for (var item in menuItems) item.id: item.isSelected};
+        _availableItems = items;
+        _selectedItems = {for (var item in items) item.id: item.isDefault};
         _isLoadingItems = false;
       });
     } catch (e) {
       // Use fallback items if loading fails
-      final fallbackItems = CategoryService.getFallbackBuffetItems();
-      final List<BuffetMenuItem> menuItems = [];
-      int fallbackId = 1000;
-      
-      fallbackItems.forEach((name, isSelected) {
-        menuItems.add(BuffetMenuItem(
-          id: fallbackId++,
-          name: name,
-          isSelected: isSelected,
-        ));
-      });
+      final fallbackItems = CategoryService.getFallbackBuffetItemsWithIds();
       
       setState(() {
-        _availableItems = menuItems;
-        _selectedItems = {for (var item in menuItems) item.id: item.isSelected};
+        _availableItems = fallbackItems;
+        _selectedItems = {for (var item in fallbackItems) item.id: item.isDefault};
         _isLoadingItems = false;
       });
     }
@@ -748,17 +727,4 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
       ),
     );
   }
-}
-
-/// Buffet menu item model
-class BuffetMenuItem {
-  final int id;
-  final String name;
-  final bool isSelected;
-
-  BuffetMenuItem({
-    required this.id,
-    required this.name,
-    required this.isSelected,
-  });
 }

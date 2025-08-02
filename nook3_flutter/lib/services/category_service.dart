@@ -192,7 +192,7 @@ class CategoryService {
   }
 
   /// Get buffet items for customization by buffet type
-  static Future<Map<String, bool>> getBuffetItems(String buffetType) async {
+  static Future<List<BuffetItem>> getBuffetItemsWithIds(String buffetType) async {
     try {
       final response = await AppConfig.post(
         Uri.parse('${AppConfig.baseUrl}/buffet-items'),
@@ -206,17 +206,27 @@ class CategoryService {
       final data = jsonDecode(response.body);
 
       if (data['return_code'] == 'SUCCESS') {
-        final Map<String, bool> items = {};
+        final List<BuffetItem> items = [];
         for (var item in data['items']) {
-          items[item['name']] = true; // Default all items to included
+          items.add(BuffetItem.fromJson(item));
         }
         return items;
       } else {
-        return getFallbackBuffetItems();
+        return getFallbackBuffetItemsWithIds();
       }
     } catch (e) {
-      return getFallbackBuffetItems();
+      return getFallbackBuffetItemsWithIds();
     }
+  }
+
+  /// Get buffet items for customization by buffet type (legacy method)
+  static Future<Map<String, bool>> getBuffetItems(String buffetType) async {
+    final items = await getBuffetItemsWithIds(buffetType);
+    final Map<String, bool> itemMap = {};
+    for (var item in items) {
+      itemMap[item.name] = item.isDefault;
+    }
+    return itemMap;
   }
 
   /// Fallback buffet items when database is unavailable
@@ -231,6 +241,20 @@ class CategoryService {
       'Tortillas/Dips': true,
       'Cakes': true,
     };
+  }
+
+  /// Fallback buffet items with IDs when database is unavailable
+  static List<BuffetItem> getFallbackBuffetItemsWithIds() {
+    return [
+      BuffetItem(id: 1000, name: 'Sandwiches', isDefault: true),
+      BuffetItem(id: 1001, name: 'Quiche', isDefault: true),
+      BuffetItem(id: 1002, name: 'Cocktail Sausages', isDefault: true),
+      BuffetItem(id: 1003, name: 'Sausage Rolls', isDefault: true),
+      BuffetItem(id: 1004, name: 'Pork Pies', isDefault: true),
+      BuffetItem(id: 1005, name: 'Scotch Eggs', isDefault: true),
+      BuffetItem(id: 1006, name: 'Tortillas/Dips', isDefault: true),
+      BuffetItem(id: 1007, name: 'Cakes', isDefault: true),
+    ];
   }
 }
 
@@ -292,4 +316,34 @@ class CategoryResult {
     this.message = '',
     this.categories,
   });
+}
+
+/// Buffet item model
+class BuffetItem {
+  final int id;
+  final String name;
+  final String? description;
+  final String? itemType;
+  final bool isVegetarian;
+  final bool isDefault;
+
+  BuffetItem({
+    required this.id,
+    required this.name,
+    this.description,
+    this.itemType,
+    this.isVegetarian = false,
+    this.isDefault = true,
+  });
+
+  factory BuffetItem.fromJson(Map<String, dynamic> json) {
+    return BuffetItem(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      itemType: json['item_type'],
+      isVegetarian: json['is_vegetarian'] ?? false,
+      isDefault: json['is_default'] ?? true,
+    );
+  }
 }
