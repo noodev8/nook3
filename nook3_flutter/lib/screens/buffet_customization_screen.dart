@@ -15,6 +15,7 @@ import 'cart_screen.dart';
 import 'profile_screen.dart';
 import '../services/category_service.dart';
 import '../services/cart_service.dart';
+import '../services/auth_service.dart';
 
 class BuffetCustomizationScreen extends StatefulWidget {
   final String buffetType;
@@ -89,11 +90,19 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
       // Map buffet type to category ID
       final categoryId = _getCategoryId(widget.buffetType);
       
-      // Get persistent session ID for guest users (we'll add user management later)
-      final sessionId = await CartService.getSessionId();
+      // Check if user is logged in, otherwise use session ID for guests
+      int? userId;
+      String? sessionId;
+      
+      if (AuthService.isLoggedIn) {
+        userId = AuthService.currentUser?.id;
+      } else {
+        sessionId = await CartService.getSessionId();
+      }
       
       // Add to cart via API
       final result = await CartService.addToCart(
+        userId: userId,
         sessionId: sessionId,
         categoryId: categoryId,
         quantity: _numberOfPeople,

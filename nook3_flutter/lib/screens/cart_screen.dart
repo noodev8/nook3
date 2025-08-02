@@ -10,6 +10,7 @@ and provides navigation to delivery options and checkout.
 import 'package:flutter/material.dart';
 import 'delivery_options_screen.dart';
 import '../services/cart_service.dart';
+import '../services/auth_service.dart';
 
 class CartScreen extends StatefulWidget {
   final int? userId;
@@ -40,11 +41,20 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> _loadCart() async {
     try {
-      // Get session ID if not provided
-      final sessionId = widget.sessionId ?? await CartService.getSessionId();
+      // Determine user ID or session ID based on login status
+      int? userId = widget.userId;
+      String? sessionId = widget.sessionId;
+      
+      if (userId == null && sessionId == null) {
+        if (AuthService.isLoggedIn) {
+          userId = AuthService.currentUser?.id;
+        } else {
+          sessionId = await CartService.getSessionId();
+        }
+      }
       
       final result = await CartService.getCart(
-        userId: widget.userId,
+        userId: userId,
         sessionId: sessionId,
       );
 
@@ -93,11 +103,20 @@ class _CartScreenState extends State<CartScreen> {
     });
 
     try {
-      // Get session ID if not provided
-      final sessionId = widget.sessionId ?? await CartService.getSessionId();
+      // Determine user ID or session ID based on login status
+      int? userId = widget.userId;
+      String? sessionId = widget.sessionId;
+      
+      if (userId == null && sessionId == null) {
+        if (AuthService.isLoggedIn) {
+          userId = AuthService.currentUser?.id;
+        } else {
+          sessionId = await CartService.getSessionId();
+        }
+      }
       
       final result = await CartService.deleteCartItem(
-        userId: widget.userId,
+        userId: userId,
         sessionId: sessionId,
         orderCategoryId: item.orderCategoryId,
       );
