@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../config/app_config.dart';
 
 class AuthService {
-  // Server configuration
-  static const String baseUrl = 'https://nook.noodev8.com/api/auth';
+  // Server configuration using AppConfig
+  static String get baseUrl => '${AppConfig.baseUrl}/auth';
   
   // SharedPreferences keys
   static const String _authTokenKey = 'auth_token';
@@ -67,7 +67,7 @@ class AuthService {
     String? phone,
   }) async {
     try {
-      final response = await http.post(
+      final response = await AppConfig.post(
         Uri.parse('$baseUrl/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
@@ -108,7 +108,7 @@ class AuthService {
     required String password,
   }) async {
     try {
-      final response = await http.post(
+      final response = await AppConfig.post(
         Uri.parse('$baseUrl/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
@@ -157,7 +157,7 @@ class AuthService {
   /// Resend verification email
   static Future<AuthResult> resendVerificationEmail(String email) async {
     try {
-      final response = await http.post(
+      final response = await AppConfig.post(
         Uri.parse('$baseUrl/resend-verification'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email}),
@@ -180,7 +180,7 @@ class AuthService {
   /// Send forgot password email
   static Future<AuthResult> forgotPassword(String email) async {
     try {
-      final response = await http.post(
+      final response = await AppConfig.post(
         Uri.parse('$baseUrl/forgot-password'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email}),
@@ -206,7 +206,7 @@ class AuthService {
     required String newPassword,
   }) async {
     try {
-      final response = await http.post(
+      final response = await AppConfig.post(
         Uri.parse('$baseUrl/reset-password'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
@@ -239,7 +239,7 @@ class AuthService {
     }
 
     try {
-      final response = await http.get(
+      final response = await AppConfig.get(
         Uri.parse('$baseUrl/profile'),
         headers: {
           'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ class AuthService {
     }
 
     try {
-      final response = await http.put(
+      final response = await AppConfig.put(
         Uri.parse('$baseUrl/profile'),
         headers: {
           'Content-Type': 'application/json',

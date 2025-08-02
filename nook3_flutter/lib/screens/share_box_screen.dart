@@ -9,6 +9,7 @@ Shows what's included in each option and allows quantity selection.
 
 import 'package:flutter/material.dart';
 import 'cart_screen.dart';
+import '../services/category_service.dart';
 
 class ShareBoxScreen extends StatefulWidget {
   const ShareBoxScreen({super.key});
@@ -20,6 +21,37 @@ class ShareBoxScreen extends StatefulWidget {
 class _ShareBoxScreenState extends State<ShareBoxScreen> {
   String _selectedType = '';
   int _quantity = 1;
+  bool _isLoadingPrices = true;
+  Map<String, double> _shareBoxPrices = {
+    'Traditional': 12.50, // Default fallback prices
+    'Vegetarian': 11.50,
+  };
+  
+  double get _totalPrice {
+    if (_selectedType.isEmpty) return 0.0;
+    return (_shareBoxPrices[_selectedType] ?? 0.0) * _quantity;
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadShareBoxPrices();
+  }
+  
+  Future<void> _loadShareBoxPrices() async {
+    try {
+      final prices = await CategoryService.getShareBoxPrices();
+      setState(() {
+        _shareBoxPrices = prices;
+        _isLoadingPrices = false;
+      });
+    } catch (e) {
+      // Keep default prices if loading fails
+      setState(() {
+        _isLoadingPrices = false;
+      });
+    }
+  }
 
   void _addToCart() {
     if (_selectedType.isEmpty) {
@@ -39,7 +71,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
               'type': 'Share Box',
               'variant': _selectedType,
               'quantity': _quantity,
-              'price': 0.0, // Price TBD
+              'price': _totalPrice
             }
           ],
         ),
@@ -224,15 +256,41 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Traditional Share Box',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w700,
-                                            color: const Color(0xFF2C3E50),
-                                            letterSpacing: -0.3,
-                                          ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                'Traditional Share Box',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: const Color(0xFF2C3E50),
+                                                  letterSpacing: -0.3,
+                                                ),
+                                              ),
+                                            ),
+                                            _isLoadingPrices
+                                                ? SizedBox(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                                        const Color(0xFFE67E22),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    '£${_shareBoxPrices['Traditional']!.toStringAsFixed(2)}',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.w700,
+                                                      color: const Color(0xFFE67E22),
+                                                    ),
+                                                  ),
+                                          ],
                                         ),
                                         const SizedBox(height: 4),
                                         Row(
@@ -444,15 +502,41 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Vegetarian Share Box',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w700,
-                                            color: const Color(0xFF2C3E50),
-                                            letterSpacing: -0.3,
-                                          ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                'Vegetarian Share Box',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: const Color(0xFF2C3E50),
+                                                  letterSpacing: -0.3,
+                                                ),
+                                              ),
+                                            ),
+                                            _isLoadingPrices
+                                                ? SizedBox(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                                        const Color(0xFF27AE60),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    '£${_shareBoxPrices['Vegetarian']!.toStringAsFixed(2)}',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.w700,
+                                                      color: const Color(0xFF27AE60),
+                                                    ),
+                                                  ),
+                                          ],
                                         ),
                                         const SizedBox(height: 4),
                                         Row(
@@ -613,7 +697,106 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                 ),
               ],
 
-              const SizedBox(height: 40),
+              // Price Summary
+              if (_selectedType.isNotEmpty) ...[
+                const SizedBox(height: 24),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8F9FA),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFFE0E6ED),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Price per box:',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF7F8C8D),
+                        ),
+                      ),
+                      Text(
+                        '£${_shareBoxPrices[_selectedType]!.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF2C3E50),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+      
+              // Total Price Display
+              if (_selectedType.isNotEmpty && _quantity > 1) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        const Color(0xFF3498DB).withOpacity(0.1),
+                        const Color(0xFF3498DB).withOpacity(0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFF3498DB).withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Total ($_quantity boxes):',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF7F8C8D),
+                            ),
+                          ),
+                          Text(
+                            '£${_shareBoxPrices[_selectedType]!.toStringAsFixed(2)} × $_quantity',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF7F8C8D),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '£${_totalPrice.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF3498DB),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 32),
 
               // Add to Cart Button with sophisticated styling
               Container(
@@ -624,7 +807,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   boxShadow: [
                     BoxShadow(
                       color: _selectedType.isNotEmpty
-                          ? const Color(0xFF27AE60).withOpacity( 0.3)
+                          ? const Color(0xFF3498DB).withOpacity( 0.3)  // Blue shadow
                           : Colors.black.withOpacity( 0.1),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
@@ -636,7 +819,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   onPressed: _selectedType.isNotEmpty ? _addToCart : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _selectedType.isNotEmpty
-                        ? const Color(0xFF27AE60)
+                        ? const Color(0xFF3498DB)  // Blue as requested
                         : const Color(0xFFBDC3C7),
                     foregroundColor: Colors.white,
                     elevation: 0,
@@ -647,7 +830,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   child: Text(
                     _selectedType.isEmpty
                       ? 'Select an option above'
-                      : 'Add to Cart',
+                      : 'Add to Cart - £${_totalPrice.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,

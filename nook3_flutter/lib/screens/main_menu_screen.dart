@@ -927,7 +927,7 @@ class MainMenuScreen extends StatelessWidget {
 
                               // Simple buffet options list
                               Text(
-                                '• Classic Buffet - £9.90 per head\n• Enhanced Buffet - £10.90 per head\n• Deluxe Buffet - £13.90 per head',
+                                '• Classic Buffet\n• Enhanced Buffet\n• Deluxe Buffet',
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontSize: 14,

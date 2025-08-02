@@ -8,11 +8,11 @@ Called on app startup to ensure users have the minimum required version.
 */
 
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import '../../config/app_config.dart';
 
 class VersionService {
-  // Server configuration
-  static const String _baseUrl = 'https://nook.noodev8.com'; // Production server
+  // Server configuration using AppConfig
+  static String get _baseUrl => AppConfig.baseUrl.replaceAll('/api', '');
   static const String _versionCheckEndpoint = '/api/version-check';
   
   /// Check if the current app version meets the server requirements
@@ -21,7 +21,7 @@ class VersionService {
     try {
       final url = Uri.parse('$_baseUrl$_versionCheckEndpoint');
       
-      final response = await http.post(
+      final response = await AppConfig.post(
         url,
         headers: {
           'Content-Type': 'application/json',
