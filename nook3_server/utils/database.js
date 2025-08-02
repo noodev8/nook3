@@ -346,6 +346,112 @@ const db = {
     `;
     const result = await pool.query(query, [key, value]);
     return result.rows[0];
+  },
+
+  // Order tracking functions
+
+  // Get order history for a specific user
+  async getOrdersByUserId(userId, limit = 20, offset = 0) {
+    const query = `
+      SELECT 
+        o.id,
+        o.total_amount,
+        o.order_status,
+        o.delivery_type,
+        o.requested_date,
+        o.requested_time,
+        o.delivery_address,
+        o.special_instructions,
+        o.created_at,
+        o.confirmed_at,
+        o.completed_at,
+        COUNT(oc.id) as item_count
+      FROM orders o
+      LEFT JOIN order_categories oc ON oc.order_id = o.id
+      WHERE o.app_user_id = $1 AND o.order_status != 'cart'
+      GROUP BY o.id, o.total_amount, o.order_status, o.delivery_type, 
+               o.requested_date, o.requested_time, o.delivery_address,
+               o.special_instructions, o.created_at, o.confirmed_at, o.completed_at
+      ORDER BY o.created_at DESC
+      LIMIT $2 OFFSET $3
+    `;
+    const result = await pool.query(query, [userId, limit, offset]);
+    return result.rows;
+  },
+
+  // Get specific order with full details for a user
+  async getOrderWithDetails(orderId, userId) {
+    // First verify the order belongs to the user
+    const orderQuery = `
+      SELECT 
+        o.*,
+        COUNT(oc.id) as item_count
+      FROM orders o
+      LEFT JOIN order_categories oc ON oc.order_id = o.id
+      WHERE o.id = $1 AND o.app_user_id = $2 AND o.order_status != 'cart'
+      GROUP BY o.id
+    `;
+    const orderResult = await pool.query(orderQuery, [orderId, userId]);
+    
+    if (orderResult.rows.length === 0) {
+      return null;
+    }
+
+    const order = orderResult.rows[0];
+    
+    // Get order items with details
+    order.items = await this.getCartItemsWithDetails(orderId);
+    
+    // Get order status history
+    order.status_history = await this.getOrderStatusHistory(orderId);
+
+    return order;
+  },
+
+  // Get order status history
+  async getOrderStatusHistory(orderId) {
+    const query = `
+      SELECT 
+        status,
+        notes,
+        created_at
+      FROM order_status_history
+      WHERE order_id = $1
+      ORDER BY created_at ASC
+    `;
+    const result = await pool.query(query, [orderId]);
+    return result.rows;
+  },
+
+  // Add order status to history
+  async addOrderStatusHistory(orderId, status, notes = null) {
+    const query = `
+      INSERT INTO order_status_history (order_id, status, notes, created_at)
+      VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
+      RETURNING *
+    `;
+    const result = await pool.query(query, [orderId, status, notes]);
+    return result.rows[0];
+  },
+
+  // Update order status and add to history
+  async updateOrderStatus(orderId, newStatus, notes = null) {
+    // Update the main order status
+    const updateQuery = `
+      UPDATE orders 
+      SET order_status = $2, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+      RETURNING *
+    `;
+    const updateResult = await pool.query(updateQuery, [orderId, newStatus]);
+    
+    if (updateResult.rows.length > 0) {
+      // Add to status history
+      await this.addOrderStatusHistory(orderId, newStatus, notes);
+      return updateResult.rows[0];
+    }
+    
+    return null;
   }
 };
 

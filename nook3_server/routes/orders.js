@@ -153,6 +153,142 @@ router.post('/submit', async (req, res) => {
   }
 });
 
+/*
+=======================================================================================================================================
+Order History API - Get user's order history
+=======================================================================================================================================
+Method: POST
+Purpose: Retrieve order history for authenticated users
+=======================================================================================================================================
+Request Payload:
+{
+  "user_id": 123,                                // integer, required - user's ID
+  "limit": 20,                                   // integer, optional - number of orders to return (default: 20)
+  "offset": 0                                    // integer, optional - pagination offset (default: 0)
+}
+
+Success Response:
+{
+  "return_code": "SUCCESS",
+  "message": "Order history retrieved successfully",
+  "orders": [...]                                // array of order objects
+}
+=======================================================================================================================================
+*/
+
+// Get order history for authenticated user
+router.post('/history', async (req, res) => {
+  try {
+    const { user_id, limit = 20, offset = 0 } = req.body;
+
+    // Validate user ID
+    if (!user_id) {
+      return res.status(400).json({
+        return_code: 'MISSING_USER_ID',
+        message: 'User ID is required'
+      });
+    }
+
+    // Get order history
+    const orders = await db.getOrdersByUserId(user_id, limit, offset);
+
+    // Format orders with proper order numbers
+    const formattedOrders = orders.map(order => ({
+      ...order,
+      order_number: `NK${order.id.toString().padStart(6, '0')}`,
+      total_amount: parseFloat(order.total_amount)
+    }));
+
+    return res.json({
+      return_code: 'SUCCESS',
+      message: 'Order history retrieved successfully',
+      orders: formattedOrders
+    });
+
+  } catch (error) {
+    console.error('Error retrieving order history:', error);
+    res.status(500).json({
+      return_code: 'SERVER_ERROR',
+      message: 'Failed to retrieve order history'
+    });
+  }
+});
+
+/*
+=======================================================================================================================================
+Order Details API - Get specific order with full details and status tracking
+=======================================================================================================================================
+Method: POST
+Purpose: Retrieve detailed information for a specific order including status history
+=======================================================================================================================================
+Request Payload:
+{
+  "user_id": 123,                                // integer, required - user's ID
+  "order_id": 456                                // integer, required - specific order ID
+}
+
+Success Response:
+{
+  "return_code": "SUCCESS",
+  "message": "Order details retrieved successfully",
+  "order": {                                     // complete order object with items and status history
+    "id": 456,
+    "order_number": "NK000456",
+    "total_amount": 59.50,
+    "order_status": "confirmed",
+    "delivery_type": "delivery",
+    "items": [...],                              // array of order items
+    "status_history": [...]                      // array of status changes
+  }
+}
+=======================================================================================================================================
+*/
+
+// Get detailed information for a specific order
+router.post('/details', async (req, res) => {
+  try {
+    const { user_id, order_id } = req.body;
+
+    // Validate required fields
+    if (!user_id || !order_id) {
+      return res.status(400).json({
+        return_code: 'MISSING_REQUIRED_FIELDS',
+        message: 'User ID and Order ID are required'
+      });
+    }
+
+    // Get order with full details
+    const order = await db.getOrderWithDetails(order_id, user_id);
+
+    if (!order) {
+      return res.status(404).json({
+        return_code: 'ORDER_NOT_FOUND',
+        message: 'Order not found or access denied'
+      });
+    }
+
+    // Format order with proper order number
+    const formattedOrder = {
+      ...order,
+      order_number: `NK${order.id.toString().padStart(6, '0')}`,
+      total_amount: parseFloat(order.total_amount)
+    };
+
+    return res.json({
+      return_code: 'SUCCESS',
+      message: 'Order details retrieved successfully',
+      order: formattedOrder
+    });
+
+  } catch (error) {
+    console.error('Error retrieving order details:', error);
+    res.status(500).json({
+      return_code: 'SERVER_ERROR',
+      message: 'Failed to retrieve order details'
+    });
+  }
+});
+
 // Order number is generated from order ID: NK + 6-digit padded ID (e.g., NK000123)
 
 module.exports = router;
