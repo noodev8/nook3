@@ -8,7 +8,7 @@ Called on app startup to ensure users have the minimum required version.
 */
 
 import 'dart:convert';
-import '../../config/app_config.dart';
+import '../config/app_config.dart';
 
 class VersionService {
   // Server configuration using AppConfig
