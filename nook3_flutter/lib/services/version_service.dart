@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 class VersionService {
   // Server configuration
-  static const String _baseUrl = 'http://localhost:3013'; // Update this for production
+  static const String _baseUrl = 'https://nook.noodev8.com'; // Production server
   static const String _versionCheckEndpoint = '/api/version-check';
   
   /// Check if the current app version meets the server requirements

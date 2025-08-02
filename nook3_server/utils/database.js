@@ -76,14 +76,14 @@ const db = {
 
   // Update password and clear token
   async updatePassword(userId, passwordHash) {
-    const query = 'UPDATE app_user SET password_hash = $1, auth_token = NULL, auth_token_expires = NULL WHERE id = $1';
-    await pool.query(query, [userId, passwordHash]);
+    const query = 'UPDATE app_user SET password_hash = $1, auth_token = NULL, auth_token_expires = NULL WHERE id = $2';
+    await pool.query(query, [passwordHash, userId]);
   },
 
   // Update display name
   async updateDisplayName(userId, displayName) {
-    const query = 'UPDATE app_user SET display_name = $1 WHERE id = $1';
-    await pool.query(query, [userId, displayName]);
+    const query = 'UPDATE app_user SET display_name = $1 WHERE id = $2';
+    await pool.query(query, [displayName, userId]);
   },
 
   // Clean up expired tokens (optional maintenance function)

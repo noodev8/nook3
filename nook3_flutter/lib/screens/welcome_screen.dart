@@ -37,15 +37,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       
       if (result.isUpdateRequired) {
         _showUpdateRequiredDialog(result);
-      } else if (result.hasError) {
-        // For network/server errors, we'll allow the app to continue
-        // but could show a warning if needed
-        _showErrorMessage(result.message);
       }
-      // If success, do nothing - app continues normally
+      // For network/server errors or success, allow the app to continue silently
+      // Only show update dialogs when actually required
     } catch (e) {
-      // Handle any unexpected errors
-      _showErrorMessage('Unable to verify app version. Please check your connection.');
+      // Handle any unexpected errors silently
+      // Version checking is non-critical functionality
+      print('Version check failed: $e');
     }
   }
 
