@@ -8,9 +8,12 @@ class CategoryService {
   /// Get all product categories
   static Future<CategoryResult> getCategories() async {
     try {
-      final response = await AppConfig.get(
+      final response = await AppConfig.post(
         Uri.parse('$baseUrl'),
         headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'get_all',
+        }),
       );
 
       final data = jsonDecode(response.body);
@@ -39,12 +42,16 @@ class CategoryService {
     }
   }
 
-  /// Get specific category by name
-  static Future<CategoryResult> getCategoryByName(String name) async {
+  /// Get category by ID
+  static Future<CategoryResult> getCategoryById(int id) async {
     try {
-      final response = await AppConfig.get(
-        Uri.parse('$baseUrl/name/$name'),
+      final response = await AppConfig.post(
+        Uri.parse('$baseUrl'),
         headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'get_by_id',
+          'category_id': id,
+        }),
       );
 
       final data = jsonDecode(response.body);
@@ -71,33 +78,75 @@ class CategoryService {
     }
   }
 
-  /// Get categories for share boxes specifically
+  /// Get categories by type
+  static Future<CategoryResult> getCategoriesByType(String type) async {
+    try {
+      final response = await AppConfig.post(
+        Uri.parse('$baseUrl'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'get_by_type',
+          'category_type': type,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (data['return_code'] == 'SUCCESS') {
+        final List<ProductCategory> categories = (data['categories'] as List)
+            .map((categoryJson) => ProductCategory.fromJson(categoryJson))
+            .toList();
+        
+        return CategoryResult(
+          success: true,
+          message: data['message'],
+          categories: categories,
+        );
+      } else {
+        return CategoryResult(
+          success: false,
+          message: data['message'] ?? 'Failed to load categories',
+        );
+      }
+    } catch (e) {
+      return CategoryResult(
+        success: false,
+        message: 'Network error. Please check your connection.',
+      );
+    }
+  }
+
+  /// Get categories for share boxes specifically using IDs
   static Future<Map<String, double>> getShareBoxPrices() async {
-    final result = await getCategories();
-    
-    if (!result.success || result.categories == null) {
-      // Return default prices if API fails
+    try {
+      // Fetch Traditional Share Box (ID: 1) and Vegetarian Share Box (ID: 2)
+      final traditionalResult = await getCategoryById(1);
+      final vegetarianResult = await getCategoryById(2);
+      
+      final Map<String, double> prices = {};
+      
+      // Get Traditional price
+      if (traditionalResult.success && traditionalResult.categories != null && traditionalResult.categories!.isNotEmpty) {
+        prices['Traditional'] = traditionalResult.categories!.first.pricePerHead ?? 5.00;
+      } else {
+        prices['Traditional'] = 5.00; // Fallback price
+      }
+      
+      // Get Vegetarian price
+      if (vegetarianResult.success && vegetarianResult.categories != null && vegetarianResult.categories!.isNotEmpty) {
+        prices['Vegetarian'] = vegetarianResult.categories!.first.pricePerHead ?? 4.00;
+      } else {
+        prices['Vegetarian'] = 4.00; // Fallback price
+      }
+      
+      return prices;
+    } catch (e) {
+      // Return fallback prices if anything goes wrong
       return {
-        'Traditional': 12.50,
-        'Vegetarian': 11.50,
+        'Traditional': 5.00,
+        'Vegetarian': 4.00,
       };
     }
-
-    final Map<String, double> prices = {};
-    
-    for (final category in result.categories!) {
-      if (category.name.contains('Traditional Share Box')) {
-        prices['Traditional'] = category.pricePerHead ?? 12.50;
-      } else if (category.name.contains('Vegetarian Share Box')) {
-        prices['Vegetarian'] = category.pricePerHead ?? 11.50;
-      }
-    }
-
-    // Ensure we have both prices, use defaults if missing
-    prices['Traditional'] ??= 12.50;
-    prices['Vegetarian'] ??= 11.50;
-
-    return prices;
   }
 }
 

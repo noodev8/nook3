@@ -91,6 +91,37 @@ const db = {
     const query = 'UPDATE app_user SET auth_token = NULL, auth_token_expires = NULL WHERE auth_token_expires < CURRENT_TIMESTAMP';
     const result = await pool.query(query);
     return result.rowCount;
+  },
+
+  // Category database functions
+  
+  // Get all active product categories
+  async getAllCategories() {
+    const query = 'SELECT * FROM product_categories WHERE is_active = TRUE ORDER BY name';
+    const result = await pool.query(query);
+    return result.rows;
+  },
+
+  // Get category by ID
+  async getCategoryById(id) {
+    const query = 'SELECT * FROM product_categories WHERE id = $1 AND is_active = TRUE';
+    const result = await pool.query(query, [id]);
+    return result.rows[0] || null;
+  },
+
+  // Get category by name (case-insensitive)
+  async getCategoryByName(name) {
+    const query = 'SELECT * FROM product_categories WHERE LOWER(name) = LOWER($1) AND is_active = TRUE';
+    const result = await pool.query(query, [name]);
+    return result.rows[0] || null;
+  },
+
+  // Get categories by type (share box or buffet)
+  async getCategoriesByType(type) {
+    const query = 'SELECT * FROM product_categories WHERE LOWER(name) LIKE LOWER($1) AND is_active = TRUE ORDER BY name';
+    const searchPattern = `%${type}%`;
+    const result = await pool.query(query, [searchPattern]);
+    return result.rows;
   }
 };
 
