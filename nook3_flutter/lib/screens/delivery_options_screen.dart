@@ -58,13 +58,11 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
       final storeName = await StoreInfoService.getStoreName();
       final storeAddress = await StoreInfoService.getStoreAddress();
       final openingHours = await StoreInfoService.getOpeningHours();
-      final collectionInstructions = await StoreInfoService.getCollectionInstructions();
       
       setState(() {
         _storeName = storeName;
         _storeAddress = storeAddress;
         _openingHours = openingHours;
-        _collectionInstructions = collectionInstructions;
         _isLoadingStoreInfo = false;
       });
     } catch (e) {
