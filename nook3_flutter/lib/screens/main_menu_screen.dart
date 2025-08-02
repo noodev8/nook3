@@ -14,6 +14,7 @@ import 'profile_screen.dart';
 import 'cart_screen.dart';
 import '../services/auth_service.dart';
 import '../services/store_info_service.dart';
+import '../config/app_config.dart';
 
 class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({super.key});
@@ -23,7 +24,7 @@ class MainMenuScreen extends StatefulWidget {
 }
 
 class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStateMixin {
-  bool _showAdvert = true;
+  bool _showAdvert = AppConfig.showPromotionalOverlay;
   late AnimationController _slideController;
   late AnimationController _wobbleController;
   late Animation<Offset> _slideAnimation;
@@ -35,13 +36,13 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
     
     // Slide-in animation controller
     _slideController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: Duration(milliseconds: AppConfig.slideAnimationMs),
       vsync: this,
     );
     
     // Wobble animation controller
     _wobbleController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: Duration(milliseconds: AppConfig.wobbleAnimationMs),
       vsync: this,
     );
     
@@ -65,7 +66,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
     
     // Start animations with delay
     if (_showAdvert) {
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(Duration(milliseconds: AppConfig.overlayDelayMs), () {
         if (mounted) {
           _slideController.forward();
           Future.delayed(const Duration(milliseconds: 300), () {
@@ -132,7 +133,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
                           children: [
                             // Full leaflet image
                             Image.asset(
-                              'assets/images/Leaflet-1.png',
+                              AppConfig.promotionalImagePath,
                               width: double.infinity,
                               fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) {
