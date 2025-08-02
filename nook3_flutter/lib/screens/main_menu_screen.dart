@@ -22,82 +22,176 @@ class MainMenuScreen extends StatefulWidget {
   State<MainMenuScreen> createState() => _MainMenuScreenState();
 }
 
-class _MainMenuScreenState extends State<MainMenuScreen> {
+class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStateMixin {
   bool _showAdvert = true;
+  late AnimationController _slideController;
+  late AnimationController _wobbleController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _wobbleAnimation;
+  
+  @override
+  void initState() {
+    super.initState();
+    
+    // Slide-in animation controller
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    
+    // Wobble animation controller
+    _wobbleController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    
+    // Slide animation from bottom
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 1.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.elasticOut,
+    ));
+    
+    // Wobble rotation animation
+    _wobbleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _wobbleController,
+      curve: Curves.elasticInOut,
+    ));
+    
+    // Start animations with delay
+    if (_showAdvert) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          _slideController.forward();
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted) {
+              _wobbleController.forward();
+            }
+          });
+        }
+      });
+    }
+  }
+  
+  @override
+  void dispose() {
+    _slideController.dispose();
+    _wobbleController.dispose();
+    super.dispose();
+  }
 
-  Widget _buildAdvertBanner() {
+  Widget _buildLeafletOverlay() {
     if (!_showAdvert) return const SizedBox.shrink();
     
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-            spreadRadius: 0,
+    return Material(
+      color: Colors.black.withValues(alpha: 0.7),
+      child: Stack(
+        children: [
+          // Background overlay - tap to dismiss
+          GestureDetector(
+            onTap: _dismissAdvert,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.transparent,
+            ),
+          ),
+          // Animated leaflet
+          Center(
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: AnimatedBuilder(
+                animation: _wobbleAnimation,
+                builder: (context, child) {
+                  return Transform.rotate(
+                    angle: (_wobbleAnimation.value * 0.1) * 
+                           (1.0 - _wobbleAnimation.value) * 
+                           4.0 * 3.14159,
+                    child: Container(
+                      margin: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Stack(
+                          children: [
+                            // Full leaflet image
+                            Image.asset(
+                              'assets/images/Leaflet-1.png',
+                              width: double.infinity,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 400,
+                                  color: const Color(0xFFF8F9FA),
+                                  child: const Center(
+                                    child: Text(
+                                      'Special Offers Available\nTap anywhere to close',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF27AE60),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            // Close button
+                            Positioned(
+                              top: 12,
+                              right: 12,
+                              child: GestureDetector(
+                                onTap: _dismissAdvert,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.7),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: const Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(
-          children: [
-            // Advert image
-            Image.asset(
-              'assets/images/Leaflet-1.png',
-              width: double.infinity,
-              height: 120,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 120,
-                  color: const Color(0xFFF8F9FA),
-                  child: const Center(
-                    child: Text(
-                      'Special Offers Available',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF27AE60),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-            // Close button
-            Positioned(
-              top: 8,
-              right: 8,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _showAdvert = false;
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
+  }
+  
+  void _dismissAdvert() {
+    setState(() {
+      _showAdvert = false;
+    });
   }
 
   void _showStoreInfo(BuildContext context) async {
@@ -318,7 +412,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Stack(
+      children: [
+        Scaffold(
       backgroundColor: const Color(0xFFFAFAFA), // Soft off-white background
       appBar: AppBar(
         title: Text(
@@ -409,8 +505,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
               ),
               const SizedBox(height: 40),
 
-              // Promotional advert banner
-              _buildAdvertBanner(),
 
               // Welcome message with sophisticated styling
               Text(
@@ -1325,6 +1419,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
           ],
         ),
       ),
+        ),
+        // Promotional leaflet overlay
+        if (_showAdvert) _buildLeafletOverlay(),
+      ],
     );
   }
 }
