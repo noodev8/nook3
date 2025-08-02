@@ -12,6 +12,7 @@ import 'order_status_screen.dart';
 import '../services/auth_service.dart';
 import '../services/cart_service.dart';
 import '../services/order_service.dart';
+import '../services/store_info_service.dart';
 
 class DeliveryOptionsScreen extends StatefulWidget {
   final List<dynamic> cartItems; // Temporary fix - will need proper CartItem integration
@@ -35,6 +36,45 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   bool _isSubmittingOrder = false;
+  
+  // Store information (loaded dynamically)
+  String _storeName = 'The Nook of Welshpool';
+  String _storeAddress = '42 High Street, Welshpool, SY21 7JQ';
+  Map<String, String> _openingHours = {
+    'Monday - Friday': '10:00 AM - 5:00 PM',
+    'Saturday': '10:00 AM - 4:00 PM',
+    'Sunday': 'Closed',
+  };
+  String _collectionInstructions = 'Please arrive at the stated collection time.';
+  bool _isLoadingStoreInfo = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStoreInfo();
+  }
+
+  Future<void> _loadStoreInfo() async {
+    try {
+      final storeName = await StoreInfoService.getStoreName();
+      final storeAddress = await StoreInfoService.getStoreAddress();
+      final openingHours = await StoreInfoService.getOpeningHours();
+      final collectionInstructions = await StoreInfoService.getCollectionInstructions();
+      
+      setState(() {
+        _storeName = storeName;
+        _storeAddress = storeAddress;
+        _openingHours = openingHours;
+        _collectionInstructions = collectionInstructions;
+        _isLoadingStoreInfo = false;
+      });
+    } catch (e) {
+      // Keep default values if loading fails
+      setState(() {
+        _isLoadingStoreInfo = false;
+      });
+    }
+  }
 
   void _selectDate() async {
     final DateTime? picked = await showDatePicker(
@@ -450,16 +490,26 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                Text(
-                                  'The Nook of Welshpool\n42 High Street, Welshpool, SY21 7JQ',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: const Color(0xFF7F8C8D),
-                                    height: 1.5,
-                                  ),
-                                ),
+                                _isLoadingStoreInfo
+                                    ? Text(
+                                        'Loading store information...',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 14,
+                                          fontStyle: FontStyle.italic,
+                                          color: const Color(0xFF7F8C8D),
+                                        ),
+                                      )
+                                    : Text(
+                                        '$_storeName\n$_storeAddress',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: const Color(0xFF7F8C8D),
+                                          height: 1.5,
+                                        ),
+                                      ),
                                 const SizedBox(height: 16),
                                 Text(
                                   'Opening Hours:',
@@ -471,16 +521,28 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(
-                                  'Mon-Fri: 8:00 AM - 5:00 PM\nSat: 9:00 AM - 4:00 PM\nSun: Closed',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: const Color(0xFF7F8C8D),
-                                    height: 1.5,
-                                  ),
-                                ),
+                                _isLoadingStoreInfo
+                                    ? Text(
+                                        'Loading hours...',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 14,
+                                          fontStyle: FontStyle.italic,
+                                          color: const Color(0xFF7F8C8D),
+                                        ),
+                                      )
+                                    : Text(
+                                        _openingHours.entries
+                                            .map((entry) => '${entry.key}: ${entry.value}')
+                                            .join('\n'),
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: const Color(0xFF7F8C8D),
+                                          height: 1.5,
+                                        ),
+                                      ),
                               ],
                             ),
                           ),

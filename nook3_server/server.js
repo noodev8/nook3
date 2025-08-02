@@ -14,6 +14,7 @@ const categoriesRoutes = require('./routes/categories');
 const buffetItemsRoutes = require('./routes/buffet-items');
 const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/orders');
+const storeInfoRoutes = require('./routes/store-info');
 
 // Middleware
 app.use(cors());
@@ -26,6 +27,7 @@ app.use('/api/categories', categoriesRoutes);
 app.use('/api/buffet-items', buffetItemsRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/store-info', storeInfoRoutes);
 
 // Basic health check route
 app.get('/', (req, res) => {
