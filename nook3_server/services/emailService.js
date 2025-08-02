@@ -21,76 +21,78 @@ async function sendVerificationEmail(email, token) {
           line-height: 1.6; 
           margin: 0; 
           padding: 20px; 
-          background: #f5f5f5;
-          color: #333;
+          background: #ffffff;
+          color: #000000;
         }
         .container { 
           max-width: 600px; 
           margin: 0 auto; 
-          background: white; 
-          border-radius: 8px; 
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          overflow: hidden;
+          background: #ffffff; 
+          border: 1px solid #e0e0e0;
         }
         .header { 
-          background: #f8f9fa; 
           padding: 30px; 
-          text-align: center; 
-          border-bottom: 1px solid #e9ecef;
+          text-align: left; 
+          border-bottom: 1px solid #e0e0e0;
         }
         .header h1 { 
           margin: 0; 
-          font-size: 24px; 
+          font-size: 22px; 
           font-weight: 600; 
-          color: #333;
+          color: #000000;
         }
         .content { 
-          padding: 40px; 
+          padding: 30px; 
         }
         .content h2 { 
-          color: #333; 
-          margin-bottom: 20px; 
-          font-size: 20px;
-          font-weight: 500;
+          color: #000000; 
+          margin: 0 0 24px 0; 
+          font-size: 18px;
+          font-weight: 600;
         }
         .content p { 
-          color: #666; 
-          margin-bottom: 20px; 
+          color: #444444; 
+          margin: 0 0 20px 0; 
           font-size: 16px;
         }
         .verify-button { 
           display: inline-block; 
-          background: #0066cc; 
-          color: white; 
-          padding: 14px 28px; 
+          background: #000000; 
+          color: #ffffff; 
+          padding: 12px 24px; 
           text-decoration: none; 
-          border-radius: 4px; 
           font-weight: 500; 
           font-size: 16px;
-          margin: 20px 0;
+          margin: 24px 0;
+          border: 2px solid #000000;
+        }
+        .verify-button:hover {
+          background: #ffffff;
+          color: #000000;
         }
         .footer { 
-          background: #f8f9fa; 
-          padding: 20px; 
-          text-align: center; 
-          color: #666; 
+          padding: 20px 30px; 
+          color: #666666; 
           font-size: 14px;
-          border-top: 1px solid #e9ecef;
+          border-top: 1px solid #e0e0e0;
         }
-        .expiry-notice { 
-          background: #fff3cd; 
-          color: #856404; 
-          padding: 12px; 
-          border-radius: 4px; 
-          margin: 20px 0; 
+        .notice { 
+          padding: 16px; 
+          margin: 24px 0; 
           font-size: 14px;
-          border: 1px solid #ffeaa7;
+          border: 1px solid #e0e0e0;
+          background: #fafafa;
         }
         .url-fallback {
-          margin-top: 30px; 
+          margin-top: 24px; 
           font-size: 14px; 
-          color: #666;
+          color: #666666;
           word-break: break-all;
+          line-height: 1.5;
+        }
+        .url-fallback a {
+          color: #000000;
+          text-decoration: underline;
         }
       </style>
     </head>
@@ -101,18 +103,21 @@ async function sendVerificationEmail(email, token) {
         </div>
         <div class="content">
           <h2>Verify Your Email Address</h2>
-          <p>Welcome to ${process.env.EMAIL_NAME}! Please click the button below to verify your email address and complete your registration.</p>
+          <p>Please click the button below to verify your email address and complete your registration.</p>
+          
           <p><a href="${verificationUrl}" class="verify-button">Verify Email Address</a></p>
-          <div class="expiry-notice">
-            This verification link will expire in 24 hours for security reasons.
+          
+          <div class="notice">
+            <strong>Important:</strong> This verification link will expire in 24 hours for security reasons.
           </div>
+          
           <div class="url-fallback">
-            If the button doesn't work, you can copy and paste this link into your browser:<br>
+            If the button doesn't work, copy and paste this link into your browser:<br>
             <a href="${verificationUrl}">${verificationUrl}</a>
           </div>
         </div>
         <div class="footer">
-          <p>If you didn't create an account with ${process.env.EMAIL_NAME}, you can safely ignore this email.</p>
+          <p>If you didn't create an account with ${process.env.EMAIL_NAME}, please ignore this email.</p>
           <p>&copy; 2025 ${process.env.EMAIL_NAME}. All rights reserved.</p>
         </div>
       </div>
@@ -121,16 +126,16 @@ async function sendVerificationEmail(email, token) {
   `;
 
   const textTemplate = `
-    Welcome to ${process.env.EMAIL_NAME}!
-    
-    Please verify your email address by clicking the link below:
-    ${verificationUrl}
-    
-    This verification link will expire in 24 hours for security reasons.
-    
-    If you didn't create an account with ${process.env.EMAIL_NAME}, you can safely ignore this email.
-    
-    © 2025 ${process.env.EMAIL_NAME}. All rights reserved.
+${process.env.EMAIL_NAME} - Email Verification Required
+
+Please verify your email address by visiting the link below:
+${verificationUrl}
+
+IMPORTANT: This verification link will expire in 24 hours for security reasons.
+
+If you didn't create an account with ${process.env.EMAIL_NAME}, please ignore this email.
+
+© 2025 ${process.env.EMAIL_NAME}. All rights reserved.
   `;
 
   try {
@@ -169,85 +174,85 @@ async function sendPasswordResetEmail(email, token) {
           line-height: 1.6; 
           margin: 0; 
           padding: 20px; 
-          background: #f5f5f5;
-          color: #333;
+          background: #ffffff;
+          color: #000000;
         }
         .container { 
           max-width: 600px; 
           margin: 0 auto; 
-          background: white; 
-          border-radius: 8px; 
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          overflow: hidden;
+          background: #ffffff; 
+          border: 1px solid #e0e0e0;
         }
         .header { 
-          background: #f8f9fa; 
           padding: 30px; 
-          text-align: center; 
-          border-bottom: 1px solid #e9ecef;
+          text-align: left; 
+          border-bottom: 1px solid #e0e0e0;
         }
         .header h1 { 
           margin: 0; 
-          font-size: 24px; 
+          font-size: 22px; 
           font-weight: 600; 
-          color: #333;
+          color: #000000;
         }
         .content { 
-          padding: 40px; 
+          padding: 30px; 
         }
         .content h2 { 
-          color: #333; 
-          margin-bottom: 20px; 
-          font-size: 20px;
-          font-weight: 500;
+          color: #000000; 
+          margin: 0 0 24px 0; 
+          font-size: 18px;
+          font-weight: 600;
         }
         .content p { 
-          color: #666; 
-          margin-bottom: 20px; 
+          color: #444444; 
+          margin: 0 0 20px 0; 
           font-size: 16px;
         }
         .reset-button { 
           display: inline-block; 
-          background: #0066cc; 
-          color: white; 
-          padding: 14px 28px; 
+          background: #000000; 
+          color: #ffffff; 
+          padding: 12px 24px; 
           text-decoration: none; 
-          border-radius: 4px; 
           font-weight: 500; 
           font-size: 16px;
-          margin: 20px 0;
+          margin: 24px 0;
+          border: 2px solid #000000;
+        }
+        .reset-button:hover {
+          background: #ffffff;
+          color: #000000;
         }
         .footer { 
-          background: #f8f9fa; 
-          padding: 20px; 
-          text-align: center; 
-          color: #666; 
+          padding: 20px 30px; 
+          color: #666666; 
           font-size: 14px;
-          border-top: 1px solid #e9ecef;
+          border-top: 1px solid #e0e0e0;
         }
-        .security-notice { 
-          background: #fff3cd; 
-          color: #856404; 
-          padding: 12px; 
-          border-radius: 4px; 
-          margin: 20px 0; 
+        .notice { 
+          padding: 16px; 
+          margin: 24px 0; 
           font-size: 14px;
-          border: 1px solid #ffeaa7;
+          border: 1px solid #e0e0e0;
+          background: #fafafa;
         }
-        .warning { 
-          background: #f8d7da; 
-          color: #721c24; 
-          padding: 12px; 
-          border-radius: 4px; 
-          margin: 20px 0; 
+        .security-info {
+          margin: 24px 0;
+          padding: 16px;
+          border: 1px solid #e0e0e0;
+          background: #fafafa;
           font-size: 14px;
-          border: 1px solid #f5c6cb;
         }
         .url-fallback {
-          margin-top: 30px; 
+          margin-top: 24px; 
           font-size: 14px; 
-          color: #666;
+          color: #666666;
           word-break: break-all;
+          line-height: 1.5;
+        }
+        .url-fallback a {
+          color: #000000;
+          text-decoration: underline;
         }
       </style>
     </head>
@@ -259,15 +264,19 @@ async function sendPasswordResetEmail(email, token) {
         <div class="content">
           <h2>Reset Your Password</h2>
           <p>We received a request to reset your password for your ${process.env.EMAIL_NAME} account.</p>
+          
           <p><a href="${resetUrl}" class="reset-button">Reset Password</a></p>
-          <div class="security-notice">
-            This password reset link will expire in 1 hour for security reasons.
+          
+          <div class="notice">
+            <strong>Important:</strong> This password reset link will expire in 1 hour for security reasons.
           </div>
-          <div class="warning">
-            If you didn't request this password reset, please ignore this email. Your account remains secure.
+          
+          <div class="security-info">
+            <strong>Security Notice:</strong> If you didn't request this password reset, please ignore this email. Your account remains secure.
           </div>
+          
           <div class="url-fallback">
-            If the button doesn't work, you can copy and paste this link into your browser:<br>
+            If the button doesn't work, copy and paste this link into your browser:<br>
             <a href="${resetUrl}">${resetUrl}</a>
           </div>
         </div>
@@ -281,20 +290,20 @@ async function sendPasswordResetEmail(email, token) {
   `;
 
   const textTemplate = `
-    Reset Your Password - ${process.env.EMAIL_NAME}
-    
-    We received a request to reset your password for your ${process.env.EMAIL_NAME} account.
-    
-    Click the link below to reset your password:
-    ${resetUrl}
-    
-    This password reset link will expire in 1 hour for security reasons.
-    
-    If you didn't request this password reset, please ignore this email. Your account remains secure.
-    
-    For security reasons, this link can only be used once and will expire soon.
-    
-    © 2025 ${process.env.EMAIL_NAME}. All rights reserved.
+${process.env.EMAIL_NAME} - Password Reset Request
+
+We received a request to reset your password for your ${process.env.EMAIL_NAME} account.
+
+Click the link below to reset your password:
+${resetUrl}
+
+IMPORTANT: This password reset link will expire in 1 hour for security reasons.
+
+SECURITY NOTICE: If you didn't request this password reset, please ignore this email. Your account remains secure.
+
+For security reasons, this link can only be used once and will expire soon.
+
+© 2025 ${process.env.EMAIL_NAME}. All rights reserved.
   `;
 
   try {

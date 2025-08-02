@@ -646,9 +646,10 @@ class _GuestNameDialogState extends State<_GuestNameDialog> {
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'What would you like us to call you?',
+            'What name shall we use?',
             style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 16,
@@ -686,6 +687,37 @@ class _GuestNameDialogState extends State<_GuestNameDialog> {
                 borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF8E1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFFFFD54F), width: 1),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  size: 20,
+                  color: const Color(0xFFE65100),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Guest data will be lost when you logout or the app resets. Data is also deleted after a period of inactivity.',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFFE65100),
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
