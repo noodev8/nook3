@@ -7,11 +7,7 @@ INSERT INTO system_settings (setting_key, setting_value, description) VALUES
 ('opening_hours_mon_fri', '10:00 AM - 5:00 PM', 'Monday to Friday opening hours'),
 ('opening_hours_saturday', '10:00 AM - 4:00 PM', 'Saturday opening hours'),
 ('opening_hours_sunday', 'Closed', 'Sunday opening hours'),
-('delivery_radius_miles', '5', 'Delivery radius in miles'),
-('minimum_order_delivery', '15.00', 'Minimum order amount for delivery'),
-('delivery_fee', '2.50', 'Standard delivery fee'),
 ('collection_instructions', 'Please arrive at the stated collection time. Ring bell if shop appears closed.', 'Instructions for collection'),
-('delivery_instructions', 'We deliver within 5 miles of Welshpool. Please ensure someone is available to receive the order.', 'Instructions for delivery'),
 ('business_description', 'Local food business specializing in buffets and share boxes for groups and events.', 'Business description for info page')
 ON CONFLICT (setting_key) DO NOTHING;
 

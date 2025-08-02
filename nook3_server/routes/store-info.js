@@ -17,18 +17,14 @@ Success Response:
   "return_code": "SUCCESS",
   "message": "Store information retrieved successfully",
   "store_info": {
-    "store_name": "The Nook of Welshpool",
-    "store_address": "42 High Street, Welshpool, SY21 7JQ",
+    "business_name": "The Nook of Welshpool",
+    "business_address": "42 High Street, Welshpool, SY21 7JQ",
     "store_phone": "01938 123456",
     "store_email": "info@nookofwelshpool.co.uk",
     "opening_hours_mon_fri": "10:00 AM - 5:00 PM",
     "opening_hours_saturday": "10:00 AM - 4:00 PM",
     "opening_hours_sunday": "Closed",
-    "delivery_radius_miles": "5",
-    "minimum_order_delivery": "15.00",
-    "delivery_fee": "2.50",
     "collection_instructions": "Please arrive at the stated collection time...",
-    "delivery_instructions": "We deliver within 5 miles of Welshpool...",
     "business_description": "Local food business specializing in buffets..."
   }
 }

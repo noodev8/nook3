@@ -76,24 +76,9 @@ class StoreInfoService {
            'Please arrive at the stated collection time. Ring bell if shop appears closed.';
   }
   
-  static Future<String> getDeliveryInstructions() async {
-    return await getStoreInfoValue('delivery_instructions') ?? 
-           'We deliver within 5 miles of Welshpool. Please ensure someone is available to receive the order.';
-  }
-  
   static Future<String> getBusinessDescription() async {
     return await getStoreInfoValue('business_description') ?? 
            'Local food business specializing in buffets and share boxes for groups and events.';
-  }
-  
-  static Future<double> getDeliveryFee() async {
-    final fee = await getStoreInfoValue('delivery_fee');
-    return double.tryParse(fee ?? '2.50') ?? 2.50;
-  }
-  
-  static Future<double> getMinimumOrderDelivery() async {
-    final minimum = await getStoreInfoValue('minimum_order_delivery');
-    return double.tryParse(minimum ?? '15.00') ?? 15.00;
   }
   
   /// Clear cache to force refresh on next request
