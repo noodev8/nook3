@@ -122,29 +122,6 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header with sophisticated styling
-              Text(
-                'Customize Your ${widget.buffetType} Buffet',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF2C3E50), // Deep charcoal
-                  letterSpacing: -0.5,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '£${widget.pricePerHead.toStringAsFixed(2)} per person',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 18,
-                  color: const Color(0xFF2C3E50), // Black for pricing
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 40),
 
               // Number of People
               Container(
@@ -173,14 +150,16 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Number of People:',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF2C3E50),
-                            letterSpacing: -0.3,
+                        Center(
+                          child: Text(
+                            'Number of people',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF2C3E50),
+                              letterSpacing: -0.3,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -643,97 +622,45 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
 
               const SizedBox(height: 40),
 
-              // Action Buttons with sophisticated styling
-              Column(
-                children: [
-                  // Add & Select Another Button
-                  Container(
-                    width: double.infinity,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color.fromARGB(51, 52, 152, 219),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                          spreadRadius: 0,
-                        ),
-                      ],
+              // Add to Cart Button
+              Container(
+                width: double.infinity,
+                height: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromARGB(77, 52, 152, 219),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                      spreadRadius: 0,
                     ),
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        // Add this buffet and go back to select another
-                        _addToCart();
-                        Navigator.pop(context); // Go back to buffet selection
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF3498DB),
-                        side: BorderSide(color: const Color(0xFF3498DB), width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        backgroundColor: Colors.white,
-                      ),
-                      icon: Icon(
-                        Icons.add_circle_outline,
-                        size: 20,
-                      ),
-                      label: Text(
-                        'Add & Select Another Buffet',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.3,
-                        ),
-                      ),
+                  ],
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: _addToCart,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF3498DB),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 0,
+                  ),
+                  icon: Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 20,
+                  ),
+                  label: Text(
+                    'Add to Cart - £${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.3,
                     ),
                   ),
-
-                  const SizedBox(height: 16),
-
-                  // Add to Cart Button
-                  Container(
-                    width: double.infinity,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color.fromARGB(77, 52, 152, 219),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                          spreadRadius: 0,
-                        ),
-                      ],
-                    ),
-                    child: ElevatedButton.icon(
-                      onPressed: _addToCart,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3498DB),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                      icon: Icon(
-                        Icons.shopping_cart_outlined,
-                        size: 20,
-                      ),
-                      label: Text(
-                        'Add to Cart - £${(_numberOfPeople * widget.pricePerHead).toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.3,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               const SizedBox(height: 32), // Extra padding at bottom
             ],
