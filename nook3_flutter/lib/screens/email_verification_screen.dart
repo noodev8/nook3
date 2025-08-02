@@ -287,7 +287,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               const SizedBox(height: 24),
 
               // Back to login button
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: OutlinedButton.icon(

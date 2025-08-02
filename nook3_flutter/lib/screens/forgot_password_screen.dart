@@ -387,7 +387,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 32),
 
                 // Try again button
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 56,
                   child: OutlinedButton.icon(
