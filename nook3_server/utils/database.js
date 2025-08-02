@@ -148,19 +148,19 @@ const db = {
 
   // Create new order
   async createOrder(orderData) {
-    const { app_user_id, guest_email, order_number, total_amount, order_status, 
+    const { app_user_id, guest_email, total_amount, order_status, 
             delivery_type, requested_date, requested_time, delivery_address, 
             delivery_notes, special_instructions } = orderData;
     
     const query = `
-      INSERT INTO orders (app_user_id, guest_email, order_number, total_amount, order_status, 
+      INSERT INTO orders (app_user_id, guest_email, total_amount, order_status, 
                          delivery_type, requested_date, requested_time, delivery_address, 
                          delivery_notes, special_instructions, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP)
       RETURNING *
     `;
     const result = await pool.query(query, [
-      app_user_id, guest_email, order_number, total_amount, order_status,
+      app_user_id, guest_email, total_amount, order_status,
       delivery_type, requested_date, requested_time, delivery_address,
       delivery_notes, special_instructions
     ]);
