@@ -193,7 +193,7 @@ class OrderSummary {
 
   factory OrderSummary.fromJson(Map<String, dynamic> json) {
     return OrderSummary(
-      id: json['id'],
+      id: int.parse(json['id'].toString()),
       orderNumber: json['order_number'],
       totalAmount: double.parse(json['total_amount'].toString()),
       orderStatus: json['order_status'],
@@ -204,7 +204,7 @@ class OrderSummary {
       createdAt: DateTime.parse(json['created_at']),
       confirmedAt: json['confirmed_at'] != null ? DateTime.parse(json['confirmed_at']) : null,
       completedAt: json['completed_at'] != null ? DateTime.parse(json['completed_at']) : null,
-      itemCount: json['item_count'],
+      itemCount: int.parse(json['item_count'].toString()),
     );
   }
 
@@ -289,7 +289,7 @@ class OrderDetail {
         .toList() ?? [];
 
     return OrderDetail(
-      id: json['id'],
+      id: int.parse(json['id'].toString()),
       orderNumber: json['order_number'],
       totalAmount: double.parse(json['total_amount'].toString()),
       orderStatus: json['order_status'],
@@ -379,11 +379,11 @@ class OrderItem {
     }
 
     return OrderItem(
-      orderCategoryId: json['order_category_id'],
-      categoryId: json['category_id'],
+      orderCategoryId: int.parse(json['order_category_id'].toString()),
+      categoryId: int.parse(json['category_id'].toString()),
       categoryName: json['category_name'],
       categoryDescription: json['category_description'],
-      quantity: json['quantity'],
+      quantity: int.parse(json['quantity'].toString()),
       unitPrice: double.parse(json['unit_price'].toString()),
       totalPrice: double.parse(json['total_price'].toString()),
       notes: json['notes'],
@@ -426,7 +426,7 @@ class OrderMenuItem {
 
   factory OrderMenuItem.fromJson(Map<String, dynamic> json) {
     return OrderMenuItem(
-      id: json['id'],
+      id: int.parse(json['id'].toString()),
       name: json['name'],
       description: json['description'],
       isVegetarian: json['is_vegetarian'] ?? false,
