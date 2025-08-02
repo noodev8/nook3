@@ -246,27 +246,43 @@ class CartItem {
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
+    print('[DEBUG] CartItem.fromJson - Processing: $json');
+    
     final List<MenuItem> items = [];
     
     if (json['included_items'] != null) {
+      print('[DEBUG] Processing ${json['included_items'].length} included items');
       for (var itemJson in json['included_items']) {
         if (itemJson != null && itemJson['id'] != null) {
-          items.add(MenuItem.fromJson(itemJson));
+          print('[DEBUG] Processing menu item: $itemJson');
+          try {
+            items.add(MenuItem.fromJson(itemJson));
+            print('[DEBUG] Successfully parsed menu item: ${itemJson['name']}');
+          } catch (e) {
+            print('[DEBUG] Error parsing menu item: $e');
+          }
         }
       }
     }
 
-    return CartItem(
-      orderCategoryId: json['order_category_id'],
-      categoryId: json['category_id'],
-      categoryName: json['category_name'],
-      categoryDescription: json['category_description'],
-      quantity: json['quantity'],
-      unitPrice: double.parse(json['unit_price'].toString()),
-      totalPrice: double.parse(json['total_price'].toString()),
-      notes: json['notes'],
-      includedItems: items,
-    );
+    try {
+      final cartItem = CartItem(
+        orderCategoryId: json['order_category_id'],
+        categoryId: json['category_id'],
+        categoryName: json['category_name'],
+        categoryDescription: json['category_description'],
+        quantity: json['quantity'],
+        unitPrice: double.parse(json['unit_price'].toString()),
+        totalPrice: double.parse(json['total_price'].toString()),
+        notes: json['notes'],
+        includedItems: items,
+      );
+      print('[DEBUG] CartItem created successfully');
+      return cartItem;
+    } catch (e) {
+      print('[DEBUG] Error creating CartItem: $e');
+      rethrow;
+    }
   }
 
   // Extract metadata from notes field
