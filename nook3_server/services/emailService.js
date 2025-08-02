@@ -328,7 +328,7 @@ For security reasons, this link can only be used once and will expire soon.
  */
 async function sendOrderConfirmationEmail(email, orderDetails) {
   const { orderNumber, totalAmount, deliveryType, deliveryAddress, requestedDate, 
-          requestedTime, estimatedTime, cartItems, customerName, phoneNumber } = orderDetails;
+          requestedTime, cartItems, customerName, phoneNumber } = orderDetails;
   
   // Format the cart items for display
   const itemsHtml = cartItems.map(item => `
@@ -503,10 +503,6 @@ async function sendOrderConfirmationEmail(email, orderDetails) {
                 <div class="detail-value">${orderNumber}</div>
               </div>
               <div class="detail-item">
-                <div class="detail-label">Estimated Ready Time</div>
-                <div class="detail-value">${estimatedTime}</div>
-              </div>
-              <div class="detail-item">
                 <div class="detail-label">Date & Time</div>
                 <div class="detail-value">${requestedDate} at ${requestedTime}</div>
               </div>
@@ -573,7 +569,6 @@ We've received your order and are preparing it now. Here are your order details:
 
 ORDER DETAILS:
 Order Number: ${orderNumber}
-Estimated Ready Time: ${estimatedTime}
 Date & Time: ${requestedDate} at ${requestedTime}
 Order Type: ${deliveryType === 'delivery' ? 'Delivery' : 'Collection'}
 

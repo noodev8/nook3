@@ -25,7 +25,6 @@ Success Response:
   "order_id": 123,
   "order_number": "NK000123",
   "total_amount": 59.50,
-  "estimated_time": "45 minutes",
   "email_sent": true
 }
 =======================================================================================================================================
@@ -113,9 +112,6 @@ router.post('/submit', async (req, res) => {
       specialInstructions: special_instructions
     });
 
-    // Estimate delivery/collection time based on order size
-    const estimatedTime = calculateEstimatedTime(cartItems);
-
     // Send order confirmation email using order ID as order number
     try {
       const emailResult = await sendOrderConfirmationEmail(email, {
@@ -125,7 +121,6 @@ router.post('/submit', async (req, res) => {
         deliveryAddress: delivery_address,
         requestedDate: requested_date,
         requestedTime: requested_time,
-        estimatedTime: estimatedTime,
         cartItems: cartItems,
         customerName: null, // We don't have customer name in current flow
         phoneNumber: phone_number
@@ -146,7 +141,6 @@ router.post('/submit', async (req, res) => {
       order_id: confirmedOrder.id,
       order_number: `NK${confirmedOrder.id.toString().padStart(6, '0')}`,
       total_amount: totalAmount,
-      estimated_time: estimatedTime,
       email_sent: true // Always return true to not worry users about email delivery
     });
 
@@ -160,18 +154,5 @@ router.post('/submit', async (req, res) => {
 });
 
 // Order number is generated from order ID: NK + 6-digit padded ID (e.g., NK000123)
-
-// Helper function to calculate estimated time
-function calculateEstimatedTime(cartItems) {
-  const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-  
-  // Base time: 30 minutes
-  // Add 5 minutes per buffet portion
-  const baseTime = 30;
-  const additionalTime = itemCount * 5;
-  const totalMinutes = Math.min(baseTime + additionalTime, 90); // Cap at 90 minutes
-  
-  return `${totalMinutes} minutes`;
-}
 
 module.exports = router;

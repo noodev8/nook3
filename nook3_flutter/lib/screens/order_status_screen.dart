@@ -9,16 +9,44 @@ Users can see their order number, estimated time, and track progress.
 
 import 'package:flutter/material.dart';
 import 'main_menu_screen.dart';
+import '../services/store_info_service.dart';
 
-class OrderStatusScreen extends StatelessWidget {
+class OrderStatusScreen extends StatefulWidget {
   final String orderNumber;
-  final String estimatedTime;
 
   const OrderStatusScreen({
     super.key,
     required this.orderNumber,
-    required this.estimatedTime,
   });
+
+  @override
+  State<OrderStatusScreen> createState() => _OrderStatusScreenState();
+}
+
+class _OrderStatusScreenState extends State<OrderStatusScreen> {
+
+  String _storePhone = '01938 123456';
+  bool _isLoadingContactInfo = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContactInfo();
+  }
+
+  Future<void> _loadContactInfo() async {
+    try {
+      final phone = await StoreInfoService.getStorePhone();
+      setState(() {
+        _storePhone = phone;
+        _isLoadingContactInfo = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingContactInfo = false;
+      });
+    }
+  }
 
   void _goToMainMenu(BuildContext context) {
     Navigator.pushAndRemoveUntil(
@@ -31,15 +59,28 @@ class OrderStatusScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
-        title: const Text('Order Status'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        title: Text(
+          'Order Status',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF2C3E50),
+            letterSpacing: 0.5,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF2C3E50),
+        elevation: 0,
+        shadowColor: Colors.black.withOpacity(0.1),
+        surfaceTintColor: Colors.transparent,
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           child: Column(
             children: [
                     // Success Icon
@@ -47,89 +88,94 @@ class OrderStatusScreen extends StatelessWidget {
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: Colors.green.shade100,
+                        color: const Color(0xFF3498DB).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(60),
+                        border: Border.all(
+                          color: const Color(0xFF3498DB).withOpacity(0.2),
+                          width: 3,
+                        ),
                       ),
                       child: const Icon(
                         Icons.check_circle,
                         size: 80,
-                        color: Colors.green,
+                        color: Color(0xFF3498DB),
                       ),
                     ),
                     const SizedBox(height: 32),
                     
                     // Success Message
-                    const Text(
+                    Text(
                       'Order Confirmed!',
                       style: TextStyle(
+                        fontFamily: 'Poppins',
                         fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF3498DB),
+                        letterSpacing: -0.5,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
                     
-                    const Text(
-                      'Thank you for your order. We\'re preparing your delicious buffet!',
+                    Text(
+                      'Thank you for your order. We\'re preparing your delicious food!',
                       style: TextStyle(
+                        fontFamily: 'Poppins',
                         fontSize: 16,
-                        color: Colors.grey,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF7F8C8D),
+                        height: 1.5,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 48),
                     
                     // Order Details Card
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: const Color(0xFF3498DB).withOpacity(0.2),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF3498DB).withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                            spreadRadius: 0,
+                          ),
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
-                        child: Column(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Order Number:',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  orderNumber,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              'Order Number:',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF2C3E50),
+                              ),
                             ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Estimated Time:',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  estimatedTime,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              widget.orderNumber,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF3498DB),
+                              ),
                             ),
                           ],
                         ),
@@ -138,21 +184,41 @@ class OrderStatusScreen extends StatelessWidget {
                     const SizedBox(height: 32),
                     
                     // Status Timeline
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: const Color(0xFF3498DB).withOpacity(0.2),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF3498DB).withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                            spreadRadius: 0,
+                          ),
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Order Status:',
                               style: TextStyle(
+                                fontFamily: 'Poppins',
                                 fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF2C3E50),
                               ),
                             ),
                             const SizedBox(height: 24),
@@ -188,52 +254,102 @@ class OrderStatusScreen extends StatelessWidget {
                     
                     // Contact Information
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
-                        borderRadius: BorderRadius.circular(12),
+                        color: const Color(0xFF3498DB).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: const Color(0xFF3498DB).withOpacity(0.2),
+                          width: 1,
+                        ),
                       ),
-                      child: const Column(
+                      child: Column(
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.phone, color: Colors.blue),
-                              SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF3498DB),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.phone,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
                               Text(
                                 'Need to make changes?',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF3498DB),
+                                  fontSize: 16,
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Call us at 07551428162 with your order number',
-                            style: TextStyle(color: Colors.blue),
-                          ),
+                          const SizedBox(height: 12),
+                          _isLoadingContactInfo
+                              ? Text(
+                                  'Loading contact information...',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: const Color(0xFF3498DB),
+                                    fontSize: 14,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                )
+                              : Text(
+                                  'Call us at $_storePhone with your order number',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: const Color(0xFF3498DB),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 32),
 
                           // Action Buttons
-                    SizedBox(
+                    Container(
                       width: double.infinity,
                       height: 56,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF3498DB).withOpacity(0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
                       child: ElevatedButton(
                         onPressed: () => _goToMainMenu(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
+                          backgroundColor: const Color(0xFF3498DB),
                           foregroundColor: Colors.white,
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Place Another Order',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
+                          ),
                         ),
                       ),
                     ),
@@ -245,19 +361,33 @@ class OrderStatusScreen extends StatelessWidget {
                         onPressed: () {
                           // TODO: Implement order tracking/history
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Order tracking feature coming soon!')),
+                            SnackBar(
+                              content: Text(
+                                'Order tracking feature coming soon!',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              backgroundColor: const Color(0xFF3498DB),
+                            ),
                           );
                         },
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.green,
-                          side: const BorderSide(color: Colors.green, width: 2),
+                          foregroundColor: const Color(0xFF3498DB),
+                          side: const BorderSide(color: Color(0xFF3498DB), width: 2),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Track This Order',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
+                          ),
                         ),
                       ),
                     ),
@@ -282,19 +412,27 @@ class OrderStatusScreen extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 color: isCompleted 
-                    ? Colors.green 
+                    ? const Color(0xFF3498DB)
                     : isActive 
-                        ? Colors.orange 
-                        : Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(20),
+                        ? const Color(0xFFE67E22)
+                        : const Color(0xFFBDC3C7),
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(
+                  color: isCompleted 
+                      ? const Color(0xFF3498DB)
+                      : isActive 
+                          ? const Color(0xFFE67E22)
+                          : const Color(0xFFBDC3C7),
+                  width: 2,
+                ),
               ),
               child: Icon(
                 isCompleted ? Icons.check : icon,
-                color: isCompleted || isActive ? Colors.white : Colors.grey,
+                color: isCompleted || isActive ? Colors.white : const Color(0xFF7F8C8D),
                 size: 20,
               ),
             ),
@@ -306,16 +444,21 @@ class OrderStatusScreen extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: isCompleted || isActive ? Colors.black : Colors.grey,
+                      fontWeight: FontWeight.w600,
+                      color: isCompleted || isActive ? const Color(0xFF2C3E50) : const Color(0xFF7F8C8D),
                     ),
                   ),
+                  const SizedBox(height: 2),
                   Text(
                     subtitle,
                     style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 14,
-                      color: isCompleted || isActive ? Colors.grey.shade600 : Colors.grey,
+                      fontWeight: FontWeight.w400,
+                      color: isCompleted || isActive ? const Color(0xFF7F8C8D) : const Color(0xFFBDC3C7),
+                      height: 1.3,
                     ),
                   ),
                 ],
@@ -324,14 +467,14 @@ class OrderStatusScreen extends StatelessWidget {
           ],
         ),
         if (!isLast) ...[
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Container(
-            margin: const EdgeInsets.only(left: 20),
+            margin: const EdgeInsets.only(left: 22),
             width: 2,
             height: 24,
-            color: isCompleted ? Colors.green : Colors.grey.shade300,
+            color: isCompleted ? const Color(0xFF3498DB) : const Color(0xFFE0E6ED),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
         ],
       ],
     );

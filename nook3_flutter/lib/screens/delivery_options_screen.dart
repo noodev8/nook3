@@ -303,7 +303,6 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
             MaterialPageRoute(
               builder: (context) => OrderStatusScreen(
                 orderNumber: result.orderNumber ?? 'Unknown',
-                estimatedTime: result.estimatedTime ?? '45 minutes',
               ),
             ),
           );
