@@ -70,7 +70,17 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   double _calculateTotal() {
-    return _totalAmount; // Use the total from API
+    // Use API total if available, otherwise calculate from items
+    if (_totalAmount > 0) {
+      return _totalAmount;
+    }
+    
+    // Fallback: calculate from cart items
+    double total = 0.0;
+    for (var item in _cartItems) {
+      total += item.totalPrice;
+    }
+    return total;
   }
 
   Future<void> _removeItem(int index) async {
@@ -144,14 +154,38 @@ class _CartScreenState extends State<CartScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Minimum Order Required'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Minimum Order Required',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF2C3E50),
+            ),
+          ),
           content: Text(
-            'Buffet orders require a minimum of 5 portions total.\n\nYou currently have $totalBuffetPortions buffet portions.\nPlease add ${5 - totalBuffetPortions} more portions or remove buffet items.',
+            'Buffet orders require a minimum of 5 portions total.\n\nYou currently have $totalBuffetPortions buffet portions.\nPlease add ${5 - totalBuffetPortions} more portions to continue.',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 14,
+              color: const Color(0xFF7F8C8D),
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF3498DB),
+              ),
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         ),
@@ -546,58 +580,40 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     child: Column(
                       children: [
-                        // Buffet Summary with sophisticated styling
-                        if (_getTotalBuffetPortions() > 0) ...[
+                        // Small subtle count indicator (only if below minimum)
+                        if (_getTotalBuffetPortions() > 0 && _getTotalBuffetPortions() < 5) ...[
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: _getTotalBuffetPortions() >= 5
-                                  ? const Color(0xFF27AE60).withOpacity( 0.1)
-                                  : const Color(0xFFE67E22).withOpacity( 0.1),
-                              borderRadius: BorderRadius.circular(12),
+                              color: const Color(0xFFF8F9FA),
+                              borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: _getTotalBuffetPortions() >= 5
-                                    ? const Color(0xFF27AE60).withOpacity( 0.3)
-                                    : const Color(0xFFE67E22).withOpacity( 0.3),
+                                color: const Color(0xFFE0E6ED),
                                 width: 1,
                               ),
                             ),
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: _getTotalBuffetPortions() >= 5
-                                        ? const Color(0xFF27AE60)
-                                        : const Color(0xFFE67E22),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    _getTotalBuffetPortions() >= 5
-                                        ? Icons.check_circle
-                                        : Icons.warning,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
+                                Icon(
+                                  Icons.info_outline,
+                                  color: const Color(0xFF7F8C8D),
+                                  size: 14,
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    'Buffet Portions: ${_getTotalBuffetPortions()} ${_getTotalBuffetPortions() >= 5 ? '(Minimum met)' : '(Need ${5 - _getTotalBuffetPortions()} more)'}',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 14,
-                                      color: _getTotalBuffetPortions() >= 5
-                                          ? const Color(0xFF27AE60)
-                                          : const Color(0xFFE67E22),
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Buffet portions: ${_getTotalBuffetPortions()}/5 minimum',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 12,
+                                    color: const Color(0xFF7F8C8D),
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 12),
                         ],
 
                         Row(

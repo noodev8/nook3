@@ -47,9 +47,6 @@ const db = require('../utils/database');
 
 // Main cart endpoint - handles all cart operations
 router.post('/', async (req, res) => {
-  console.log('[DEBUG] Cart API endpoint hit');
-  console.log('[DEBUG] Request body:', JSON.stringify(req.body, null, 2));
-  
   try {
     const { action, user_id, session_id, category_id, quantity, unit_price, 
             department_label, notes, deluxe_format, included_items, order_category_id } = req.body;
@@ -90,7 +87,6 @@ router.post('/', async (req, res) => {
         });
     }
   } catch (error) {
-    console.error('[DEBUG] Cart API error:', error);
     res.status(500).json({
       return_code: 'SERVER_ERROR',
       message: 'Failed to process cart request'
@@ -100,8 +96,6 @@ router.post('/', async (req, res) => {
 
 // Add item to cart
 async function addItemToCart(data, res) {
-  console.log('[DEBUG] addItemToCart called with data:', data);
-  
   const { user_id, session_id, category_id, quantity, unit_price, 
           department_label, notes, deluxe_format, included_items } = data;
 
