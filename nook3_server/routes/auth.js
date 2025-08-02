@@ -176,26 +176,20 @@ router.get('/verify-email', async (req, res) => {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Invalid Verification Link - ${process.env.EMAIL_NAME}</title>
+          <title>Invalid Verification Link</title>
           <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-            .container { max-width: 500px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
-            .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; }
-            .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-            .content { padding: 40px; }
-            .content h2 { color: #333; margin-bottom: 20px; }
-            .content p { color: #666; margin-bottom: 20px; }
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; line-height: 1.6; }
+            .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            h1 { margin: 0 0 20px 0; font-size: 24px; font-weight: 600; }
+            h2 { margin: 0 0 16px 0; font-size: 20px; font-weight: 500; color: #d63384; }
+            p { margin: 0 0 16px 0; color: #666; }
           </style>
         </head>
         <body>
           <div class="container">
-            <div class="header">
-              <h1>${process.env.EMAIL_NAME}</h1>
-            </div>
-            <div class="content">
-              <h2>❌ Invalid Verification Link</h2>
-              <p>This verification link is invalid or malformed. Please check your email for the correct link or request a new verification email.</p>
-            </div>
+            <h1>${process.env.EMAIL_NAME}</h1>
+            <h2>Invalid Verification Link</h2>
+            <p>This verification link is invalid or malformed. Please check your email for the correct link or request a new verification email.</p>
           </div>
         </body>
         </html>
@@ -211,26 +205,20 @@ router.get('/verify-email', async (req, res) => {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Verification Link Expired - ${process.env.EMAIL_NAME}</title>
+          <title>Verification Link Expired</title>
           <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-            .container { max-width: 500px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
-            .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 30px; }
-            .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-            .content { padding: 40px; }
-            .content h2 { color: #333; margin-bottom: 20px; }
-            .content p { color: #666; margin-bottom: 20px; }
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; line-height: 1.6; }
+            .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            h1 { margin: 0 0 20px 0; font-size: 24px; font-weight: 600; }
+            h2 { margin: 0 0 16px 0; font-size: 20px; font-weight: 500; color: #fd7e14; }
+            p { margin: 0 0 16px 0; color: #666; }
           </style>
         </head>
         <body>
           <div class="container">
-            <div class="header">
-              <h1>${process.env.EMAIL_NAME}</h1>
-            </div>
-            <div class="content">
-              <h2>⏰ Verification Link Expired</h2>
-              <p>This verification link has expired or has already been used. Please request a new verification email from the app.</p>
-            </div>
+            <h1>${process.env.EMAIL_NAME}</h1>
+            <h2>Verification Link Expired</h2>
+            <p>This verification link has expired or has already been used. Please request a new verification email from the app.</p>
           </div>
         </body>
         </html>
@@ -248,29 +236,23 @@ router.get('/verify-email', async (req, res) => {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Email Verified - ${process.env.EMAIL_NAME}</title>
+        <title>Email Verified</title>
         <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-          .container { max-width: 500px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
-          .header { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; padding: 30px; }
-          .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-          .content { padding: 40px; }
-          .content h2 { color: #333; margin-bottom: 20px; }
-          .content p { color: #666; margin-bottom: 20px; }
-          .success-icon { font-size: 48px; margin-bottom: 20px; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; line-height: 1.6; }
+          .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+          h1 { margin: 0 0 20px 0; font-size: 24px; font-weight: 600; }
+          h2 { margin: 0 0 16px 0; font-size: 20px; font-weight: 500; color: #198754; }
+          p { margin: 0 0 16px 0; color: #666; }
+          .success-icon { font-size: 48px; margin-bottom: 20px; color: #198754; }
         </style>
       </head>
       <body>
         <div class="container">
-          <div class="header">
-            <h1>${process.env.EMAIL_NAME}</h1>
-          </div>
-          <div class="content">
-            <div class="success-icon">✅</div>
-            <h2>Email Verified Successfully!</h2>
-            <p>Your email address has been verified. You can now log in to your account and enjoy all the features of ${process.env.EMAIL_NAME}.</p>
-            <p>You can close this window and return to the app.</p>
-          </div>
+          <h1>${process.env.EMAIL_NAME}</h1>
+          <div class="success-icon">✓</div>
+          <h2>Email Verified Successfully</h2>
+          <p>Your email address has been verified. You can now log in to your account and enjoy all the features of ${process.env.EMAIL_NAME}.</p>
+          <p>You can close this window and return to the app.</p>
         </div>
       </body>
       </html>
@@ -284,26 +266,20 @@ router.get('/verify-email', async (req, res) => {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verification Error - ${process.env.EMAIL_NAME}</title>
+        <title>Verification Error</title>
         <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-          .container { max-width: 500px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
-          .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; }
-          .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-          .content { padding: 40px; }
-          .content h2 { color: #333; margin-bottom: 20px; }
-          .content p { color: #666; margin-bottom: 20px; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; line-height: 1.6; }
+          .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+          h1 { margin: 0 0 20px 0; font-size: 24px; font-weight: 600; }
+          h2 { margin: 0 0 16px 0; font-size: 20px; font-weight: 500; color: #dc3545; }
+          p { margin: 0 0 16px 0; color: #666; }
         </style>
       </head>
       <body>
         <div class="container">
-          <div class="header">
-            <h1>${process.env.EMAIL_NAME}</h1>
-          </div>
-          <div class="content">
-            <h2>❌ Verification Error</h2>
-            <p>An error occurred while verifying your email. Please try again or contact support.</p>
-          </div>
+          <h1>${process.env.EMAIL_NAME}</h1>
+          <h2>Verification Error</h2>
+          <p>An error occurred while verifying your email. Please try again or contact support.</p>
         </div>
       </body>
       </html>
@@ -423,26 +399,20 @@ router.get('/reset-password', async (req, res) => {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Invalid Reset Link - ${process.env.EMAIL_NAME}</title>
+          <title>Invalid Reset Link</title>
           <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-            .container { max-width: 500px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
-            .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; }
-            .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-            .content { padding: 40px; }
-            .content h2 { color: #333; margin-bottom: 20px; }
-            .content p { color: #666; margin-bottom: 20px; }
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; line-height: 1.6; }
+            .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            h1 { margin: 0 0 20px 0; font-size: 24px; font-weight: 600; }
+            h2 { margin: 0 0 16px 0; font-size: 20px; font-weight: 500; color: #d63384; }
+            p { margin: 0 0 16px 0; color: #666; }
           </style>
         </head>
         <body>
           <div class="container">
-            <div class="header">
-              <h1>${process.env.EMAIL_NAME}</h1>
-            </div>
-            <div class="content">
-              <h2>❌ Invalid Reset Link</h2>
-              <p>This password reset link is invalid or malformed. Please request a new password reset.</p>
-            </div>
+            <h1>${process.env.EMAIL_NAME}</h1>
+            <h2>Invalid Reset Link</h2>
+            <p>This password reset link is invalid or malformed. Please request a new password reset.</p>
           </div>
         </body>
         </html>
@@ -458,26 +428,20 @@ router.get('/reset-password', async (req, res) => {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Reset Link Expired - ${process.env.EMAIL_NAME}</title>
+          <title>Reset Link Expired</title>
           <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-            .container { max-width: 500px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
-            .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 30px; }
-            .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-            .content { padding: 40px; }
-            .content h2 { color: #333; margin-bottom: 20px; }
-            .content p { color: #666; margin-bottom: 20px; }
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; line-height: 1.6; }
+            .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            h1 { margin: 0 0 20px 0; font-size: 24px; font-weight: 600; }
+            h2 { margin: 0 0 16px 0; font-size: 20px; font-weight: 500; color: #fd7e14; }
+            p { margin: 0 0 16px 0; color: #666; }
           </style>
         </head>
         <body>
           <div class="container">
-            <div class="header">
-              <h1>${process.env.EMAIL_NAME}</h1>
-            </div>
-            <div class="content">
-              <h2>⏰ Reset Link Expired</h2>
-              <p>This password reset link has expired or has already been used. Please request a new password reset.</p>
-            </div>
+            <h1>${process.env.EMAIL_NAME}</h1>
+            <h2>Reset Link Expired</h2>
+            <p>This password reset link has expired or has already been used. Please request a new password reset.</p>
           </div>
         </body>
         </html>
@@ -491,48 +455,43 @@ router.get('/reset-password', async (req, res) => {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reset Password - ${process.env.EMAIL_NAME}</title>
+        <title>Reset Password</title>
         <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-          .container { max-width: 400px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
-          .header { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 30px; text-align: center; }
-          .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-          .content { padding: 40px; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; line-height: 1.6; }
+          .container { max-width: 500px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+          h1 { margin: 0 0 20px 0; font-size: 24px; font-weight: 600; }
+          h2 { margin: 0 0 24px 0; font-size: 20px; font-weight: 500; }
           .form-group { margin-bottom: 20px; }
-          .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; }
-          .form-group input { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-          .form-group input:focus { outline: none; border-color: #2563eb; }
-          .reset-button { width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
-          .reset-button:hover { transform: translateY(-2px); }
-          .reset-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-          .message { padding: 10px; border-radius: 5px; margin-bottom: 20px; display: none; }
-          .message.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-          .message.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-          .password-requirements { font-size: 14px; color: #666; margin-top: 5px; }
+          .form-group label { display: block; margin-bottom: 6px; font-weight: 500; }
+          .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; box-sizing: border-box; }
+          .form-group input:focus { outline: none; border-color: #0066cc; box-shadow: 0 0 0 2px rgba(0,102,204,0.2); }
+          .reset-button { width: 100%; background: #0066cc; color: white; padding: 14px; border: none; border-radius: 4px; font-size: 16px; font-weight: 500; cursor: pointer; }
+          .reset-button:hover { background: #0052a3; }
+          .reset-button:disabled { opacity: 0.6; cursor: not-allowed; background: #0066cc; }
+          .message { padding: 12px; border-radius: 4px; margin-bottom: 20px; display: none; }
+          .message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+          .message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+          .password-requirements { font-size: 14px; color: #666; margin-top: 4px; }
         </style>
       </head>
       <body>
         <div class="container">
-          <div class="header">
-            <h1>${process.env.EMAIL_NAME}</h1>
-          </div>
-          <div class="content">
-            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">Reset Your Password</h2>
-            <div id="message" class="message"></div>
-            <form id="resetForm" method="post" action="javascript:void(0)">
-              <input type="hidden" name="token" value="${token}">
-              <div class="form-group">
-                <label for="new_password">New Password</label>
-                <input type="password" id="new_password" name="new_password" required minlength="8">
-                <div class="password-requirements">Minimum 8 characters required</div>
-              </div>
-              <div class="form-group">
-                <label for="confirm_password">Confirm New Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" required minlength="8">
-              </div>
-              <button type="submit" class="reset-button" id="submitBtn">Reset Password</button>
-            </form>
-          </div>
+          <h1>${process.env.EMAIL_NAME}</h1>
+          <h2>Reset Your Password</h2>
+          <div id="message" class="message"></div>
+          <form id="resetForm" method="post" action="javascript:void(0)">
+            <input type="hidden" name="token" value="${token}">
+            <div class="form-group">
+              <label for="new_password">New Password</label>
+              <input type="password" id="new_password" name="new_password" required minlength="8">
+              <div class="password-requirements">Minimum 8 characters required</div>
+            </div>
+            <div class="form-group">
+              <label for="confirm_password">Confirm New Password</label>
+              <input type="password" id="confirm_password" name="confirm_password" required minlength="8">
+            </div>
+            <button type="submit" class="reset-button" id="submitBtn">Reset Password</button>
+          </form>
         </div>
         <script>
           document.getElementById('resetForm').addEventListener('submit', async function(e) {
@@ -611,26 +570,20 @@ router.get('/reset-password', async (req, res) => {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reset Error - ${process.env.EMAIL_NAME}</title>
+        <title>Reset Error</title>
         <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-          .container { max-width: 500px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
-          .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; }
-          .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-          .content { padding: 40px; }
-          .content h2 { color: #333; margin-bottom: 20px; }
-          .content p { color: #666; margin-bottom: 20px; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; line-height: 1.6; }
+          .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+          h1 { margin: 0 0 20px 0; font-size: 24px; font-weight: 600; }
+          h2 { margin: 0 0 16px 0; font-size: 20px; font-weight: 500; color: #dc3545; }
+          p { margin: 0 0 16px 0; color: #666; }
         </style>
       </head>
       <body>
         <div class="container">
-          <div class="header">
-            <h1>${process.env.EMAIL_NAME}</h1>
-          </div>
-          <div class="content">
-            <h2>❌ Reset Error</h2>
-            <p>An error occurred while loading the password reset form. Please try again or request a new password reset.</p>
-          </div>
+          <h1>${process.env.EMAIL_NAME}</h1>
+          <h2>Reset Error</h2>
+          <p>An error occurred while loading the password reset form. Please try again or request a new password reset.</p>
         </div>
       </body>
       </html>

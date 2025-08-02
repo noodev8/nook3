@@ -17,73 +17,80 @@ async function sendVerificationEmail(email, token) {
       <title>Verify Your Email - ${process.env.EMAIL_NAME}</title>
       <style>
         body { 
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; 
           line-height: 1.6; 
           margin: 0; 
-          padding: 0; 
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          padding: 20px; 
+          background: #f5f5f5;
+          color: #333;
         }
         .container { 
           max-width: 600px; 
-          margin: 40px auto; 
+          margin: 0 auto; 
           background: white; 
-          border-radius: 10px; 
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          border-radius: 8px; 
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
           overflow: hidden;
         }
         .header { 
-          background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); 
-          color: white; 
+          background: #f8f9fa; 
           padding: 30px; 
           text-align: center; 
+          border-bottom: 1px solid #e9ecef;
         }
         .header h1 { 
           margin: 0; 
-          font-size: 28px; 
-          font-weight: 300; 
+          font-size: 24px; 
+          font-weight: 600; 
+          color: #333;
         }
         .content { 
           padding: 40px; 
-          text-align: center; 
         }
         .content h2 { 
           color: #333; 
           margin-bottom: 20px; 
-          font-size: 24px;
+          font-size: 20px;
+          font-weight: 500;
         }
         .content p { 
           color: #666; 
-          margin-bottom: 30px; 
+          margin-bottom: 20px; 
           font-size: 16px;
         }
         .verify-button { 
           display: inline-block; 
-          background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); 
+          background: #0066cc; 
           color: white; 
-          padding: 15px 30px; 
+          padding: 14px 28px; 
           text-decoration: none; 
-          border-radius: 25px; 
-          font-weight: bold; 
+          border-radius: 4px; 
+          font-weight: 500; 
           font-size: 16px;
-          transition: transform 0.2s;
-        }
-        .verify-button:hover { 
-          transform: translateY(-2px); 
+          margin: 20px 0;
         }
         .footer { 
           background: #f8f9fa; 
           padding: 20px; 
           text-align: center; 
-          color: #888; 
+          color: #666; 
           font-size: 14px;
+          border-top: 1px solid #e9ecef;
         }
         .expiry-notice { 
           background: #fff3cd; 
           color: #856404; 
-          padding: 15px; 
-          border-radius: 5px; 
+          padding: 12px; 
+          border-radius: 4px; 
           margin: 20px 0; 
           font-size: 14px;
+          border: 1px solid #ffeaa7;
+        }
+        .url-fallback {
+          margin-top: 30px; 
+          font-size: 14px; 
+          color: #666;
+          word-break: break-all;
         }
       </style>
     </head>
@@ -95,14 +102,14 @@ async function sendVerificationEmail(email, token) {
         <div class="content">
           <h2>Verify Your Email Address</h2>
           <p>Welcome to ${process.env.EMAIL_NAME}! Please click the button below to verify your email address and complete your registration.</p>
-          <a href="${verificationUrl}" class="verify-button">Verify Email Address</a>
+          <p><a href="${verificationUrl}" class="verify-button">Verify Email Address</a></p>
           <div class="expiry-notice">
-            ⏰ This verification link will expire in 24 hours for security reasons.
+            This verification link will expire in 24 hours for security reasons.
           </div>
-          <p style="margin-top: 30px; font-size: 14px; color: #888;">
+          <div class="url-fallback">
             If the button doesn't work, you can copy and paste this link into your browser:<br>
-            <a href="${verificationUrl}" style="word-break: break-all; color: #4CAF50;">${verificationUrl}</a>
-          </p>
+            <a href="${verificationUrl}">${verificationUrl}</a>
+          </div>
         </div>
         <div class="footer">
           <p>If you didn't create an account with ${process.env.EMAIL_NAME}, you can safely ignore this email.</p>
@@ -158,81 +165,89 @@ async function sendPasswordResetEmail(email, token) {
       <title>Reset Your Password - ${process.env.EMAIL_NAME}</title>
       <style>
         body { 
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; 
           line-height: 1.6; 
           margin: 0; 
-          padding: 0; 
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          padding: 20px; 
+          background: #f5f5f5;
+          color: #333;
         }
         .container { 
           max-width: 600px; 
-          margin: 40px auto; 
+          margin: 0 auto; 
           background: white; 
-          border-radius: 10px; 
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          border-radius: 8px; 
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
           overflow: hidden;
         }
         .header { 
-          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
-          color: white; 
+          background: #f8f9fa; 
           padding: 30px; 
           text-align: center; 
+          border-bottom: 1px solid #e9ecef;
         }
         .header h1 { 
           margin: 0; 
-          font-size: 28px; 
-          font-weight: 300; 
+          font-size: 24px; 
+          font-weight: 600; 
+          color: #333;
         }
         .content { 
           padding: 40px; 
-          text-align: center; 
         }
         .content h2 { 
           color: #333; 
           margin-bottom: 20px; 
-          font-size: 24px;
+          font-size: 20px;
+          font-weight: 500;
         }
         .content p { 
           color: #666; 
-          margin-bottom: 30px; 
+          margin-bottom: 20px; 
           font-size: 16px;
         }
         .reset-button { 
           display: inline-block; 
-          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+          background: #0066cc; 
           color: white; 
-          padding: 15px 30px; 
+          padding: 14px 28px; 
           text-decoration: none; 
-          border-radius: 25px; 
-          font-weight: bold; 
+          border-radius: 4px; 
+          font-weight: 500; 
           font-size: 16px;
-          transition: transform 0.2s;
-        }
-        .reset-button:hover { 
-          transform: translateY(-2px); 
+          margin: 20px 0;
         }
         .footer { 
           background: #f8f9fa; 
           padding: 20px; 
           text-align: center; 
-          color: #888; 
+          color: #666; 
           font-size: 14px;
+          border-top: 1px solid #e9ecef;
         }
         .security-notice { 
-          background: #fef3c7; 
-          color: #92400e; 
-          padding: 15px; 
-          border-radius: 5px; 
+          background: #fff3cd; 
+          color: #856404; 
+          padding: 12px; 
+          border-radius: 4px; 
           margin: 20px 0; 
           font-size: 14px;
+          border: 1px solid #ffeaa7;
         }
         .warning { 
-          background: #fee2e2; 
-          color: #991b1b; 
-          padding: 15px; 
-          border-radius: 5px; 
+          background: #f8d7da; 
+          color: #721c24; 
+          padding: 12px; 
+          border-radius: 4px; 
           margin: 20px 0; 
           font-size: 14px;
+          border: 1px solid #f5c6cb;
+        }
+        .url-fallback {
+          margin-top: 30px; 
+          font-size: 14px; 
+          color: #666;
+          word-break: break-all;
         }
       </style>
     </head>
@@ -244,17 +259,17 @@ async function sendPasswordResetEmail(email, token) {
         <div class="content">
           <h2>Reset Your Password</h2>
           <p>We received a request to reset your password for your ${process.env.EMAIL_NAME} account.</p>
-          <a href="${resetUrl}" class="reset-button">Reset Password</a>
+          <p><a href="${resetUrl}" class="reset-button">Reset Password</a></p>
           <div class="security-notice">
-            ⏰ This password reset link will expire in 1 hour for security reasons.
+            This password reset link will expire in 1 hour for security reasons.
           </div>
           <div class="warning">
-            🔒 If you didn't request this password reset, please ignore this email. Your account remains secure.
+            If you didn't request this password reset, please ignore this email. Your account remains secure.
           </div>
-          <p style="margin-top: 30px; font-size: 14px; color: #888;">
+          <div class="url-fallback">
             If the button doesn't work, you can copy and paste this link into your browser:<br>
-            <a href="${resetUrl}" style="word-break: break-all; color: #2563eb;">${resetUrl}</a>
-          </p>
+            <a href="${resetUrl}">${resetUrl}</a>
+          </div>
         </div>
         <div class="footer">
           <p>For security reasons, this link can only be used once and will expire soon.</p>
