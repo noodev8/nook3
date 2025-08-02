@@ -9,11 +9,46 @@ Users can see pricing and what's included in each buffet type.
 
 import 'package:flutter/material.dart';
 import 'buffet_customization_screen.dart';
+import '../services/category_service.dart';
 
-class BuffetSelectionScreen extends StatelessWidget {
+class BuffetSelectionScreen extends StatefulWidget {
   const BuffetSelectionScreen({super.key});
 
-  void _selectBuffet(BuildContext context, String buffetType, double price) {
+  @override
+  State<BuffetSelectionScreen> createState() => _BuffetSelectionScreenState();
+}
+
+class _BuffetSelectionScreenState extends State<BuffetSelectionScreen> {
+  bool _isLoadingPrices = true;
+  Map<String, double> _buffetPrices = {
+    'Classic': 9.90, // Default fallback prices
+    'Enhanced': 10.90,
+    'Deluxe': 13.90,
+  };
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadBuffetPrices();
+  }
+  
+  Future<void> _loadBuffetPrices() async {
+    try {
+      final prices = await CategoryService.getBuffetPrices();
+      setState(() {
+        _buffetPrices = prices;
+        _isLoadingPrices = false;
+      });
+    } catch (e) {
+      // Keep default prices if loading fails
+      setState(() {
+        _isLoadingPrices = false;
+      });
+    }
+  }
+
+  void _selectBuffet(BuildContext context, String buffetType) {
+    final price = _buffetPrices[buffetType] ?? 0.0;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -43,7 +78,7 @@ class BuffetSelectionScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withOpacity( 0.1),
+        shadowColor: Colors.black.withAlpha(25),
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
@@ -75,44 +110,6 @@ class BuffetSelectionScreen extends StatelessWidget {
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8F9FA),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE9ECEF)),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF3498DB).withOpacity( 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        Icons.info_outline,
-                        color: const Color(0xFF3498DB),
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Order multiple buffets with different department labels. Minimum 5 total buffet portions required across all buffets.',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF2C3E50),
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 40),
 
               // Classic Buffet section header
@@ -124,8 +121,8 @@ class BuffetSelectionScreen extends StatelessWidget {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      const Color(0xFF27AE60).withOpacity( 0.1),
-                      const Color(0xFF27AE60).withOpacity( 0.05),
+                      const Color.fromARGB(25, 39, 174, 96),
+                      const Color.fromARGB(13, 39, 174, 96),
                       Colors.transparent,
                     ],
                   ),
@@ -166,24 +163,24 @@ class BuffetSelectionScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFF27AE60).withOpacity( 0.3),
+                    color: const Color.fromARGB(77, 39, 174, 96),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF27AE60).withOpacity( 0.15),
+                      color: const Color.fromARGB(38, 39, 174, 96),
                       blurRadius: 25,
                       offset: const Offset(0, 10),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha(20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha(10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -194,7 +191,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
-                    onTap: () => _selectBuffet(context, 'Classic', 9.90),
+                    onTap: () => _selectBuffet(context, 'Classic'),
                     borderRadius: BorderRadius.circular(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +209,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                const Color(0xFF3498DB).withOpacity( 0.8),
+                                const Color.fromARGB(204, 52, 152, 219),
                                 const Color(0xFF2980B9),
                               ],
                             ),
@@ -232,7 +229,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
-                                        const Color(0xFF3498DB).withOpacity( 0.8),
+                                        const Color.fromARGB(204, 52, 152, 219),
                                         const Color(0xFF2980B9),
                                       ],
                                     ),
@@ -273,15 +270,26 @@ class BuffetSelectionScreen extends StatelessWidget {
                                           ),
                                         ),
                                         const SizedBox(height: 4),
-                                        Text(
-                                          '£9.90 per head',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 18,
-                                            color: const Color(0xFF27AE60),
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
+                                        _isLoadingPrices
+                                            ? SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                                    const Color(0xFF27AE60),
+                                                  ),
+                                                ),
+                                              )
+                                            : Text(
+                                                '£${_buffetPrices['Classic']!.toStringAsFixed(2)} per head',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 18,
+                                                  color: const Color(0xFF2C3E50),
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
                                       ],
                                     ),
                                   ),
@@ -360,8 +368,8 @@ class BuffetSelectionScreen extends StatelessWidget {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      const Color(0xFFE67E22).withOpacity( 0.1),
-                      const Color(0xFFE67E22).withOpacity( 0.05),
+                      const Color.fromARGB(25, 230, 126, 34),
+                      const Color.fromARGB(13, 230, 126, 34),
                       Colors.transparent,
                     ],
                   ),
@@ -402,24 +410,24 @@ class BuffetSelectionScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFFE67E22).withOpacity( 0.3),
+                    color: const Color.fromARGB(77, 230, 126, 34),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFE67E22).withOpacity( 0.15),
+                      color: const Color.fromARGB(38, 230, 126, 34),
                       blurRadius: 25,
                       offset: const Offset(0, 10),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha(20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha(10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -430,7 +438,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
-                    onTap: () => _selectBuffet(context, 'Enhanced', 10.90),
+                    onTap: () => _selectBuffet(context, 'Enhanced'),
                     borderRadius: BorderRadius.circular(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,7 +456,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                const Color(0xFFE67E22).withOpacity( 0.8),
+                                const Color.fromARGB(204, 230, 126, 34),
                                 const Color(0xFFD35400),
                               ],
                             ),
@@ -468,7 +476,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
-                                        const Color(0xFFE67E22).withOpacity( 0.8),
+                                        const Color.fromARGB(204, 230, 126, 34),
                                         const Color(0xFFD35400),
                                       ],
                                     ),
@@ -509,15 +517,26 @@ class BuffetSelectionScreen extends StatelessWidget {
                                           ),
                                         ),
                                         const SizedBox(height: 4),
-                                        Text(
-                                          '£10.90 per head',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 18,
-                                            color: const Color(0xFF27AE60),
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
+                                        _isLoadingPrices
+                                            ? SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                                    const Color(0xFF27AE60),
+                                                  ),
+                                                ),
+                                              )
+                                            : Text(
+                                                '£${_buffetPrices['Enhanced']!.toStringAsFixed(2)} per head',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 18,
+                                                  color: const Color(0xFF2C3E50),
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
                                       ],
                                     ),
                                   ),
@@ -606,8 +625,8 @@ class BuffetSelectionScreen extends StatelessWidget {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      const Color(0xFF9B59B6).withOpacity( 0.1),
-                      const Color(0xFF9B59B6).withOpacity( 0.05),
+                      const Color.fromARGB(25, 155, 89, 182),
+                      const Color.fromARGB(13, 155, 89, 182),
                       Colors.transparent,
                     ],
                   ),
@@ -648,24 +667,24 @@ class BuffetSelectionScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFF9B59B6).withOpacity( 0.3),
+                    color: const Color.fromARGB(77, 155, 89, 182),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF9B59B6).withOpacity( 0.15),
+                      color: const Color.fromARGB(38, 155, 89, 182),
                       blurRadius: 25,
                       offset: const Offset(0, 10),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha(20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha(10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -676,7 +695,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
-                    onTap: () => _selectBuffet(context, 'Deluxe', 13.90),
+                    onTap: () => _selectBuffet(context, 'Deluxe'),
                     borderRadius: BorderRadius.circular(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -694,7 +713,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                const Color(0xFF9B59B6).withOpacity( 0.8),
+                                const Color.fromARGB(204, 155, 89, 182),
                                 const Color(0xFF8E44AD),
                               ],
                             ),
@@ -714,7 +733,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
-                                        const Color(0xFF9B59B6).withOpacity( 0.8),
+                                        const Color.fromARGB(204, 155, 89, 182),
                                         const Color(0xFF8E44AD),
                                       ],
                                     ),
@@ -755,15 +774,26 @@ class BuffetSelectionScreen extends StatelessWidget {
                                           ),
                                         ),
                                         const SizedBox(height: 4),
-                                        Text(
-                                          '£13.90 per head',
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 18,
-                                            color: const Color(0xFF27AE60),
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
+                                        _isLoadingPrices
+                                            ? SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                                    const Color(0xFF27AE60),
+                                                  ),
+                                                ),
+                                              )
+                                            : Text(
+                                                '£${_buffetPrices['Deluxe']!.toStringAsFixed(2)} per head',
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 18,
+                                                  color: const Color(0xFF2C3E50),
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
                                       ],
                                     ),
                                   ),
@@ -837,7 +867,7 @@ class BuffetSelectionScreen extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF9B59B6).withOpacity( 0.1),
+                                  color: const Color.fromARGB(25, 155, 89, 182),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(

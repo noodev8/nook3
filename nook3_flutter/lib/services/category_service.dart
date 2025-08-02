@@ -148,6 +148,48 @@ class CategoryService {
       };
     }
   }
+
+  /// Get categories for buffets specifically using IDs
+  static Future<Map<String, double>> getBuffetPrices() async {
+    try {
+      // Fetch Classic Buffet (ID: 3), Enhanced Buffet (ID: 4), and Deluxe Buffet (ID: 5)
+      final classicResult = await getCategoryById(3);
+      final enhancedResult = await getCategoryById(4);
+      final deluxeResult = await getCategoryById(5);
+      
+      final Map<String, double> prices = {};
+      
+      // Get Classic price
+      if (classicResult.success && classicResult.categories != null && classicResult.categories!.isNotEmpty) {
+        prices['Classic'] = classicResult.categories!.first.pricePerHead ?? 9.90;
+      } else {
+        prices['Classic'] = 9.90; // Fallback price
+      }
+      
+      // Get Enhanced price
+      if (enhancedResult.success && enhancedResult.categories != null && enhancedResult.categories!.isNotEmpty) {
+        prices['Enhanced'] = enhancedResult.categories!.first.pricePerHead ?? 10.90;
+      } else {
+        prices['Enhanced'] = 10.90; // Fallback price
+      }
+      
+      // Get Deluxe price
+      if (deluxeResult.success && deluxeResult.categories != null && deluxeResult.categories!.isNotEmpty) {
+        prices['Deluxe'] = deluxeResult.categories!.first.pricePerHead ?? 13.90;
+      } else {
+        prices['Deluxe'] = 13.90; // Fallback price
+      }
+      
+      return prices;
+    } catch (e) {
+      // Return fallback prices if anything goes wrong
+      return {
+        'Classic': 9.90,
+        'Enhanced': 10.90,
+        'Deluxe': 13.90,
+      };
+    }
+  }
 }
 
 /// Product Category model
