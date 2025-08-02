@@ -38,6 +38,7 @@ class MainMenuScreen extends StatelessWidget {
 
     // Load store information
     try {
+      final navigator = Navigator.of(context);
       final storeName = await StoreInfoService.getStoreName();
       final storeAddress = await StoreInfoService.getStoreAddress();
       final storePhone = await StoreInfoService.getStorePhone();
@@ -46,7 +47,7 @@ class MainMenuScreen extends StatelessWidget {
       final businessDescription = await StoreInfoService.getBusinessDescription();
 
       // Close loading dialog
-      Navigator.pop(context);
+      navigator.pop();
 
       // Show actual store info dialog
       showDialog(
