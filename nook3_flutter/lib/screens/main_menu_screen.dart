@@ -50,6 +50,7 @@ class MainMenuScreen extends StatelessWidget {
       navigator.pop();
 
       // Show actual store info dialog
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
