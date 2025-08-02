@@ -202,6 +202,89 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = AuthService.currentUser;
     
+    // If no user data, show error screen
+    if (user == null) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFFAFAFA),
+        appBar: AppBar(
+          title: Text(
+            'Profile',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF2C3E50),
+              letterSpacing: 0.5,
+            ),
+          ),
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF2C3E50),
+          elevation: 0,
+          shadowColor: Colors.black.withOpacity(0.1),
+          surfaceTintColor: Colors.transparent,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: const Color(0xFF7F8C8D),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'No User Data',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF2C3E50),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Please log in again to view your profile.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF7F8C8D),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () async {
+                  await AuthService.logout();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    (route) => false,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF3498DB),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Go to Login',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
@@ -221,7 +304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         shadowColor: Colors.black.withOpacity(0.1),
         surfaceTintColor: Colors.transparent,
         actions: [
-          if (!_isEditing && !user!.isAnonymous)
+          if (!_isEditing && !user.isAnonymous)
             IconButton(
               onPressed: _toggleEdit,
               icon: Icon(Icons.edit_outlined),
@@ -269,7 +352,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         border: Border.all(color: Colors.white, width: 3),
                       ),
                       child: Icon(
-                        user!.isAnonymous ? Icons.person_outline : Icons.person,
+                        user.isAnonymous ? Icons.person_outline : Icons.person,
                         size: 40,
                         color: Colors.white,
                       ),
