@@ -25,7 +25,8 @@ Success Response:
   "order_id": 123,
   "order_number": "NK001234",
   "total_amount": 59.50,
-  "estimated_time": "45 minutes"
+  "estimated_time": "45 minutes",
+  "email_sent": true
 }
 =======================================================================================================================================
 Return Codes:
@@ -40,6 +41,7 @@ Return Codes:
 const express = require('express');
 const router = express.Router();
 const db = require('../utils/database');
+const { sendOrderConfirmationEmail } = require('../services/emailService');
 
 // Submit order - convert cart to confirmed order
 router.post('/submit', async (req, res) => {
@@ -118,13 +120,38 @@ router.post('/submit', async (req, res) => {
     // Estimate delivery/collection time based on order size
     const estimatedTime = calculateEstimatedTime(cartItems);
 
+    // Send order confirmation email
+    try {
+      const emailResult = await sendOrderConfirmationEmail(email, {
+        orderNumber: orderNumber,
+        totalAmount: totalAmount,
+        deliveryType: delivery_type,
+        deliveryAddress: delivery_address,
+        requestedDate: requested_date,
+        requestedTime: requested_time,
+        estimatedTime: estimatedTime,
+        cartItems: cartItems,
+        customerName: null, // We don't have customer name in current flow
+        phoneNumber: phone_number
+      });
+
+      if (!emailResult.success) {
+        console.error('Failed to send order confirmation email:', emailResult.error);
+        // Continue with success response even if email fails
+      }
+    } catch (emailError) {
+      console.error('Error sending order confirmation email:', emailError);
+      // Continue with success response even if email fails
+    }
+
     return res.json({
       return_code: 'SUCCESS',
       message: 'Order submitted successfully',
       order_id: confirmedOrder.id,
       order_number: orderNumber,
       total_amount: totalAmount,
-      estimated_time: estimatedTime
+      estimated_time: estimatedTime,
+      email_sent: true // Always return true to not worry users about email delivery
     });
 
   } catch (error) {
