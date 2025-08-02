@@ -12,3 +12,5 @@ ChatGPT - AI Dev
 Next.js - Website
 Tailwind - Website CSS
 
+Notes
+If you know the user when accessing the app, Record last accessed date
