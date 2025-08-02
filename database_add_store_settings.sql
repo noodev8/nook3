@@ -1,19 +1,7 @@
--- Store Information Table
--- This table stores dynamic store information to avoid hardcoded values in the app
+-- Add missing store information to existing system_settings table
+-- This extends the current system_settings with additional store configuration
 
-CREATE TABLE IF NOT EXISTS store_info (
-    id SERIAL PRIMARY KEY,
-    info_key VARCHAR(50) UNIQUE NOT NULL,
-    info_value TEXT NOT NULL,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Insert default store information
-INSERT INTO store_info (info_key, info_value, description) VALUES
-('store_name', 'The Nook of Welshpool', 'Business name'),
-('store_address', '42 High Street, Welshpool, SY21 7JQ', 'Full store address'),
+INSERT INTO system_settings (setting_key, setting_value, description) VALUES
 ('store_phone', '01938 123456', 'Store contact phone number'),
 ('store_email', 'info@nookofwelshpool.co.uk', 'Store contact email'),
 ('opening_hours_mon_fri', '10:00 AM - 5:00 PM', 'Monday to Friday opening hours'),
@@ -25,10 +13,10 @@ INSERT INTO store_info (info_key, info_value, description) VALUES
 ('collection_instructions', 'Please arrive at the stated collection time. Ring bell if shop appears closed.', 'Instructions for collection'),
 ('delivery_instructions', 'We deliver within 5 miles of Welshpool. Please ensure someone is available to receive the order.', 'Instructions for delivery'),
 ('business_description', 'Local food business specializing in buffets and share boxes for groups and events.', 'Business description for info page')
-ON CONFLICT (info_key) DO NOTHING;
+ON CONFLICT (setting_key) DO NOTHING;
 
--- Create function to update the updated_at timestamp
-CREATE OR REPLACE FUNCTION update_store_info_updated_at()
+-- Create function to update the updated_at timestamp for system_settings if it doesn't exist
+CREATE OR REPLACE FUNCTION update_system_settings_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
@@ -36,9 +24,9 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Create trigger to automatically update updated_at
-DROP TRIGGER IF EXISTS update_store_info_updated_at_trigger ON store_info;
-CREATE TRIGGER update_store_info_updated_at_trigger
-    BEFORE UPDATE ON store_info
+-- Create trigger to automatically update updated_at if it doesn't exist
+DROP TRIGGER IF EXISTS update_system_settings_updated_at_trigger ON system_settings;
+CREATE TRIGGER update_system_settings_updated_at_trigger
+    BEFORE UPDATE ON system_settings
     FOR EACH ROW
-    EXECUTE FUNCTION update_store_info_updated_at();
+    EXECUTE FUNCTION update_system_settings_updated_at();

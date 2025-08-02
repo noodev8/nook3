@@ -14,50 +14,185 @@ import 'login_screen.dart';
 import 'profile_screen.dart';
 import 'cart_screen.dart';
 import '../services/auth_service.dart';
+import '../services/store_info_service.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
 
-  void _showStoreInfo(BuildContext context) {
+  void _showStoreInfo(BuildContext context) async {
+    // Show dialog with loading state first
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Store Information'),
-        content: const Column(
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(
+        title: Text('Store Information'),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'The Nook of Welshpool',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text('42 High Street, Welshpool, SY21 7JQ'),
+            CircularProgressIndicator(),
             SizedBox(height: 16),
-            Text(
-              'Opening Hours:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text('Mon-Fri: 8:00 AM - 5:00 PM'),
-            Text('Sat: 9:00 AM - 4:00 PM'),
-            Text('Sun: Closed'),
-            SizedBox(height: 16),
-            Text(
-              'Contact:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text('Phone: 07551428162'),
-            Text('Email: NOOKBUFFET@GMAIL.COM'),
+            Text('Loading store information...'),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
       ),
     );
+
+    // Load store information
+    try {
+      final storeName = await StoreInfoService.getStoreName();
+      final storeAddress = await StoreInfoService.getStoreAddress();
+      final storePhone = await StoreInfoService.getStorePhone();
+      final storeEmail = await StoreInfoService.getStoreEmail();
+      final openingHours = await StoreInfoService.getOpeningHours();
+      final businessDescription = await StoreInfoService.getBusinessDescription();
+
+      // Close loading dialog
+      Navigator.pop(context);
+
+      // Show actual store info dialog
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Store Information',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF2C3E50),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  storeName,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF27AE60),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  storeAddress,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: const Color(0xFF7F8C8D),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Opening Hours:',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF2C3E50),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                ...openingHours.entries.map((entry) => Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    '${entry.key}: ${entry.value}',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      color: const Color(0xFF7F8C8D),
+                    ),
+                  ),
+                )),
+                const SizedBox(height: 16),
+                Text(
+                  'Contact:',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF2C3E50),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Phone: $storePhone',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: const Color(0xFF7F8C8D),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Email: $storeEmail',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: const Color(0xFF7F8C8D),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'About Us:',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF2C3E50),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  businessDescription,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: const Color(0xFF7F8C8D),
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF3498DB),
+              ),
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      // Close loading dialog
+      Navigator.pop(context);
+      
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: const Text('Failed to load store information. Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _buildFeatureItem(String text, IconData icon) {

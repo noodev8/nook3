@@ -316,18 +316,18 @@ const db = {
     return result.rows[0];
   },
 
-  // Store information functions
+  // Store information functions (using system_settings table)
   
   // Get all store information
   async getAllStoreInfo() {
-    const query = 'SELECT info_key, info_value, description FROM store_info ORDER BY info_key';
+    const query = 'SELECT setting_key as info_key, setting_value as info_value, description FROM system_settings ORDER BY setting_key';
     const result = await pool.query(query);
     return result.rows;
   },
 
   // Get specific store information by key
   async getStoreInfoByKey(key) {
-    const query = 'SELECT info_key, info_value, description FROM store_info WHERE info_key = $1';
+    const query = 'SELECT setting_key as info_key, setting_value as info_value, description FROM system_settings WHERE setting_key = $1';
     const result = await pool.query(query, [key]);
     return result.rows[0] || null;
   },
@@ -335,10 +335,10 @@ const db = {
   // Update store information (for admin use)
   async updateStoreInfo(key, value) {
     const query = `
-      UPDATE store_info 
-      SET info_value = $2, updated_at = CURRENT_TIMESTAMP 
-      WHERE info_key = $1 
-      RETURNING *
+      UPDATE system_settings 
+      SET setting_value = $2, updated_at = CURRENT_TIMESTAMP 
+      WHERE setting_key = $1 
+      RETURNING setting_key as info_key, setting_value as info_value, description
     `;
     const result = await pool.query(query, [key, value]);
     return result.rows[0];

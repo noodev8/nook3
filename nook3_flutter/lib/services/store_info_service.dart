@@ -47,11 +47,11 @@ class StoreInfoService {
   
   /// Convenience methods for commonly used store info
   static Future<String> getStoreName() async {
-    return await getStoreInfoValue('store_name') ?? 'The Nook of Welshpool';
+    return await getStoreInfoValue('business_name') ?? 'The Nook of Welshpool';
   }
   
   static Future<String> getStoreAddress() async {
-    return await getStoreInfoValue('store_address') ?? '42 High Street, Welshpool, SY21 7JQ';
+    return await getStoreInfoValue('business_address') ?? '42 High Street, Welshpool, SY21 7JQ';
   }
   
   static Future<String> getStorePhone() async {
