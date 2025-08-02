@@ -97,7 +97,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withOpacity( 0.1),
+        shadowColor: Colors.black.withAlpha( 25),
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
@@ -131,33 +131,36 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
               ),
               const SizedBox(height: 40),
 
-              // Traditional Option with sophisticated styling
+              // Traditional Option with enhanced selection styling
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: _selectedType == 'Traditional'
-                        ? const Color(0xFFE67E22)
-                        : const Color(0xFFE67E22).withOpacity( 0.3),
-                    width: 2,
+                        ? const Color(0xFF81C784)
+                        : const Color(0xFFE0E6ED),
+                    width: _selectedType == 'Traditional' ? 3 : 1,
                   ),
+                  color: _selectedType == 'Traditional' 
+                      ? const Color.fromARGB(13, 129, 199, 132)
+                      : Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: _selectedType == 'Traditional'
-                          ? const Color(0xFFE67E22).withOpacity( 0.25)
-                          : const Color(0xFFE67E22).withOpacity( 0.15),
-                      blurRadius: 25,
-                      offset: const Offset(0, 10),
+                          ? const Color.fromARGB(77, 129, 199, 132)
+                          : Colors.black.withAlpha( 20),
+                      blurRadius: _selectedType == 'Traditional' ? 20 : 15,
+                      offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha( 20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha( 10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -165,12 +168,13 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   ],
                 ),
                 child: Material(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
                     onTap: () {
                       setState(() {
                         _selectedType = 'Traditional';
+                        _quantity = 1; // Reset quantity when switching
                       });
                     },
                     borderRadius: BorderRadius.circular(20),
@@ -206,7 +210,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                           colors: [
-                                            const Color(0xFFE67E22).withOpacity( 0.8),
+                                            const Color.fromARGB(204, 230, 126, 34),
                                             const Color(0xFFD35400),
                                           ],
                                         ),
@@ -234,7 +238,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       Colors.transparent,
-                                      Colors.black.withOpacity( 0.3),
+                                      Colors.black.withAlpha( 77),
                                     ],
                                     stops: const [0.6, 1.0],
                                   ),
@@ -287,7 +291,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                                       fontFamily: 'Poppins',
                                                       fontSize: 20,
                                                       fontWeight: FontWeight.w700,
-                                                      color: const Color(0xFFE67E22),
+                                                      color: const Color(0xFF2C3E50),
                                                     ),
                                                   ),
                                           ],
@@ -298,7 +302,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                             Icon(
                                               Icons.people_outline,
                                               size: 16,
-                                              color: const Color(0xFFE67E22),
+                                              color: const Color(0xFF81C784),
                                             ),
                                             const SizedBox(width: 6),
                                             Text(
@@ -315,19 +319,6 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                       ],
                                     ),
                                   ),
-                                  if (_selectedType == 'Traditional')
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF27AE60),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
                                 ],
                               ),
                               const SizedBox(height: 20),
@@ -375,35 +366,128 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   ),
                 ),
               ),
+              
+              // Quantity selector for Traditional (appears when selected)
+              if (_selectedType == 'Traditional') ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(13, 129, 199, 132),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color.fromARGB(51, 129, 199, 132),
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Quantity',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF2C3E50),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF81C784),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: IconButton(
+                              onPressed: _quantity > 1 ? () {
+                                setState(() {
+                                  _quantity--;
+                                });
+                              } : null,
+                              icon: Icon(
+                                Icons.remove,
+                                color: _quantity > 1 ? Colors.white : Colors.white.withAlpha(128),
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: const Color(0xFF81C784)),
+                            ),
+                            child: Text(
+                              '$_quantity',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF2C3E50),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF81C784),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _quantity++;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              
               const SizedBox(height: 24),
 
-              // Vegetarian Option with sophisticated styling
+              // Vegetarian Option with enhanced selection styling
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: _selectedType == 'Vegetarian'
-                        ? const Color(0xFF27AE60)
-                        : const Color(0xFF27AE60).withOpacity( 0.3),
-                    width: 2,
+                        ? const Color(0xFF81C784)
+                        : const Color(0xFFE0E6ED),
+                    width: _selectedType == 'Vegetarian' ? 3 : 1,
                   ),
+                  color: _selectedType == 'Vegetarian' 
+                      ? const Color.fromARGB(13, 129, 199, 132)
+                      : Colors.white,
                   boxShadow: [
                     BoxShadow(
                       color: _selectedType == 'Vegetarian'
-                          ? const Color(0xFF27AE60).withOpacity( 0.25)
-                          : const Color(0xFF27AE60).withOpacity( 0.15),
-                      blurRadius: 25,
-                      offset: const Offset(0, 10),
+                          ? const Color.fromARGB(77, 129, 199, 132)
+                          : Colors.black.withAlpha( 20),
+                      blurRadius: _selectedType == 'Vegetarian' ? 20 : 15,
+                      offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha( 20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha( 10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -411,12 +495,13 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   ],
                 ),
                 child: Material(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
                     onTap: () {
                       setState(() {
                         _selectedType = 'Vegetarian';
+                        _quantity = 1; // Reset quantity when switching
                       });
                     },
                     borderRadius: BorderRadius.circular(20),
@@ -452,7 +537,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                           colors: [
-                                            const Color(0xFF27AE60).withOpacity( 0.8),
+                                            const Color.fromARGB(204, 39, 174, 96),
                                             const Color(0xFF229954),
                                           ],
                                         ),
@@ -480,7 +565,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       Colors.transparent,
-                                      Colors.black.withOpacity( 0.3),
+                                      Colors.black.withAlpha( 77),
                                     ],
                                     stops: const [0.6, 1.0],
                                   ),
@@ -523,7 +608,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                                     child: CircularProgressIndicator(
                                                       strokeWidth: 2,
                                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                                        const Color(0xFF27AE60),
+                                                        const Color(0xFF81C784),
                                                       ),
                                                     ),
                                                   )
@@ -533,7 +618,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                                       fontFamily: 'Poppins',
                                                       fontSize: 20,
                                                       fontWeight: FontWeight.w700,
-                                                      color: const Color(0xFF27AE60),
+                                                      color: const Color(0xFF2C3E50),
                                                     ),
                                                   ),
                                           ],
@@ -544,7 +629,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                             Icon(
                                               Icons.eco_outlined,
                                               size: 16,
-                                              color: const Color(0xFF27AE60),
+                                              color: const Color(0xFF81C784),
                                             ),
                                             const SizedBox(width: 6),
                                             Text(
@@ -561,19 +646,6 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                                       ],
                                     ),
                                   ),
-                                  if (_selectedType == 'Vegetarian')
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF27AE60),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
                                 ],
                               ),
                               const SizedBox(height: 20),
@@ -621,181 +693,96 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
-
-              // Quantity Selector with sophisticated styling
-              if (_selectedType.isNotEmpty) ...[
-                Text(
-                  'Quantity:',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF2C3E50),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8F9FA),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFFE0E6ED),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: _quantity > 1 ? const Color(0xFF2C3E50) : const Color(0xFFBDC3C7),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: IconButton(
-                          onPressed: _quantity > 1 ? () {
-                            setState(() {
-                              _quantity--;
-                            });
-                          } : null,
-                          icon: const Icon(Icons.remove),
-                          color: Colors.white,
-                          iconSize: 20,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        child: Text(
-                          '$_quantity',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF2C3E50),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: _quantity < 10 ? const Color(0xFF2C3E50) : const Color(0xFFBDC3C7),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: IconButton(
-                          onPressed: _quantity < 10 ? () {
-                            setState(() {
-                              _quantity++;
-                            });
-                          } : null,
-                          icon: const Icon(Icons.add),
-                          color: Colors.white,
-                          iconSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-
-              // Price Summary
-              if (_selectedType.isNotEmpty) ...[
-                const SizedBox(height: 24),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8F9FA),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFFE0E6ED),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Price per box:',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF7F8C8D),
-                        ),
-                      ),
-                      Text(
-                        '£${_shareBoxPrices[_selectedType]!.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF2C3E50),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-      
-              // Total Price Display
-              if (_selectedType.isNotEmpty && _quantity > 1) ...[
+              
+              // Quantity selector for Vegetarian (appears when selected)
+              if (_selectedType == 'Vegetarian') ...[
                 const SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFF3498DB).withOpacity(0.1),
-                        const Color(0xFF3498DB).withOpacity(0.05),
-                      ],
-                    ),
+                    color: const Color.fromARGB(13, 129, 199, 132),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFF3498DB).withOpacity(0.3),
+                      color: const Color.fromARGB(51, 129, 199, 132),
                       width: 1,
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Text(
+                        'Quantity',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF2C3E50),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
                         children: [
-                          Text(
-                            'Total ($_quantity boxes):',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF7F8C8D),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF81C784),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: IconButton(
+                              onPressed: _quantity > 1 ? () {
+                                setState(() {
+                                  _quantity--;
+                                });
+                              } : null,
+                              icon: Icon(
+                                Icons.remove,
+                                color: _quantity > 1 ? Colors.white : Colors.white.withAlpha(128),
+                                size: 20,
+                              ),
                             ),
                           ),
-                          Text(
-                            '£${_shareBoxPrices[_selectedType]!.toStringAsFixed(2)} × $_quantity',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF7F8C8D),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: const Color(0xFF81C784)),
+                            ),
+                            child: Text(
+                              '$_quantity',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF2C3E50),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF81C784),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _quantity++;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
                           ),
                         ],
-                      ),
-                      Text(
-                        '£${_totalPrice.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF3498DB),
-                        ),
                       ),
                     ],
                   ),
                 ),
               ],
-
+              
               const SizedBox(height: 32),
 
               // Add to Cart Button with sophisticated styling
@@ -807,8 +794,8 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                   boxShadow: [
                     BoxShadow(
                       color: _selectedType.isNotEmpty
-                          ? const Color(0xFF3498DB).withOpacity( 0.3)  // Blue shadow
-                          : Colors.black.withOpacity( 0.1),
+                          ? const Color.fromARGB(77, 52, 152, 219)  // Blue shadow
+                          : Colors.black.withAlpha( 25),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                       spreadRadius: 0,
