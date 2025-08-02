@@ -389,13 +389,23 @@ router.post('/forgot-password', async (req, res) => {
 
     // Generate reset token
     const resetToken = generateToken('reset');
+    console.log('Generated reset token for user:', user.id, 'Token length:', resetToken.length);
+    
     const tokenExpiry = getTokenExpiry(1); // 1 hour
+    console.log('Token expiry set to:', tokenExpiry);
+    
     await db.setAuthToken(user.id, resetToken, tokenExpiry);
+    console.log('Token saved to database for user:', user.id);
 
     // Send password reset email
+    console.log('Attempting to send password reset email to:', email);
     const emailResult = await sendPasswordResetEmail(email, resetToken);
+    console.log('Email send result:', emailResult);
+    
     if (!emailResult.success) {
       console.error('Failed to send password reset email:', emailResult.error);
+    } else {
+      console.log('Password reset email sent successfully with message ID:', emailResult.messageId);
     }
 
     res.json(genericResponse);
