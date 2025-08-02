@@ -54,7 +54,7 @@ class OrderService {
     } catch (e) {
       return OrderResult(
         success: false,
-        message: 'Network error. Please check your connection.',
+        message: 'Network error: $e',
       );
     }
   }
@@ -97,7 +97,7 @@ class OrderService {
     } catch (e) {
       return OrderHistoryResult(
         success: false,
-        message: 'Network error. Please check your connection.',
+        message: 'Network error: $e',
       );
     }
   }
@@ -136,7 +136,7 @@ class OrderService {
     } catch (e) {
       return OrderDetailResult(
         success: false,
-        message: 'Network error. Please check your connection.',
+        message: 'Network error: $e',
       );
     }
   }

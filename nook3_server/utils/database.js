@@ -455,4 +455,6 @@ const db = {
   }
 };
 
+// Export both the db object and the pool for health checks
 module.exports = db;
+module.exports.pool = pool;
