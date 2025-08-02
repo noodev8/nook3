@@ -57,13 +57,12 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
         _isLoadingItems = false;
       });
     } catch (e) {
-      print('[DEBUG] Failed to load buffet items: $e');
       setState(() {
         _isLoadingItems = false;
       });
       
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load menu items: $e')),
+        SnackBar(content: Text('Failed to load menu items. Please try again.')),
       );
     }
   }

@@ -17,53 +17,30 @@ class CartService {
     String? deluxeFormat,
     required List<int> includedItemIds,
   }) async {
-    print('[DEBUG] CartService.addToCart called');
-    print('[DEBUG] URL: $baseUrl');
-    print('[DEBUG] categoryId: $categoryId, quantity: $quantity, unitPrice: $unitPrice');
-    print('[DEBUG] includedItemIds: $includedItemIds');
-    print('[DEBUG] sessionId: $sessionId');
-    
     try {
-      final requestBody = {
-        'action': 'add',
-        'user_id': userId,
-        'session_id': sessionId,
-        'category_id': categoryId,
-        'quantity': quantity,
-        'unit_price': unitPrice,
-        'department_label': departmentLabel,
-        'notes': notes,
-        'deluxe_format': deluxeFormat,
-        'included_items': includedItemIds,
-      };
-      
-      print('[DEBUG] Request body: ${jsonEncode(requestBody)}');
-      
       final response = await AppConfig.post(
         Uri.parse('$baseUrl'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(requestBody),
+        body: jsonEncode({
+          'action': 'add',
+          'user_id': userId,
+          'session_id': sessionId,
+          'category_id': categoryId,
+          'quantity': quantity,
+          'unit_price': unitPrice,
+          'department_label': departmentLabel,
+          'notes': notes,
+          'deluxe_format': deluxeFormat,
+          'included_items': includedItemIds,
+        }),
       );
-      
-      print('[DEBUG] Response status: ${response.statusCode}');
-      print('[DEBUG] Response body: ${response.body}');
 
       final data = jsonDecode(response.body);
-      print('[DEBUG] Parsed JSON data: $data');
-      print('[DEBUG] Return code: ${data['return_code']}');
 
       if (data['return_code'] == 'SUCCESS') {
-        print('[DEBUG] Success response - processing cart items');
-        print('[DEBUG] Cart items raw: ${data['cart_items']}');
-        
         final List<CartItem> cartItems = (data['cart_items'] as List)
-            .map((itemJson) {
-              print('[DEBUG] Processing cart item: $itemJson');
-              return CartItem.fromJson(itemJson);
-            })
+            .map((itemJson) => CartItem.fromJson(itemJson))
             .toList();
-        
-        print('[DEBUG] Processed ${cartItems.length} cart items successfully');
         
         return CartResult(
           success: true,
@@ -78,10 +55,9 @@ class CartService {
         );
       }
     } catch (e) {
-      print('[DEBUG] CartService.addToCart exception: $e');
       return CartResult(
         success: false,
-        message: 'Network error. Please check your connection. Error: $e',
+        message: 'Network error. Please check your connection.',
       );
     }
   }
@@ -246,43 +222,27 @@ class CartItem {
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
-    print('[DEBUG] CartItem.fromJson - Processing: $json');
-    
     final List<MenuItem> items = [];
     
     if (json['included_items'] != null) {
-      print('[DEBUG] Processing ${json['included_items'].length} included items');
       for (var itemJson in json['included_items']) {
         if (itemJson != null && itemJson['id'] != null) {
-          print('[DEBUG] Processing menu item: $itemJson');
-          try {
-            items.add(MenuItem.fromJson(itemJson));
-            print('[DEBUG] Successfully parsed menu item: ${itemJson['name']}');
-          } catch (e) {
-            print('[DEBUG] Error parsing menu item: $e');
-          }
+          items.add(MenuItem.fromJson(itemJson));
         }
       }
     }
 
-    try {
-      final cartItem = CartItem(
-        orderCategoryId: json['order_category_id'],
-        categoryId: json['category_id'],
-        categoryName: json['category_name'],
-        categoryDescription: json['category_description'],
-        quantity: json['quantity'],
-        unitPrice: double.parse(json['unit_price'].toString()),
-        totalPrice: double.parse(json['total_price'].toString()),
-        notes: json['notes'],
-        includedItems: items,
-      );
-      print('[DEBUG] CartItem created successfully');
-      return cartItem;
-    } catch (e) {
-      print('[DEBUG] Error creating CartItem: $e');
-      rethrow;
-    }
+    return CartItem(
+      orderCategoryId: json['order_category_id'],
+      categoryId: json['category_id'],
+      categoryName: json['category_name'],
+      categoryDescription: json['category_description'],
+      quantity: json['quantity'],
+      unitPrice: double.parse(json['unit_price'].toString()),
+      totalPrice: double.parse(json['total_price'].toString()),
+      notes: json['notes'],
+      includedItems: items,
+    );
   }
 
   // Extract metadata from notes field
