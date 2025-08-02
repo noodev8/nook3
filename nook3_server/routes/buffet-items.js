@@ -112,25 +112,10 @@ router.post('/', async (req, res) => {
 // Database function to get buffet items for a specific category
 async function getBuffetItemsFromDatabase(categoryId) {
   try {
-    const query = `
-      SELECT 
-        mi.id,
-        mi.name,
-        mi.description,
-        mi.item_type,
-        mi.is_vegetarian,
-        cmi.is_default_included as is_default
-      FROM category_menu_items cmi
-      JOIN menu_items mi ON mi.id = cmi.menu_item_id
-      WHERE cmi.category_id = $1 
-        AND mi.is_active = true
-      ORDER BY mi.name ASC
-    `;
+    const rows = await db.getMenuItemsByCategory(categoryId);
     
-    const result = await db.query(query, [categoryId]);
-    
-    if (result.rows && result.rows.length > 0) {
-      return result.rows.map(row => ({
+    if (rows && rows.length > 0) {
+      return rows.map(row => ({
         id: row.id,
         name: row.name,
         description: row.description || '',

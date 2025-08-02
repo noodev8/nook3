@@ -122,6 +122,26 @@ const db = {
     const searchPattern = `%${type}%`;
     const result = await pool.query(query, [searchPattern]);
     return result.rows;
+  },
+
+  // Get menu items for a specific category
+  async getMenuItemsByCategory(categoryId) {
+    const query = `
+      SELECT 
+        mi.id,
+        mi.name,
+        mi.description,
+        mi.item_type,
+        mi.is_vegetarian,
+        cmi.is_default_included as is_default
+      FROM category_menu_items cmi
+      JOIN menu_items mi ON mi.id = cmi.menu_item_id
+      WHERE cmi.category_id = $1 
+        AND mi.is_active = true
+      ORDER BY mi.name ASC
+    `;
+    const result = await pool.query(query, [categoryId]);
+    return result.rows;
   }
 };
 
