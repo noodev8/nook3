@@ -291,6 +291,10 @@ const db = {
     const { orderId, totalAmount, deliveryType, deliveryAddress, 
             phoneNumber, email, requestedDate, requestedTime, specialInstructions } = orderData;
     
+    // Combine requestedDate and requestedTime into a proper timestamp
+    // requestedDate comes as YYYY-MM-DD, requestedTime as HH:MM
+    const combinedDateTime = `${requestedDate} ${requestedTime}:00`; // Add seconds
+    
     const query = `
       UPDATE orders 
       SET total_amount = $2,
@@ -300,7 +304,7 @@ const db = {
           guest_phone = $5,
           guest_email = $6,
           requested_date = $7,
-          requested_time = $8,
+          requested_time = $8::timestamp,
           special_instructions = $9,
           confirmed_at = CURRENT_TIMESTAMP,
           updated_at = CURRENT_TIMESTAMP
@@ -310,7 +314,7 @@ const db = {
     
     const result = await pool.query(query, [
       orderId, totalAmount, deliveryType, deliveryAddress,
-      phoneNumber, email, requestedDate, requestedTime, specialInstructions
+      phoneNumber, email, requestedDate, combinedDateTime, specialInstructions
     ]);
     
     return result.rows[0];
