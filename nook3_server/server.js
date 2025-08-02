@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 // Import routes
 const authRoutes = require('./routes/auth');
 const categoriesRoutes = require('./routes/categories');
+const buffetItemsRoutes = require('./routes/buffet-items');
 
 // Middleware
 app.use(cors());
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
+app.use('/api/buffet-items', buffetItemsRoutes);
 
 // Basic health check route
 app.get('/', (req, res) => {

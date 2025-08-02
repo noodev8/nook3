@@ -12,6 +12,7 @@ This screen allows users to customize their selected buffet by:
 
 import 'package:flutter/material.dart';
 import 'cart_screen.dart';
+import '../services/category_service.dart';
 
 class BuffetCustomizationScreen extends StatefulWidget {
   final String buffetType;
@@ -32,18 +33,32 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
   String _departmentLabel = '';
   String _notes = '';
   String _deluxeFormat = 'Mixed'; // For Deluxe buffet only
+  bool _isLoadingItems = true;
   
-  // Sample items that can be removed (this would come from API in real app)
-  final Map<String, bool> _includedItems = {
-    'Sandwiches': true,
-    'Quiche': true,
-    'Cocktail Sausages': true,
-    'Sausage Rolls': true,
-    'Pork Pies': true,
-    'Scotch Eggs': true,
-    'Tortillas/Dips': true,
-    'Cakes': true,
-  };
+  // Items loaded from database
+  Map<String, bool> _includedItems = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBuffetItems();
+  }
+  
+  Future<void> _loadBuffetItems() async {
+    try {
+      final items = await CategoryService.getBuffetItems(widget.buffetType);
+      setState(() {
+        _includedItems = items;
+        _isLoadingItems = false;
+      });
+    } catch (e) {
+      // Use fallback items if loading fails
+      setState(() {
+        _includedItems = CategoryService.getFallbackBuffetItems();
+        _isLoadingItems = false;
+      });
+    }
+  }
 
   void _addToCart() {
     final selectedItems = _includedItems.entries
@@ -98,7 +113,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withOpacity(0.1),
+        shadowColor: Colors.black.withAlpha(25),
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
@@ -125,46 +140,8 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 18,
-                  color: const Color(0xFF27AE60), // Green for pricing
+                  color: const Color(0xFF2C3E50), // Black for pricing
                   fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8F9FA),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE9ECEF)),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF3498DB).withOpacity( 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        Icons.info_outline,
-                        color: const Color(0xFF3498DB),
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'You can order multiple buffets with different department labels. Minimum 5 total buffet portions required across all buffets in your order.',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF2C3E50),
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
               const SizedBox(height: 40),
@@ -175,13 +152,13 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha(20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha(10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -216,7 +193,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                                 Container(
                                   decoration: BoxDecoration(
                                     color: _numberOfPeople > 1
-                                        ? const Color(0xFF3498DB).withOpacity( 0.1)
+                                        ? const Color.fromARGB(25, 52, 152, 219)
                                         : const Color(0xFFF8F9FA),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -257,7 +234,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                                 Container(
                                   decoration: BoxDecoration(
                                     color: _numberOfPeople < 50
-                                        ? const Color(0xFF3498DB).withOpacity( 0.1)
+                                        ? const Color.fromARGB(25, 52, 152, 219)
                                         : const Color(0xFFF8F9FA),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -283,7 +260,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF27AE60).withOpacity( 0.1),
+                                color: const Color.fromARGB(25, 39, 174, 96),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
@@ -312,13 +289,13 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity( 0.08),
+                        color: Colors.black.withAlpha(20),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                         spreadRadius: 0,
                       ),
                       BoxShadow(
-                        color: Colors.black.withOpacity( 0.04),
+                        color: Colors.black.withAlpha(10),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
                         spreadRadius: 0,
@@ -356,7 +333,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                                   width: 2,
                                 ),
                                 color: _deluxeFormat == format.split(' ')[0]
-                                    ? const Color(0xFF9B59B6).withOpacity( 0.1)
+                                    ? const Color.fromARGB(25, 155, 89, 182)
                                     : Colors.white,
                               ),
                               child: RadioListTile<String>(
@@ -394,13 +371,13 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha(20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha(10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -436,19 +413,28 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        ..._includedItems.entries.map((entry) {
+                        _isLoadingItems
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    const Color(0xFF27AE60),
+                                  ),
+                                ),
+                              )
+                            : Column(
+                                children: _includedItems.entries.map((entry) {
                           return Container(
                             margin: const EdgeInsets.only(bottom: 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: entry.value
-                                    ? const Color(0xFF27AE60).withOpacity( 0.3)
+                                    ? const Color.fromARGB(77, 39, 174, 96)
                                     : const Color(0xFFE9ECEF),
                                 width: 1,
                               ),
                               color: entry.value
-                                  ? const Color(0xFF27AE60).withOpacity( 0.05)
+                                  ? const Color.fromARGB(13, 39, 174, 96)
                                   : const Color(0xFFF8F9FA),
                             ),
                             child: CheckboxListTile(
@@ -486,7 +472,8 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                               },
                             ),
                           );
-                        }),
+                        }).toList(),
+                              ),
                       ],
                     ),
                   ),
@@ -500,13 +487,13 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha(20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha(10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -580,13 +567,13 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.08),
+                      color: Colors.black.withAlpha(20),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity( 0.04),
+                      color: Colors.black.withAlpha(10),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                       spreadRadius: 0,
@@ -667,7 +654,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF3498DB).withOpacity( 0.2),
+                          color: const Color.fromARGB(51, 52, 152, 219),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                           spreadRadius: 0,
@@ -714,7 +701,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF3498DB).withOpacity( 0.3),
+                          color: const Color.fromARGB(77, 52, 152, 219),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                           spreadRadius: 0,

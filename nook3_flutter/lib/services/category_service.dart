@@ -190,6 +190,48 @@ class CategoryService {
       };
     }
   }
+
+  /// Get buffet items for customization by buffet type
+  static Future<Map<String, bool>> getBuffetItems(String buffetType) async {
+    try {
+      final response = await AppConfig.post(
+        Uri.parse('${AppConfig.baseUrl}/buffet-items'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'get_by_buffet_type',
+          'buffet_type': buffetType,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (data['return_code'] == 'SUCCESS') {
+        final Map<String, bool> items = {};
+        for (var item in data['items']) {
+          items[item['name']] = true; // Default all items to included
+        }
+        return items;
+      } else {
+        return getFallbackBuffetItems();
+      }
+    } catch (e) {
+      return getFallbackBuffetItems();
+    }
+  }
+
+  /// Fallback buffet items when database is unavailable
+  static Map<String, bool> getFallbackBuffetItems() {
+    return {
+      'Sandwiches': true,
+      'Quiche': true,
+      'Cocktail Sausages': true,
+      'Sausage Rolls': true,
+      'Pork Pies': true,
+      'Scotch Eggs': true,
+      'Tortillas/Dips': true,
+      'Cakes': true,
+    };
+  }
 }
 
 /// Product Category model
