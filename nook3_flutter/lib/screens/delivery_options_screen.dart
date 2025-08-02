@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'order_status_screen.dart';
 import '../services/auth_service.dart';
 import '../services/cart_service.dart';
+import '../services/order_service.dart';
 
 class DeliveryOptionsScreen extends StatefulWidget {
   final List<dynamic> cartItems; // Temporary fix - will need proper CartItem integration
@@ -120,9 +121,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
     });
     
     try {
-      // TODO: Create order submission API
-      // For now, show confirmation dialog then navigate to order status
-      
+      // Show confirmation dialog first
       bool? confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -235,16 +234,45 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
       );
       
       if (confirmed == true) {
-        // Navigate to order status screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const OrderStatusScreen(
-              orderNumber: 'NK001234', // TODO: Get from API response
-              estimatedTime: '45 minutes',
-            ),
-          ),
+        // Submit order to API
+        int? userId;
+        String? sessionId;
+        
+        if (AuthService.isLoggedIn) {
+          userId = AuthService.currentUser?.id;
+        } else {
+          sessionId = await CartService.getSessionId();
+        }
+        
+        final result = await OrderService.submitOrder(
+          userId: userId,
+          sessionId: sessionId,
+          deliveryType: _selectedOption.toLowerCase(),
+          deliveryAddress: _selectedOption == 'Delivery' ? _addressController.text.trim() : null,
+          phoneNumber: phone,
+          email: email,
+          requestedDate: _selectedDate!,
+          requestedTime: '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}',
+          specialInstructions: null, // TODO: Add special instructions field if needed
         );
+        
+        if (result.success) {
+          // Navigate to order status screen with real data
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OrderStatusScreen(
+                orderNumber: result.orderNumber ?? 'Unknown',
+                estimatedTime: result.estimatedTime ?? '45 minutes',
+              ),
+            ),
+          );
+        } else {
+          // Show error
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result.message)),
+          );
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

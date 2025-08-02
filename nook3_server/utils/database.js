@@ -284,6 +284,36 @@ const db = {
       WHERE id = $1
     `;
     await pool.query(query, [orderId]);
+  },
+
+  // Update cart order to confirmed order
+  async updateOrderToConfirmed(orderData) {
+    const { orderId, orderNumber, totalAmount, deliveryType, deliveryAddress, 
+            phoneNumber, email, requestedDate, requestedTime, specialInstructions } = orderData;
+    
+    const query = `
+      UPDATE orders 
+      SET order_number = $2,
+          total_amount = $3,
+          order_status = 'confirmed',
+          delivery_type = $4,
+          delivery_address = $5,
+          guest_phone = $6,
+          guest_email = $7,
+          requested_date = $8,
+          requested_time = $9,
+          special_instructions = $10,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+      RETURNING *
+    `;
+    
+    const result = await pool.query(query, [
+      orderId, orderNumber, totalAmount, deliveryType, deliveryAddress,
+      phoneNumber, email, requestedDate, requestedTime, specialInstructions
+    ]);
+    
+    return result.rows[0];
   }
 };
 
