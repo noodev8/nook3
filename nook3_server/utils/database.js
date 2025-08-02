@@ -303,6 +303,7 @@ const db = {
           requested_date = $8,
           requested_time = $9,
           special_instructions = $10,
+          confirmed_at = CURRENT_TIMESTAMP,
           updated_at = CURRENT_TIMESTAMP
       WHERE id = $1
       RETURNING *
