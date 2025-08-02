@@ -69,7 +69,7 @@ class CartService {
           success: true,
           message: data['message'],
           cartItems: cartItems,
-          totalAmount: data['total_amount']?.toDouble() ?? 0.0,
+          totalAmount: double.tryParse(data['total_amount']?.toString() ?? '0.0') ?? 0.0,
         );
       } else {
         return CartResult(
@@ -113,7 +113,7 @@ class CartService {
           success: true,
           message: data['message'],
           cartItems: cartItems,
-          totalAmount: data['total_amount']?.toDouble() ?? 0.0,
+          totalAmount: double.tryParse(data['total_amount']?.toString() ?? '0.0') ?? 0.0,
         );
       } else {
         return CartResult(
@@ -158,7 +158,7 @@ class CartService {
           success: true,
           message: data['message'],
           cartItems: cartItems,
-          totalAmount: data['total_amount']?.toDouble() ?? 0.0,
+          totalAmount: double.tryParse(data['total_amount']?.toString() ?? '0.0') ?? 0.0,
         );
       } else {
         return CartResult(
