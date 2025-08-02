@@ -245,11 +245,10 @@ async function getOrCreateCartOrder(user_id, session_id) {
   
   if (!cartOrder) {
     // Create new cart order
-    const orderNumber = generateOrderNumber();
     cartOrder = await db.createOrder({
       app_user_id: user_id || null,
       guest_email: session_id || null, // Using guest_email field for session_id temporarily
-      order_number: orderNumber,
+      order_number: null, // Use database ID instead of generated text
       total_amount: 0,
       order_status: 'cart',
       delivery_type: 'pending',
@@ -285,11 +284,7 @@ function calculateCartTotal(cartItems) {
   return cartItems.reduce((total, item) => total + (item.total_price || 0), 0);
 }
 
-// Helper function to generate order number
-function generateOrderNumber() {
-  const timestamp = Date.now().toString();
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-  return `CART-${timestamp}-${random}`;
-}
+// Note: For cart items, we use the database ID instead of generating order numbers
+// Order numbers will be generated only when the cart is converted to an actual order
 
 module.exports = router;
