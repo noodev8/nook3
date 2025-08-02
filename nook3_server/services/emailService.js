@@ -331,17 +331,74 @@ async function sendOrderConfirmationEmail(email, orderDetails) {
           requestedTime, cartItems, customerName, phoneNumber } = orderDetails;
   
   // Format the cart items for display
-  const itemsHtml = cartItems.map(item => `
-    <tr style="border-bottom: 1px solid #e0e0e0;">
-      <td style="padding: 12px 0; color: #000000; font-weight: 500;">${item.category_name}</td>
-      <td style="padding: 12px 0; text-align: center; color: #666666;">x${item.quantity}</td>
-      <td style="padding: 12px 0; text-align: right; color: #000000; font-weight: 500;">£${parseFloat(item.total_price).toFixed(2)}</td>
-    </tr>
-  `).join('');
+  const itemsHtml = cartItems.map(item => {
+    // Parse metadata from notes to get department_label and deluxe_format
+    let departmentLabel = null;
+    let deluxeFormat = null;
+    
+    if (item.notes) {
+      try {
+        // Look for metadata in notes (format: "... | Metadata: {json}")
+        const metadataMatch = item.notes.match(/Metadata:\s*({.*})/);
+        if (metadataMatch) {
+          const metadata = JSON.parse(metadataMatch[1]);
+          departmentLabel = metadata.department_label;
+          deluxeFormat = metadata.deluxe_format;
+        }
+      } catch (e) {
+        // If metadata parsing fails, just continue without it
+      }
+    }
+    
+    // Build additional details string
+    let details = '';
+    if (departmentLabel) {
+      details += `<br><small style="color: #666666;">Department: ${departmentLabel}</small>`;
+    }
+    if (deluxeFormat) {
+      details += `<br><small style="color: #666666;">Format: ${deluxeFormat}</small>`;
+    }
+    
+    return `
+      <tr style="border-bottom: 1px solid #e0e0e0;">
+        <td style="padding: 12px 0; color: #000000; font-weight: 500;">
+          ${item.category_name}
+          ${details}
+        </td>
+        <td style="padding: 12px 0; text-align: center; color: #666666;">x${item.quantity}</td>
+        <td style="padding: 12px 0; text-align: right; color: #000000; font-weight: 500;">£${parseFloat(item.total_price).toFixed(2)}</td>
+      </tr>
+    `;
+  }).join('');
 
-  const itemsText = cartItems.map(item => 
-    `${item.category_name} x${item.quantity} - £${parseFloat(item.total_price).toFixed(2)}`
-  ).join('\n');
+  const itemsText = cartItems.map(item => {
+    // Parse metadata for text version too
+    let departmentLabel = null;
+    let deluxeFormat = null;
+    
+    if (item.notes) {
+      try {
+        const metadataMatch = item.notes.match(/Metadata:\s*({.*})/);
+        if (metadataMatch) {
+          const metadata = JSON.parse(metadataMatch[1]);
+          departmentLabel = metadata.department_label;
+          deluxeFormat = metadata.deluxe_format;
+        }
+      } catch (e) {
+        // Continue without metadata if parsing fails
+      }
+    }
+    
+    let itemText = `${item.category_name} x${item.quantity} - £${parseFloat(item.total_price).toFixed(2)}`;
+    if (departmentLabel) {
+      itemText += ` (Department: ${departmentLabel})`;
+    }
+    if (deluxeFormat) {
+      itemText += ` (Format: ${deluxeFormat})`;
+    }
+    
+    return itemText;
+  }).join('\n');
 
   const deliveryInfo = deliveryType === 'delivery' 
     ? `<strong>Delivery Address:</strong><br>${deliveryAddress}`
