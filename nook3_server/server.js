@@ -35,13 +35,29 @@ app.get('/', (req, res) => {
   });
 });
 
-// API health check
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'healthy',
-    service: 'nook3-api',
-    timestamp: new Date().toISOString()
-  });
+// API health check with database test
+app.get('/api/health', async (req, res) => {
+  try {
+    // Test database connection
+    const db = require('./utils/database');
+    await db.pool.query('SELECT 1 as test');
+    
+    res.json({ 
+      status: 'healthy',
+      service: 'nook3-api',
+      database: 'connected',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Health check database error:', error);
+    res.status(500).json({ 
+      status: 'unhealthy',
+      service: 'nook3-api',
+      database: 'disconnected',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // Version check route for app startup
