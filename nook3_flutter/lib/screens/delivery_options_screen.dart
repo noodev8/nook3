@@ -8,7 +8,9 @@ For delivery, users can enter their address. For collection, shows store address
 */
 
 import 'package:flutter/material.dart';
-import 'order_confirmation_screen.dart';
+import 'order_status_screen.dart';
+import '../services/auth_service.dart';
+import '../services/cart_service.dart';
 
 class DeliveryOptionsScreen extends StatefulWidget {
   final List<dynamic> cartItems; // Temporary fix - will need proper CartItem integration
@@ -28,8 +30,10 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
   String _selectedOption = '';
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
+  bool _isSubmittingOrder = false;
 
   void _selectDate() async {
     final DateTime? picked = await showDatePicker(
@@ -57,7 +61,8 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
     }
   }
 
-  void _proceedToConfirmation() {
+  void _confirmOrder() async {
+    // Validation checks
     if (_selectedOption.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select delivery or collection')),
@@ -79,20 +84,177 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
       return;
     }
     
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OrderConfirmationScreen(
-          cartItems: widget.cartItems,
-          totalAmount: widget.totalAmount,
-          deliveryOption: _selectedOption,
-          deliveryAddress: _selectedOption == 'Delivery' ? _addressController.text : null,
-          phoneNumber: _phoneController.text,
-          selectedDate: _selectedDate!,
-          selectedTime: _selectedTime!,
+    // Email and phone validation
+    String email = _emailController.text.trim();
+    String phone = _phoneController.text.trim();
+    
+    // If user is logged in, get email from their profile
+    if (AuthService.isLoggedIn && AuthService.currentUser?.email != null) {
+      email = AuthService.currentUser!.email!;
+    }
+    
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email is required for order confirmation')),
+      );
+      return;
+    }
+    
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Phone number is required for order updates')),
+      );
+      return;
+    }
+    
+    // Basic email validation
+    if (!email.contains('@') || !email.contains('.')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid email address')),
+      );
+      return;
+    }
+    
+    setState(() {
+      _isSubmittingOrder = true;
+    });
+    
+    try {
+      // TODO: Create order submission API
+      // For now, show confirmation dialog then navigate to order status
+      
+      bool? confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Confirm Order',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF2C3E50),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Order Total: £${widget.totalAmount.toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF27AE60),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Delivery: $_selectedOption',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: const Color(0xFF7F8C8D),
+                ),
+              ),
+              if (_selectedOption == 'Delivery') ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Address: ${_addressController.text}',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: const Color(0xFF7F8C8D),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 4),
+              Text(
+                'Date: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: const Color(0xFF7F8C8D),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Time: ${_selectedTime!.format(context)}',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: const Color(0xFF7F8C8D),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Confirmation will be sent to: $email',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 12,
+                  color: const Color(0xFF7F8C8D),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF7F8C8D),
+              ),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF27AE60),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Confirm Order',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ),
-      ),
-    );
+      );
+      
+      if (confirmed == true) {
+        // Navigate to order status screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const OrderStatusScreen(
+              orderNumber: 'NK001234', // TODO: Get from API response
+              estimatedTime: '45 minutes',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to submit order: $e')),
+      );
+    } finally {
+      setState(() {
+        _isSubmittingOrder = false;
+      });
+    }
   }
 
   @override
@@ -604,6 +766,56 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                       ),
                       const SizedBox(height: 24),
 
+                      // Email Address with sophisticated styling
+                      TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          color: const Color(0xFF2C3E50),
+                        ),
+                        decoration: InputDecoration(
+                          labelText: AuthService.isLoggedIn && AuthService.currentUser?.email != null 
+                              ? 'Email (from account: ${AuthService.currentUser!.email!})'
+                              : 'Email Address',
+                          labelStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: const Color(0xFF7F8C8D),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: const Color(0xFFE0E6ED),
+                              width: 1.5,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: const Color(0xFFE0E6ED),
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: const Color(0xFF3498DB),
+                              width: 2,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: const Color(0xFFFAFAFA),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          prefixIcon: Icon(
+                            Icons.email_outlined,
+                            color: const Color(0xFF7F8C8D),
+                          ),
+                        ),
+                        enabled: !(AuthService.isLoggedIn && AuthService.currentUser?.email != null),
+                      ),
+                      const SizedBox(height: 16),
+
                       // Phone Number with sophisticated styling
                       TextField(
                         controller: _phoneController,
@@ -665,7 +877,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                   ],
                 ),
                 child: ElevatedButton.icon(
-                  onPressed: _selectedOption.isNotEmpty ? _proceedToConfirmation : null,
+                  onPressed: _selectedOption.isNotEmpty && !_isSubmittingOrder ? _confirmOrder : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _selectedOption.isNotEmpty
                         ? const Color(0xFF3498DB)
@@ -676,14 +888,25 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  icon: Icon(
-                    Icons.arrow_forward_outlined,
-                    size: 20,
-                  ),
+                  icon: _isSubmittingOrder 
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Icon(
+                          Icons.check_circle_outlined,
+                          size: 20,
+                        ),
                   label: Text(
-                    _selectedOption.isEmpty
-                      ? 'Select an option above'
-                      : 'Continue to Order Summary',
+                    _isSubmittingOrder
+                        ? 'Confirming Order...'
+                        : _selectedOption.isEmpty
+                            ? 'Select an option above'
+                            : 'Confirm Order',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
@@ -704,6 +927,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
   void dispose() {
     _addressController.dispose();
     _phoneController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 }
