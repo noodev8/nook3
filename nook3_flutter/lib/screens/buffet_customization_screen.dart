@@ -88,8 +88,8 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
       // Map buffet type to category ID
       final categoryId = _getCategoryId(widget.buffetType);
       
-      // Generate session ID for guest users (we'll add user management later)
-      final sessionId = CartService.generateSessionId();
+      // Get persistent session ID for guest users (we'll add user management later)
+      final sessionId = await CartService.getSessionId();
       
       // Add to cart via API
       final result = await CartService.addToCart(
@@ -104,11 +104,11 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
       );
 
       if (result.success) {
-        // Navigate to cart screen (it will load from database)
+        // Navigate to cart screen (it will load from database using persistent session ID)
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => CartScreen(sessionId: sessionId),
+            builder: (context) => CartScreen(),
           ),
         );
       } else {

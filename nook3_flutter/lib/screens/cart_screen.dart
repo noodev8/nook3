@@ -40,9 +40,12 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> _loadCart() async {
     try {
+      // Get session ID if not provided
+      final sessionId = widget.sessionId ?? await CartService.getSessionId();
+      
       final result = await CartService.getCart(
         userId: widget.userId,
-        sessionId: widget.sessionId,
+        sessionId: sessionId,
       );
 
       if (result.success) {
@@ -80,9 +83,12 @@ class _CartScreenState extends State<CartScreen> {
     });
 
     try {
+      // Get session ID if not provided
+      final sessionId = widget.sessionId ?? await CartService.getSessionId();
+      
       final result = await CartService.deleteCartItem(
         userId: widget.userId,
-        sessionId: widget.sessionId,
+        sessionId: sessionId,
         orderCategoryId: item.orderCategoryId,
       );
 

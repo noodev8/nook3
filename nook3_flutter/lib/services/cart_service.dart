@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../config/app_config.dart';
 
 class CartService {
@@ -189,11 +190,28 @@ class CartService {
     }
   }
 
-  /// Generate session ID for guest users
-  static String generateSessionId() {
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final random = (timestamp % 10000).toString().padLeft(4, '0');
-    return 'guest_${timestamp}_$random';
+  /// Get or generate persistent session ID for guest users
+  static Future<String> getSessionId() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? sessionId = prefs.getString('cart_session_id');
+    
+    if (sessionId == null) {
+      // Generate new session ID
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final random = (timestamp % 10000).toString().padLeft(4, '0');
+      sessionId = 'guest_${timestamp}_$random';
+      
+      // Store it persistently
+      await prefs.setString('cart_session_id', sessionId);
+    }
+    
+    return sessionId;
+  }
+  
+  /// Clear session ID (for testing or when user logs out)
+  static Future<void> clearSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('cart_session_id');
   }
 }
 

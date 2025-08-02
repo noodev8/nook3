@@ -4,8 +4,8 @@ class AppConfig {
   // Change this URL for your environment
   // static const String baseUrl = 'http://192.168.1.88:3013/api'; // Home
   // static const String baseUrl = 'http://192.168.1.108:3013/api'; // Work
-  // static const String baseUrl = 'https://nook.noodev8.com/api'; // Production
-  static const String baseUrl = 'http://localhost:3013/api'; // Local development
+  static const String baseUrl = 'https://nook.noodev8.com/api'; // Production
+  // static const String baseUrl = 'http://localhost:3013/api'; // Local development
 
   static const String appName = 'The Nook of Welshpool';
   static const bool isDebugMode = false;
