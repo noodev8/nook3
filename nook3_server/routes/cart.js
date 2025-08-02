@@ -80,10 +80,13 @@ router.post('/', async (req, res) => {
       case 'clear':
         return await clearCart(req.body, res);
 
+      case 'validation':
+        return await getCartValidation(req.body, res);
+
       default:
         return res.status(400).json({
           return_code: 'INVALID_ACTION',
-          message: 'Invalid action. Supported actions: add, get, delete, clear'
+          message: 'Invalid action. Supported actions: add, get, delete, clear, validation'
         });
     }
   } catch (error) {
@@ -237,6 +240,29 @@ async function clearCart(data, res) {
     cart_items: [],
     total_amount: 0
   });
+}
+
+// Get cart validation info (minimum quantities per category)
+async function getCartValidation(data, res) {
+  try {
+    // Get all categories with their minimum quantities
+    const categories = await db.getAllCategories();
+    
+    return res.json({
+      return_code: 'SUCCESS',
+      message: 'Validation info retrieved successfully',
+      categories: categories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        minimum_quantity: cat.minimum_quantity || 1
+      }))
+    });
+  } catch (error) {
+    return res.status(500).json({
+      return_code: 'SERVER_ERROR',
+      message: 'Failed to retrieve validation info'
+    });
+  }
 }
 
 // Helper function to get or create cart order

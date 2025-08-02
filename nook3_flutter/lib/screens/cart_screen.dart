@@ -32,6 +32,8 @@ class _CartScreenState extends State<CartScreen> {
   bool _isDeleting = false;
   double _totalAmount = 0.0;
   String? _errorMessage;
+  Map<int, int> _minimumQuantities = {}; // categoryId -> minimum quantity
+  Map<int, String> _categoryNames = {}; // categoryId -> category name
 
   @override
   void initState() {
@@ -53,21 +55,32 @@ class _CartScreenState extends State<CartScreen> {
         }
       }
       
-      final result = await CartService.getCart(
-        userId: userId,
-        sessionId: sessionId,
-      );
+      // Load cart items and validation info concurrently
+      final results = await Future.wait([
+        CartService.getCart(userId: userId, sessionId: sessionId),
+        CartService.getCartValidation(userId: userId, sessionId: sessionId),
+      ]);
+      
+      final cartResult = results[0] as CartResult;
+      final validationResult = results[1] as CartValidationResult;
 
-      if (result.success) {
+      if (cartResult.success) {
         setState(() {
-          _cartItems = result.cartItems ?? [];
-          _totalAmount = result.totalAmount ?? 0.0;
+          _cartItems = cartResult.cartItems ?? [];
+          _totalAmount = cartResult.totalAmount ?? 0.0;
+          
+          // Load validation info if available
+          if (validationResult.success) {
+            _minimumQuantities = validationResult.minimumQuantities ?? {};
+            _categoryNames = validationResult.categoryNames ?? {};
+          }
+          
           _isLoading = false;
           _errorMessage = null;
         });
       } else {
         setState(() {
-          _errorMessage = result.message;
+          _errorMessage = cartResult.message;
           _isLoading = false;
         });
       }
@@ -149,12 +162,30 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  int _getTotalBuffetPortions() {
-    int total = 0;
+  Map<int, int> _getCategoryQuantities() {
+    Map<int, int> quantities = {};
     for (var item in _cartItems) {
-      total += item.quantity; // All cart items are buffets with quantity = number of people
+      quantities[item.categoryId] = (quantities[item.categoryId] ?? 0) + item.quantity;
     }
-    return total;
+    return quantities;
+  }
+
+  List<String> _getValidationErrors() {
+    List<String> errors = [];
+    final categoryQuantities = _getCategoryQuantities();
+    
+    for (var entry in categoryQuantities.entries) {
+      final categoryId = entry.key;
+      final totalQuantity = entry.value;
+      final minimumRequired = _minimumQuantities[categoryId] ?? 1;
+      final categoryName = _categoryNames[categoryId] ?? 'Unknown Category';
+      
+      if (totalQuantity < minimumRequired) {
+        errors.add('$categoryName requires a minimum of $minimumRequired ${minimumRequired == 1 ? 'item' : 'portions'}. You currently have $totalQuantity.');
+      }
+    }
+    
+    return errors;
   }
 
   void _proceedToDelivery() {
@@ -165,11 +196,10 @@ class _CartScreenState extends State<CartScreen> {
       return;
     }
 
-    // Check minimum buffet requirement
-    int totalBuffetPortions = _getTotalBuffetPortions();
-    bool hasBuffets = _cartItems.isNotEmpty; // All current items are buffets
-
-    if (hasBuffets && totalBuffetPortions < 5) {
+    // Check minimum quantity requirements for all categories
+    final validationErrors = _getValidationErrors();
+    
+    if (validationErrors.isNotEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -184,13 +214,31 @@ class _CartScreenState extends State<CartScreen> {
               color: const Color(0xFF2C3E50),
             ),
           ),
-          content: Text(
-            'Buffet orders require a minimum of 5 portions total.\n\nYou currently have $totalBuffetPortions buffet portions.\nPlease add ${5 - totalBuffetPortions} more portions to continue.',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 14,
-              color: const Color(0xFF7F8C8D),
-            ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Please ensure all minimum requirements are met:',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: const Color(0xFF7F8C8D),
+                ),
+              ),
+              const SizedBox(height: 12),
+              ...validationErrors.map((error) => Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  '• $error',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    color: const Color(0xFF7F8C8D),
+                  ),
+                ),
+              )),
+            ],
           ),
           actions: [
             TextButton(
@@ -599,15 +647,15 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     child: Column(
                       children: [
-                        // Small subtle count indicator (only if below minimum)
-                        if (_getTotalBuffetPortions() > 0 && _getTotalBuffetPortions() < 5) ...[
+                        // Show validation warnings if any categories don't meet minimums
+                        if (_getValidationErrors().isNotEmpty) ...[
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8F9FA),
+                              color: const Color(0xFFFFF3CD),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: const Color(0xFFE0E6ED),
+                                color: const Color(0xFFFFD60A),
                                 width: 1,
                               ),
                             ),
@@ -615,18 +663,20 @@ class _CartScreenState extends State<CartScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.info_outline,
-                                  color: const Color(0xFF7F8C8D),
-                                  size: 14,
+                                  Icons.warning_outlined,
+                                  color: const Color(0xFFB08800),
+                                  size: 16,
                                 ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'Buffet portions: ${_getTotalBuffetPortions()}/5 minimum',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 12,
-                                    color: const Color(0xFF7F8C8D),
-                                    fontWeight: FontWeight.w500,
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Minimum requirements not met',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 12,
+                                      color: const Color(0xFFB08800),
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ],

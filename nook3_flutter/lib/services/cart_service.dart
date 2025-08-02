@@ -213,6 +213,55 @@ class CartService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('cart_session_id');
   }
+
+  /// Get cart validation info (minimum quantities per category)
+  static Future<CartValidationResult> getCartValidation({
+    int? userId,
+    String? sessionId,
+  }) async {
+    try {
+      final response = await AppConfig.post(
+        Uri.parse('$baseUrl'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'action': 'validation',
+          'user_id': userId,
+          'session_id': sessionId,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (data['return_code'] == 'SUCCESS') {
+        final Map<int, int> minimumQuantities = {};
+        final Map<int, String> categoryNames = {};
+        
+        // Parse minimum quantities for each category
+        if (data['categories'] != null) {
+          for (var category in data['categories']) {
+            minimumQuantities[category['id']] = category['minimum_quantity'] ?? 1;
+            categoryNames[category['id']] = category['name'] ?? 'Unknown';
+          }
+        }
+        
+        return CartValidationResult(
+          success: true,
+          minimumQuantities: minimumQuantities,
+          categoryNames: categoryNames,
+        );
+      } else {
+        return CartValidationResult(
+          success: false,
+          message: data['message'] ?? 'Failed to load validation info',
+        );
+      }
+    } catch (e) {
+      return CartValidationResult(
+        success: false,
+        message: 'Network error. Please check your connection.',
+      );
+    }
+  }
 }
 
 /// Cart item model
@@ -318,5 +367,20 @@ class CartResult {
     this.message = '',
     this.cartItems,
     this.totalAmount,
+  });
+}
+
+/// Cart validation result model
+class CartValidationResult {
+  final bool success;
+  final String message;
+  final Map<int, int>? minimumQuantities; // categoryId -> minimum quantity
+  final Map<int, String>? categoryNames;   // categoryId -> category name
+
+  CartValidationResult({
+    required this.success,
+    this.message = '',
+    this.minimumQuantities,
+    this.categoryNames,
   });
 }
