@@ -129,10 +129,6 @@ app.post('/api/menu', (req, res) => {
   res.json({ return_code: 'SUCCESS', message: 'Menu routes - Coming Soon' });
 });
 
-app.post('/api/orders', (req, res) => {
-  res.json({ return_code: 'SUCCESS', message: 'Orders routes - Coming Soon' });
-});
-
 app.post('/api/users', (req, res) => {
   res.json({ return_code: 'SUCCESS', message: 'Users routes - Coming Soon' });
 });
