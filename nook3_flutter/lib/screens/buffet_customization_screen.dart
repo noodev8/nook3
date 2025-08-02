@@ -57,14 +57,14 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
         _isLoadingItems = false;
       });
     } catch (e) {
-      // Use fallback items if loading fails
-      final fallbackItems = CategoryService.getFallbackBuffetItemsWithIds();
-      
+      print('[DEBUG] Failed to load buffet items: $e');
       setState(() {
-        _availableItems = fallbackItems;
-        _selectedItems = {for (var item in fallbackItems) item.id: item.isDefault};
         _isLoadingItems = false;
       });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load menu items: $e')),
+      );
     }
   }
 

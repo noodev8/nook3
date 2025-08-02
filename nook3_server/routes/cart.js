@@ -47,12 +47,24 @@ const db = require('../utils/database');
 
 // Main cart endpoint - handles all cart operations
 router.post('/', async (req, res) => {
+  console.log('[DEBUG] Cart API - Request received');
+  console.log('[DEBUG] Request body:', JSON.stringify(req.body, null, 2));
+  console.log('[DEBUG] Request headers:', req.headers);
+  
   try {
     const { action, user_id, session_id, category_id, quantity, unit_price, 
             department_label, notes, deluxe_format, included_items, order_category_id } = req.body;
     
+    console.log('[DEBUG] Extracted parameters:');
+    console.log('[DEBUG] - action:', action);
+    console.log('[DEBUG] - category_id:', category_id);
+    console.log('[DEBUG] - quantity:', quantity);
+    console.log('[DEBUG] - included_items:', included_items);
+    console.log('[DEBUG] - session_id:', session_id);
+    
     // Validate action parameter
     if (!action) {
+      console.log('[DEBUG] Missing action parameter');
       return res.status(400).json({
         return_code: 'MISSING_ACTION',
         message: 'Action parameter is required'

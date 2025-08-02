@@ -212,10 +212,10 @@ class CategoryService {
         }
         return items;
       } else {
-        return getFallbackBuffetItemsWithIds();
+        throw Exception('Failed to load buffet items: API returned error');
       }
     } catch (e) {
-      return getFallbackBuffetItemsWithIds();
+      throw Exception('Failed to load buffet items: $e');
     }
   }
 

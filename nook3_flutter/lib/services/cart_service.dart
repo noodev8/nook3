@@ -17,23 +17,36 @@ class CartService {
     String? deluxeFormat,
     required List<int> includedItemIds,
   }) async {
+    print('[DEBUG] CartService.addToCart called');
+    print('[DEBUG] URL: $baseUrl');
+    print('[DEBUG] categoryId: $categoryId, quantity: $quantity, unitPrice: $unitPrice');
+    print('[DEBUG] includedItemIds: $includedItemIds');
+    print('[DEBUG] sessionId: $sessionId');
+    
     try {
+      final requestBody = {
+        'action': 'add',
+        'user_id': userId,
+        'session_id': sessionId,
+        'category_id': categoryId,
+        'quantity': quantity,
+        'unit_price': unitPrice,
+        'department_label': departmentLabel,
+        'notes': notes,
+        'deluxe_format': deluxeFormat,
+        'included_items': includedItemIds,
+      };
+      
+      print('[DEBUG] Request body: ${jsonEncode(requestBody)}');
+      
       final response = await AppConfig.post(
         Uri.parse('$baseUrl'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'action': 'add',
-          'user_id': userId,
-          'session_id': sessionId,
-          'category_id': categoryId,
-          'quantity': quantity,
-          'unit_price': unitPrice,
-          'department_label': departmentLabel,
-          'notes': notes,
-          'deluxe_format': deluxeFormat,
-          'included_items': includedItemIds,
-        }),
+        body: jsonEncode(requestBody),
       );
+      
+      print('[DEBUG] Response status: ${response.statusCode}');
+      print('[DEBUG] Response body: ${response.body}');
 
       final data = jsonDecode(response.body);
 
@@ -55,9 +68,10 @@ class CartService {
         );
       }
     } catch (e) {
+      print('[DEBUG] CartService.addToCart exception: $e');
       return CartResult(
         success: false,
-        message: 'Network error. Please check your connection.',
+        message: 'Network error. Please check your connection. Error: $e',
       );
     }
   }
