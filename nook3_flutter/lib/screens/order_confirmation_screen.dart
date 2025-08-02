@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'order_status_screen.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> cartItems;
+  final List<dynamic> cartItems; // Temporary fix for cart integration
   final double totalAmount;
   final String deliveryOption;
   final String? deliveryAddress;

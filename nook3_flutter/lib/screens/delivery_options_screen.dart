@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'order_confirmation_screen.dart';
 
 class DeliveryOptionsScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> cartItems;
+  final List<dynamic> cartItems; // Temporary fix - will need proper CartItem integration
   final double totalAmount;
 
   const DeliveryOptionsScreen({

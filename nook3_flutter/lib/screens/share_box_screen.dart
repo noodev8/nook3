@@ -61,19 +61,13 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
       return;
     }
     
-    // TODO: Add to cart logic
+    // TODO: Implement share box cart integration similar to buffet system
+    // For now, navigate to empty cart - share box integration pending
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CartScreen(
-          items: [
-            {
-              'type': 'Share Box',
-              'variant': _selectedType,
-              'quantity': _quantity,
-              'price': _totalPrice
-            }
-          ],
+          sessionId: 'temp_session_${DateTime.now().millisecondsSinceEpoch}',
         ),
       ),
     );

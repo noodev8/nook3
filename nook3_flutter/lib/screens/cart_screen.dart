@@ -132,7 +132,7 @@ class _CartScreenState extends State<CartScreen> {
 
     // Check minimum buffet requirement
     int totalBuffetPortions = _getTotalBuffetPortions();
-    bool hasBuffets = _cartItems.any((item) => item['type'] == 'Buffet');
+    bool hasBuffets = _cartItems.isNotEmpty; // All current items are buffets
 
     if (hasBuffets && totalBuffetPortions < 5) {
       showDialog(
