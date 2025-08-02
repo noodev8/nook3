@@ -44,7 +44,11 @@ class CategoryService {
 
   /// Get category by ID
   static Future<CategoryResult> getCategoryById(int id) async {
+    print('[DEBUG] getCategoryById($id) - Starting API call');
+    final stopwatch = Stopwatch()..start();
+    
     try {
+      print('[DEBUG] Making POST request to: $baseUrl');
       final response = await AppConfig.post(
         Uri.parse('$baseUrl'),
         headers: {'Content-Type': 'application/json'},
@@ -53,11 +57,17 @@ class CategoryService {
           'category_id': id,
         }),
       );
+      
+      stopwatch.stop();
+      print('[DEBUG] getCategoryById($id) - API response received in ${stopwatch.elapsedMilliseconds}ms');
+      print('[DEBUG] Response status: ${response.statusCode}');
+      print('[DEBUG] Response body: ${response.body}');
 
       final data = jsonDecode(response.body);
 
       if (data['return_code'] == 'SUCCESS') {
         final category = ProductCategory.fromJson(data['category']);
+        print('[DEBUG] Category $id parsed successfully: ${category.name}, price: ${category.pricePerHead}');
         
         return CategoryResult(
           success: true,
@@ -65,12 +75,15 @@ class CategoryService {
           categories: [category],
         );
       } else {
+        print('[DEBUG] API returned error for category $id: ${data['message']}');
         return CategoryResult(
           success: false,
           message: data['message'] ?? 'Category not found',
         );
       }
     } catch (e) {
+      stopwatch.stop();
+      print('[DEBUG] getCategoryById($id) - Exception after ${stopwatch.elapsedMilliseconds}ms: $e');
       return CategoryResult(
         success: false,
         message: 'Network error. Please check your connection.',
@@ -151,37 +164,65 @@ class CategoryService {
 
   /// Get categories for buffets specifically using IDs
   static Future<Map<String, double>> getBuffetPrices() async {
+    print('[DEBUG] getBuffetPrices() - Starting buffet price fetch');
+    final stopwatch = Stopwatch()..start();
+    
     try {
-      // Fetch Classic Buffet (ID: 3), Enhanced Buffet (ID: 4), and Deluxe Buffet (ID: 5)
+      print('[DEBUG] Fetching Classic Buffet (ID: 3)');
+      final classicStart = Stopwatch()..start();
       final classicResult = await getCategoryById(3);
+      classicStart.stop();
+      print('[DEBUG] Classic fetch took: ${classicStart.elapsedMilliseconds}ms');
+      
+      print('[DEBUG] Fetching Enhanced Buffet (ID: 4)');
+      final enhancedStart = Stopwatch()..start();
       final enhancedResult = await getCategoryById(4);
+      enhancedStart.stop();
+      print('[DEBUG] Enhanced fetch took: ${enhancedStart.elapsedMilliseconds}ms');
+      
+      print('[DEBUG] Fetching Deluxe Buffet (ID: 5)');
+      final deluxeStart = Stopwatch()..start();
       final deluxeResult = await getCategoryById(5);
+      deluxeStart.stop();
+      print('[DEBUG] Deluxe fetch took: ${deluxeStart.elapsedMilliseconds}ms');
       
       final Map<String, double> prices = {};
       
       // Get Classic price
       if (classicResult.success && classicResult.categories != null && classicResult.categories!.isNotEmpty) {
         prices['Classic'] = classicResult.categories!.first.pricePerHead ?? 9.90;
+        print('[DEBUG] Classic price from DB: ${prices['Classic']}');
       } else {
         prices['Classic'] = 9.90; // Fallback price
+        print('[DEBUG] Classic using fallback price: ${prices['Classic']}');
       }
       
       // Get Enhanced price
       if (enhancedResult.success && enhancedResult.categories != null && enhancedResult.categories!.isNotEmpty) {
         prices['Enhanced'] = enhancedResult.categories!.first.pricePerHead ?? 10.90;
+        print('[DEBUG] Enhanced price from DB: ${prices['Enhanced']}');
       } else {
         prices['Enhanced'] = 10.90; // Fallback price
+        print('[DEBUG] Enhanced using fallback price: ${prices['Enhanced']}');
       }
       
       // Get Deluxe price
       if (deluxeResult.success && deluxeResult.categories != null && deluxeResult.categories!.isNotEmpty) {
         prices['Deluxe'] = deluxeResult.categories!.first.pricePerHead ?? 13.90;
+        print('[DEBUG] Deluxe price from DB: ${prices['Deluxe']}');
       } else {
         prices['Deluxe'] = 13.90; // Fallback price
+        print('[DEBUG] Deluxe using fallback price: ${prices['Deluxe']}');
       }
+      
+      stopwatch.stop();
+      print('[DEBUG] getBuffetPrices() - Total time: ${stopwatch.elapsedMilliseconds}ms');
+      print('[DEBUG] Final prices: $prices');
       
       return prices;
     } catch (e) {
+      stopwatch.stop();
+      print('[DEBUG] getBuffetPrices() - Error after ${stopwatch.elapsedMilliseconds}ms: $e');
       // Return fallback prices if anything goes wrong
       return {
         'Classic': 9.90,

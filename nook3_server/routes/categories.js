@@ -38,17 +38,23 @@ const db = require('../utils/database');
 
 // Main categories endpoint - handles all category operations
 router.post('/', async (req, res) => {
+  const startTime = Date.now();
+  console.log(`[DEBUG] Categories API - Request received at ${new Date().toISOString()}`);
+  console.log(`[DEBUG] Request body:`, req.body);
+  
   try {
     const { action, category_id, category_type } = req.body;
     
     // Validate action parameter
     if (!action) {
+      console.log('[DEBUG] Missing action parameter');
       return res.status(400).json({
         return_code: 'MISSING_ACTION',
         message: 'Action parameter is required'
       });
     }
 
+    console.log(`[DEBUG] Processing action: ${action}`);
     switch (action) {
       case 'get_all':
         const categories = await db.getAllCategories();
@@ -59,7 +65,10 @@ router.post('/', async (req, res) => {
         });
 
       case 'get_by_id':
+        console.log(`[DEBUG] get_by_id action - category_id: ${category_id}`);
+        
         if (!category_id) {
+          console.log('[DEBUG] Missing category_id parameter');
           return res.status(400).json({
             return_code: 'MISSING_CATEGORY_ID',
             message: 'Category ID is required for get_by_id action'
@@ -68,20 +77,31 @@ router.post('/', async (req, res) => {
 
         const categoryId = parseInt(category_id);
         if (isNaN(categoryId)) {
+          console.log(`[DEBUG] Invalid category_id: ${category_id}`);
           return res.status(400).json({
             return_code: 'INVALID_CATEGORY_ID',
             message: 'Invalid category ID'
           });
         }
 
+        console.log(`[DEBUG] Querying database for category ID: ${categoryId}`);
+        const dbStart = Date.now();
         const category = await db.getCategoryById(categoryId);
+        const dbEnd = Date.now();
+        console.log(`[DEBUG] Database query took: ${dbEnd - dbStart}ms`);
+        
         if (!category) {
+          console.log(`[DEBUG] Category ${categoryId} not found in database`);
           return res.status(404).json({
             return_code: 'CATEGORY_NOT_FOUND',
             message: 'Category not found'
           });
         }
 
+        console.log(`[DEBUG] Category ${categoryId} found:`, category);
+        const totalTime = Date.now() - startTime;
+        console.log(`[DEBUG] Total request time: ${totalTime}ms`);
+        
         return res.json({
           return_code: 'SUCCESS',
           message: 'Category retrieved successfully',
