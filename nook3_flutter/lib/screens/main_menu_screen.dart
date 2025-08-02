@@ -12,6 +12,7 @@ import 'share_box_screen.dart';
 import 'buffet_selection_screen.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
+import 'cart_screen.dart';
 import '../services/auth_service.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -1079,13 +1080,9 @@ class MainMenuScreen extends StatelessWidget {
                 break;
               case 1:
                 // Cart
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Cart feature - add items first!'),
-                    backgroundColor: const Color(0xFF2C3E50),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartScreen()),
                 );
                 break;
               case 2:

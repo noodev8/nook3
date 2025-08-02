@@ -9,6 +9,8 @@ Users can see pricing and what's included in each buffet type.
 
 import 'package:flutter/material.dart';
 import 'buffet_customization_screen.dart';
+import 'cart_screen.dart';
+import 'profile_screen.dart';
 import '../services/category_service.dart';
 
 class BuffetSelectionScreen extends StatefulWidget {
@@ -893,6 +895,71 @@ class _BuffetSelectionScreenState extends State<BuffetSelectionScreen> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        selectedItemColor: const Color(0xFF3498DB),
+        unselectedItemColor: const Color(0xFF7F8C8D),
+        selectedLabelStyle: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 11,
+          fontWeight: FontWeight.w400,
+        ),
+        elevation: 0,
+        currentIndex: 0, // No current selection since this is a sub-screen
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              // Home
+              Navigator.popUntil(context, (route) => route.isFirst);
+              break;
+            case 1:
+              // Cart
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CartScreen()),
+              );
+              break;
+            case 2:
+              // Profile
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+              break;
+            case 3:
+              // Store Info - placeholder
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart_outlined),
+            activeIcon: Icon(Icons.shopping_cart),
+            label: 'Cart',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info_outline),
+            activeIcon: Icon(Icons.info),
+            label: 'Info',
+          ),
+        ],
       ),
     );
   }
