@@ -10,7 +10,7 @@ Shows what's included in each option and allows quantity selection.
 import 'package:flutter/material.dart';
 import 'cart_screen.dart';
 import 'profile_screen.dart';
-import '../services/category_service.dart';
+import '../services/category_service.dart';\nimport '../services/cart_service.dart';\nimport '../services/auth_service.dart';
 
 class ShareBoxScreen extends StatefulWidget {
   const ShareBoxScreen({super.key});
@@ -54,7 +54,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
     }
   }
 
-  void _addToCart() {
+  void _addToCart() async {
     if (_selectedType.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a share box type')),
@@ -62,16 +62,81 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
       return;
     }
     
-    // TODO: Implement share box cart integration similar to buffet system
-    // For now, navigate to empty cart - share box integration pending
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CartScreen(
-          sessionId: 'temp_session_${DateTime.now().millisecondsSinceEpoch}',
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
         ),
-      ),
-    );
+      );
+
+      // Get user authentication status
+      int? userId;
+      String? sessionId;
+      
+      if (AuthService.isLoggedIn) {
+        userId = AuthService.currentUser?.id;
+      } else {
+        sessionId = await CartService.getSessionId();
+      }
+
+      // Determine category ID based on selection
+      int categoryId = _selectedType == 'Traditional' ? 1 : 2; // Traditional=1, Vegetarian=2
+      double unitPrice = _shareBoxPrices[_selectedType] ?? 0.0;
+
+      // Add to cart using CartService
+      final result = await CartService.addToCart(
+        userId: userId,
+        sessionId: sessionId,
+        categoryId: categoryId,
+        quantity: _quantity,
+        unitPrice: unitPrice,
+        includedItemIds: [], // Share boxes don't have customizable items
+        notes: '$_selectedType Share Box',
+      );
+
+      // Close loading dialog
+      Navigator.pop(context);
+
+      if (result.success) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$_selectedType Share Box added to cart!'),
+            backgroundColor: const Color(0xFF27AE60),
+          ),
+        );
+
+        // Navigate to cart to show the added item
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CartScreen(),
+          ),
+        );
+      } else {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: const Color(0xFFE74C3C),
+          ),
+        );
+      }
+    } catch (e) {
+      // Close loading dialog if still open
+      Navigator.pop(context);
+      
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add to cart: $e'),
+          backgroundColor: const Color(0xFFE74C3C),
+        ),
+      );
+    }
   }
 
   @override
