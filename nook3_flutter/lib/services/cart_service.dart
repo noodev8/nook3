@@ -20,7 +20,7 @@ class CartService {
   }) async {
     try {
       final response = await AppConfig.post(
-        Uri.parse('$baseUrl'),
+        Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'action': 'add',
@@ -70,7 +70,7 @@ class CartService {
   }) async {
     try {
       final response = await AppConfig.post(
-        Uri.parse('$baseUrl'),
+        Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'action': 'get',
@@ -114,7 +114,7 @@ class CartService {
   }) async {
     try {
       final response = await AppConfig.post(
-        Uri.parse('$baseUrl'),
+        Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'action': 'delete',
@@ -158,7 +158,7 @@ class CartService {
   }) async {
     try {
       final response = await AppConfig.post(
-        Uri.parse('$baseUrl'),
+        Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'action': 'clear',
@@ -221,7 +221,7 @@ class CartService {
   }) async {
     try {
       final response = await AppConfig.post(
-        Uri.parse('$baseUrl'),
+        Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'action': 'validation',

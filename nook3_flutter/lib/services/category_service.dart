@@ -9,7 +9,7 @@ class CategoryService {
   static Future<CategoryResult> getCategories() async {
     try {
       final response = await AppConfig.post(
-        Uri.parse('$baseUrl'),
+        Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'action': 'get_all',
@@ -46,7 +46,7 @@ class CategoryService {
   static Future<CategoryResult> getCategoryById(int id) async {
     try {
       final response = await AppConfig.post(
-        Uri.parse('$baseUrl'),
+        Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'action': 'get_by_id',
@@ -82,7 +82,7 @@ class CategoryService {
   static Future<CategoryResult> getCategoriesByType(String type) async {
     try {
       final response = await AppConfig.post(
-        Uri.parse('$baseUrl'),
+        Uri.parse(baseUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'action': 'get_by_type',
