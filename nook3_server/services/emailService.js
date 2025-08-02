@@ -283,11 +283,6 @@ async function sendPasswordResetEmail(email, token) {
   `;
 
   try {
-    console.log('Resend API Key exists:', !!process.env.RESEND_API_KEY);
-    console.log('Email from:', `${process.env.EMAIL_NAME} <${process.env.EMAIL_FROM}>`);
-    console.log('Email to:', email);
-    console.log('Reset URL being sent:', resetUrl);
-    
     const result = await resend.emails.send({
       from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_FROM}>`,
       to: email,
@@ -300,7 +295,6 @@ async function sendPasswordResetEmail(email, token) {
     return { success: true, messageId: result.id };
   } catch (error) {
     console.error('Error sending password reset email:', error);
-    console.error('Error details:', JSON.stringify(error, null, 2));
     return { success: false, error: error.message };
   }
 }

@@ -100,9 +100,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Find user
-    console.log('Looking up user by email...');
     const user = await db.findUserByEmail(email);
-    console.log('User lookup result:', user ? 'User found' : 'User not found');
     if (!user) {
       return res.status(401).json({
         return_code: 'INVALID_CREDENTIALS',
@@ -327,9 +325,7 @@ router.post('/resend-verification', async (req, res) => {
       });
     }
 
-    console.log('Looking up user by email...');
     const user = await db.findUserByEmail(email);
-    console.log('User lookup result:', user ? 'User found' : 'User not found');
     
     // Generic response to prevent user enumeration
     const genericResponse = {
@@ -368,10 +364,8 @@ router.post('/resend-verification', async (req, res) => {
  * Forgot password
  */
 router.post('/forgot-password', async (req, res) => {
-  console.log('=== FORGOT PASSWORD ROUTE STARTED ===');
   try {
     const { email } = req.body;
-    console.log('Email received:', email);
 
     if (!email) {
       return res.status(400).json({
@@ -380,9 +374,7 @@ router.post('/forgot-password', async (req, res) => {
       });
     }
 
-    console.log('Looking up user by email...');
     const user = await db.findUserByEmail(email);
-    console.log('User lookup result:', user ? 'User found' : 'User not found');
     
     // Generic response to prevent user enumeration
     const genericResponse = {
@@ -392,40 +384,24 @@ router.post('/forgot-password', async (req, res) => {
 
     // If user doesn't exist, return generic response
     if (!user || user.is_anonymous) {
-      console.log('User not found or anonymous - returning generic response without sending email');
       return res.json(genericResponse);
     }
-    
-    console.log('User found - proceeding to send reset email');
 
     // Generate reset token
     const resetToken = generateToken('reset');
-    console.log('Generated reset token for user:', user.id, 'Token length:', resetToken.length);
-    
     const tokenExpiry = getTokenExpiry(1); // 1 hour
-    console.log('Token expiry set to:', tokenExpiry);
-    
     await db.setAuthToken(user.id, resetToken, tokenExpiry);
-    console.log('Token saved to database for user:', user.id);
 
     // Send password reset email
-    console.log('Attempting to send password reset email to:', email);
     const emailResult = await sendPasswordResetEmail(email, resetToken);
-    console.log('Email send result:', emailResult);
-    
     if (!emailResult.success) {
       console.error('Failed to send password reset email:', emailResult.error);
-    } else {
-      console.log('Password reset email sent successfully with message ID:', emailResult.messageId);
     }
 
-    console.log('=== FORGOT PASSWORD ROUTE COMPLETED SUCCESSFULLY ===');
     res.json(genericResponse);
 
   } catch (error) {
-    console.error('=== FORGOT PASSWORD ROUTE ERROR ===');
     console.error('Forgot password error:', error);
-    console.error('Error stack:', error.stack);
     res.status(500).json({
       return_code: 'SERVER_ERROR',
       message: 'Internal server error'
