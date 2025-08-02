@@ -23,7 +23,7 @@ Success Response:
   "return_code": "SUCCESS",
   "message": "Order submitted successfully",
   "order_id": 123,
-  "order_number": "NK001234",
+  "order_number": "NK000123",
   "total_amount": 59.50,
   "estimated_time": "45 minutes",
   "email_sent": true
@@ -100,13 +100,9 @@ router.post('/submit', async (req, res) => {
     // Calculate total amount
     const totalAmount = cartItems.reduce((total, item) => total + (parseFloat(item.total_price) || 0), 0);
 
-    // Generate order number
-    const orderNumber = generateOrderNumber();
-
     // Update cart order to confirmed order
     const confirmedOrder = await db.updateOrderToConfirmed({
       orderId: cartOrder.id,
-      orderNumber: orderNumber,
       totalAmount: totalAmount,
       deliveryType: delivery_type,
       deliveryAddress: delivery_address,
@@ -120,10 +116,10 @@ router.post('/submit', async (req, res) => {
     // Estimate delivery/collection time based on order size
     const estimatedTime = calculateEstimatedTime(cartItems);
 
-    // Send order confirmation email
+    // Send order confirmation email using order ID as order number
     try {
       const emailResult = await sendOrderConfirmationEmail(email, {
-        orderNumber: orderNumber,
+        orderNumber: `NK${confirmedOrder.id.toString().padStart(6, '0')}`, // Format: NK000123
         totalAmount: totalAmount,
         deliveryType: delivery_type,
         deliveryAddress: delivery_address,
@@ -148,7 +144,7 @@ router.post('/submit', async (req, res) => {
       return_code: 'SUCCESS',
       message: 'Order submitted successfully',
       order_id: confirmedOrder.id,
-      order_number: orderNumber,
+      order_number: `NK${confirmedOrder.id.toString().padStart(6, '0')}`,
       total_amount: totalAmount,
       estimated_time: estimatedTime,
       email_sent: true // Always return true to not worry users about email delivery
@@ -163,15 +159,7 @@ router.post('/submit', async (req, res) => {
   }
 });
 
-// Helper function to generate order number
-function generateOrderNumber() {
-  const date = new Date();
-  const year = date.getFullYear().toString().slice(-2);
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-  return `NK${year}${month}${day}${random}`;
-}
+// Order number is generated from order ID: NK + 6-digit padded ID (e.g., NK000123)
 
 // Helper function to calculate estimated time
 function calculateEstimatedTime(cartItems) {

@@ -288,21 +288,20 @@ const db = {
 
   // Update cart order to confirmed order
   async updateOrderToConfirmed(orderData) {
-    const { orderId, orderNumber, totalAmount, deliveryType, deliveryAddress, 
+    const { orderId, totalAmount, deliveryType, deliveryAddress, 
             phoneNumber, email, requestedDate, requestedTime, specialInstructions } = orderData;
     
     const query = `
       UPDATE orders 
-      SET order_number = $2,
-          total_amount = $3,
+      SET total_amount = $2,
           order_status = 'confirmed',
-          delivery_type = $4,
-          delivery_address = $5,
-          guest_phone = $6,
-          guest_email = $7,
-          requested_date = $8,
-          requested_time = $9,
-          special_instructions = $10,
+          delivery_type = $3,
+          delivery_address = $4,
+          guest_phone = $5,
+          guest_email = $6,
+          requested_date = $7,
+          requested_time = $8,
+          special_instructions = $9,
           confirmed_at = CURRENT_TIMESTAMP,
           updated_at = CURRENT_TIMESTAMP
       WHERE id = $1
@@ -310,7 +309,7 @@ const db = {
     `;
     
     const result = await pool.query(query, [
-      orderId, orderNumber, totalAmount, deliveryType, deliveryAddress,
+      orderId, totalAmount, deliveryType, deliveryAddress,
       phoneNumber, email, requestedDate, requestedTime, specialInstructions
     ]);
     

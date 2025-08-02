@@ -5,7 +5,7 @@
 -- Dumped from database version 16.9 (Ubuntu 16.9-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 17.4
 
--- Started on 2025-08-02 18:17:43
+-- Started on 2025-08-02 19:27:20
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -72,7 +72,7 @@ CREATE SEQUENCE public.app_user_id_seq
 ALTER SEQUENCE public.app_user_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3508 (class 0 OID 0)
+-- TOC entry 3509 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: app_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -113,7 +113,7 @@ CREATE SEQUENCE public.category_menu_items_id_seq
 ALTER SEQUENCE public.category_menu_items_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3509 (class 0 OID 0)
+-- TOC entry 3510 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: category_menu_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -156,7 +156,7 @@ CREATE SEQUENCE public.menu_items_id_seq
 ALTER SEQUENCE public.menu_items_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3510 (class 0 OID 0)
+-- TOC entry 3511 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: menu_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -200,7 +200,7 @@ CREATE SEQUENCE public.order_categories_id_seq
 ALTER SEQUENCE public.order_categories_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3511 (class 0 OID 0)
+-- TOC entry 3512 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: order_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -241,7 +241,7 @@ CREATE SEQUENCE public.order_items_id_seq
 ALTER SEQUENCE public.order_items_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3512 (class 0 OID 0)
+-- TOC entry 3513 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: order_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -282,7 +282,7 @@ CREATE SEQUENCE public.order_status_history_id_seq
 ALTER SEQUENCE public.order_status_history_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3513 (class 0 OID 0)
+-- TOC entry 3514 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: order_status_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -309,7 +309,9 @@ CREATE TABLE public.orders (
     special_instructions text,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     confirmed_at timestamp without time zone,
-    completed_at timestamp without time zone
+    completed_at timestamp without time zone,
+    guest_phone character varying(20),
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -332,7 +334,7 @@ CREATE SEQUENCE public.orders_id_seq
 ALTER SEQUENCE public.orders_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3514 (class 0 OID 0)
+-- TOC entry 3515 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -375,7 +377,7 @@ CREATE SEQUENCE public.product_categories_id_seq
 ALTER SEQUENCE public.product_categories_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3515 (class 0 OID 0)
+-- TOC entry 3516 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: product_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -416,7 +418,7 @@ CREATE SEQUENCE public.system_settings_id_seq
 ALTER SEQUENCE public.system_settings_id_seq OWNER TO nook_prod_user;
 
 --
--- TOC entry 3516 (class 0 OID 0)
+-- TOC entry 3517 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: system_settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nook_prod_user
 --
@@ -449,7 +451,7 @@ ALTER TABLE ONLY public.menu_items ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
--- TOC entry 3311 (class 2604 OID 19712)
+-- TOC entry 3312 (class 2604 OID 19712)
 -- Name: order_categories id; Type: DEFAULT; Schema: public; Owner: nook_prod_user
 --
 
@@ -457,7 +459,7 @@ ALTER TABLE ONLY public.order_categories ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
--- TOC entry 3314 (class 2604 OID 19723)
+-- TOC entry 3315 (class 2604 OID 19723)
 -- Name: order_items id; Type: DEFAULT; Schema: public; Owner: nook_prod_user
 --
 
@@ -465,7 +467,7 @@ ALTER TABLE ONLY public.order_items ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3316 (class 2604 OID 19731)
+-- TOC entry 3317 (class 2604 OID 19731)
 -- Name: order_status_history id; Type: DEFAULT; Schema: public; Owner: nook_prod_user
 --
 
@@ -489,7 +491,7 @@ ALTER TABLE ONLY public.product_categories ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 3318 (class 2604 OID 19741)
+-- TOC entry 3319 (class 2604 OID 19741)
 -- Name: system_settings id; Type: DEFAULT; Schema: public; Owner: nook_prod_user
 --
 
@@ -497,7 +499,7 @@ ALTER TABLE ONLY public.system_settings ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 3321 (class 2606 OID 19652)
+-- TOC entry 3322 (class 2606 OID 19652)
 -- Name: app_user app_user_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -506,7 +508,7 @@ ALTER TABLE ONLY public.app_user
 
 
 --
--- TOC entry 3332 (class 2606 OID 19694)
+-- TOC entry 3333 (class 2606 OID 19694)
 -- Name: category_menu_items category_menu_items_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -515,7 +517,7 @@ ALTER TABLE ONLY public.category_menu_items
 
 
 --
--- TOC entry 3330 (class 2606 OID 19685)
+-- TOC entry 3331 (class 2606 OID 19685)
 -- Name: menu_items menu_items_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -524,7 +526,7 @@ ALTER TABLE ONLY public.menu_items
 
 
 --
--- TOC entry 3346 (class 2606 OID 19718)
+-- TOC entry 3347 (class 2606 OID 19718)
 -- Name: order_categories order_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -533,7 +535,7 @@ ALTER TABLE ONLY public.order_categories
 
 
 --
--- TOC entry 3351 (class 2606 OID 19726)
+-- TOC entry 3352 (class 2606 OID 19726)
 -- Name: order_items order_items_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -542,7 +544,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 3355 (class 2606 OID 19736)
+-- TOC entry 3356 (class 2606 OID 19736)
 -- Name: order_status_history order_status_history_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -551,7 +553,7 @@ ALTER TABLE ONLY public.order_status_history
 
 
 --
--- TOC entry 3342 (class 2606 OID 19705)
+-- TOC entry 3343 (class 2606 OID 19705)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -560,7 +562,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 3325 (class 2606 OID 19673)
+-- TOC entry 3326 (class 2606 OID 19673)
 -- Name: product_categories product_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -569,7 +571,7 @@ ALTER TABLE ONLY public.product_categories
 
 
 --
--- TOC entry 3357 (class 2606 OID 19746)
+-- TOC entry 3358 (class 2606 OID 19746)
 -- Name: system_settings system_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -578,7 +580,7 @@ ALTER TABLE ONLY public.system_settings
 
 
 --
--- TOC entry 3359 (class 2606 OID 19748)
+-- TOC entry 3360 (class 2606 OID 19748)
 -- Name: system_settings system_settings_setting_key_key; Type: CONSTRAINT; Schema: public; Owner: nook_prod_user
 --
 
@@ -587,7 +589,7 @@ ALTER TABLE ONLY public.system_settings
 
 
 --
--- TOC entry 3322 (class 1259 OID 19653)
+-- TOC entry 3323 (class 1259 OID 19653)
 -- Name: idx_app_user_display_name; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -595,7 +597,7 @@ CREATE INDEX idx_app_user_display_name ON public.app_user USING btree (display_n
 
 
 --
--- TOC entry 3323 (class 1259 OID 19654)
+-- TOC entry 3324 (class 1259 OID 19654)
 -- Name: idx_app_user_email; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -603,7 +605,7 @@ CREATE INDEX idx_app_user_email ON public.app_user USING btree (email);
 
 
 --
--- TOC entry 3333 (class 1259 OID 19761)
+-- TOC entry 3334 (class 1259 OID 19761)
 -- Name: idx_category_menu_items_category_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -611,7 +613,7 @@ CREATE INDEX idx_category_menu_items_category_id ON public.category_menu_items U
 
 
 --
--- TOC entry 3334 (class 1259 OID 19762)
+-- TOC entry 3335 (class 1259 OID 19762)
 -- Name: idx_category_menu_items_menu_item_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -619,7 +621,7 @@ CREATE INDEX idx_category_menu_items_menu_item_id ON public.category_menu_items 
 
 
 --
--- TOC entry 3326 (class 1259 OID 19767)
+-- TOC entry 3327 (class 1259 OID 19767)
 -- Name: idx_menu_items_active; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -627,7 +629,7 @@ CREATE INDEX idx_menu_items_active ON public.menu_items USING btree (is_active);
 
 
 --
--- TOC entry 3327 (class 1259 OID 19765)
+-- TOC entry 3328 (class 1259 OID 19765)
 -- Name: idx_menu_items_type; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -635,7 +637,7 @@ CREATE INDEX idx_menu_items_type ON public.menu_items USING btree (item_type);
 
 
 --
--- TOC entry 3328 (class 1259 OID 19766)
+-- TOC entry 3329 (class 1259 OID 19766)
 -- Name: idx_menu_items_vegetarian; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -643,7 +645,7 @@ CREATE INDEX idx_menu_items_vegetarian ON public.menu_items USING btree (is_vege
 
 
 --
--- TOC entry 3343 (class 1259 OID 19757)
+-- TOC entry 3344 (class 1259 OID 19757)
 -- Name: idx_order_categories_category_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -651,7 +653,7 @@ CREATE INDEX idx_order_categories_category_id ON public.order_categories USING b
 
 
 --
--- TOC entry 3344 (class 1259 OID 19756)
+-- TOC entry 3345 (class 1259 OID 19756)
 -- Name: idx_order_categories_order_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -659,7 +661,7 @@ CREATE INDEX idx_order_categories_order_id ON public.order_categories USING btre
 
 
 --
--- TOC entry 3347 (class 1259 OID 19760)
+-- TOC entry 3348 (class 1259 OID 19760)
 -- Name: idx_order_items_menu_item_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -667,7 +669,7 @@ CREATE INDEX idx_order_items_menu_item_id ON public.order_items USING btree (men
 
 
 --
--- TOC entry 3348 (class 1259 OID 19759)
+-- TOC entry 3349 (class 1259 OID 19759)
 -- Name: idx_order_items_order_category_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -675,7 +677,7 @@ CREATE INDEX idx_order_items_order_category_id ON public.order_items USING btree
 
 
 --
--- TOC entry 3349 (class 1259 OID 19758)
+-- TOC entry 3350 (class 1259 OID 19758)
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -683,7 +685,7 @@ CREATE INDEX idx_order_items_order_id ON public.order_items USING btree (order_i
 
 
 --
--- TOC entry 3352 (class 1259 OID 19764)
+-- TOC entry 3353 (class 1259 OID 19764)
 -- Name: idx_order_status_history_created_at; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -691,7 +693,7 @@ CREATE INDEX idx_order_status_history_created_at ON public.order_status_history 
 
 
 --
--- TOC entry 3353 (class 1259 OID 19763)
+-- TOC entry 3354 (class 1259 OID 19763)
 -- Name: idx_order_status_history_order_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -699,7 +701,7 @@ CREATE INDEX idx_order_status_history_order_id ON public.order_status_history US
 
 
 --
--- TOC entry 3335 (class 1259 OID 19749)
+-- TOC entry 3336 (class 1259 OID 19749)
 -- Name: idx_orders_app_user_id; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -707,7 +709,7 @@ CREATE INDEX idx_orders_app_user_id ON public.orders USING btree (app_user_id);
 
 
 --
--- TOC entry 3336 (class 1259 OID 19755)
+-- TOC entry 3337 (class 1259 OID 19755)
 -- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -715,7 +717,7 @@ CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at);
 
 
 --
--- TOC entry 3337 (class 1259 OID 19753)
+-- TOC entry 3338 (class 1259 OID 19753)
 -- Name: idx_orders_date; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -723,7 +725,7 @@ CREATE INDEX idx_orders_date ON public.orders USING btree (requested_date);
 
 
 --
--- TOC entry 3338 (class 1259 OID 19750)
+-- TOC entry 3339 (class 1259 OID 19750)
 -- Name: idx_orders_guest_email; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -731,7 +733,7 @@ CREATE INDEX idx_orders_guest_email ON public.orders USING btree (guest_email);
 
 
 --
--- TOC entry 3339 (class 1259 OID 19752)
+-- TOC entry 3340 (class 1259 OID 19752)
 -- Name: idx_orders_status; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -739,7 +741,7 @@ CREATE INDEX idx_orders_status ON public.orders USING btree (order_status);
 
 
 --
--- TOC entry 3340 (class 1259 OID 19754)
+-- TOC entry 3341 (class 1259 OID 19754)
 -- Name: idx_orders_time; Type: INDEX; Schema: public; Owner: nook_prod_user
 --
 
@@ -762,7 +764,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENC
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLES TO nook_prod_user;
 
 
--- Completed on 2025-08-02 18:17:44
+-- Completed on 2025-08-02 19:27:21
 
 --
 -- PostgreSQL database dump complete
