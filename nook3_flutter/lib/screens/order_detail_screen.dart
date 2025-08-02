@@ -101,13 +101,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     await _loadOrderDetails();
   }
 
-  Color _getStatusColor(String statusColor) {
-    try {
-      return Color(int.parse(statusColor.replaceFirst('#', '0xFF')));
-    } catch (e) {
-      return const Color(0xFF7F8C8D); // Default gray
-    }
-  }
 
   Widget _buildStatusTimeline() {
     if (_order == null || _order!.statusHistory.isEmpty) {

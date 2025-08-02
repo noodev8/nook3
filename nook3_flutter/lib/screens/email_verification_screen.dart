@@ -145,7 +145,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3498DB).withOpacity(0.1),
+                  color: const Color(0xFF3498DB).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: const Color(0xFF3498DB).withValues(alpha: 0.3)),
                 ),

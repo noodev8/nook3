@@ -43,7 +43,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     } catch (e) {
       // Handle any unexpected errors silently
       // Version checking is non-critical functionality
-      print('Version check failed: $e');
+      // Version check failed silently
     }
   }
 
@@ -95,16 +95,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
-  /// Show non-blocking error message
-  void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.orange,
-        duration: const Duration(seconds: 3),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

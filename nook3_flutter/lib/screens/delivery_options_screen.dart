@@ -45,7 +45,6 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
     'Saturday': '10:00 AM - 4:00 PM',
     'Sunday': 'Closed',
   };
-  String _collectionInstructions = 'Please arrive at the stated collection time.';
   bool _isLoadingStoreInfo = true;
 
   @override
