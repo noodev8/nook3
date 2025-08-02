@@ -99,10 +99,10 @@ class MainMenuScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: accentColor.withOpacity( 0.05),
+        color: accentColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: accentColor.withOpacity( 0.2),
+          color: accentColor.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -162,7 +162,7 @@ class MainMenuScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withOpacity( 0.1),
+        shadowColor: Colors.black.withValues(alpha: 0.1),
         surfaceTintColor: Colors.transparent,
         actions: [
           // Profile button

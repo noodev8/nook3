@@ -9,7 +9,7 @@ Users can resend the verification email or continue to the app.
 
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-import 'main_menu_screen.dart';
+import 'login_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   final String email;
@@ -43,10 +43,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     });
   }
 
-  void _continueToApp() {
+  void _backToLogin() {
+    // Clear any stored user data since they haven't verified their email
+    AuthService.logout();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
@@ -68,7 +70,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF2C3E50),
         elevation: 0,
-        shadowColor: Colors.black.withOpacity(0.1),
+        shadowColor: Colors.black.withValues(alpha: 0.1),
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
@@ -95,7 +97,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   borderRadius: BorderRadius.circular(60),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF3498DB).withOpacity(0.3),
+                      color: const Color(0xFF3498DB).withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 0,
@@ -145,7 +147,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 decoration: BoxDecoration(
                   color: const Color(0xFF3498DB).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFF3498DB).withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFF3498DB).withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   widget.email,
@@ -168,7 +170,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -244,7 +246,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF3498DB).withOpacity(0.3),
+                      color: const Color(0xFF3498DB).withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                       spreadRadius: 0,
@@ -284,22 +286,22 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Continue to app button
+              // Back to login button
               Container(
                 width: double.infinity,
                 height: 56,
                 child: OutlinedButton.icon(
-                  onPressed: _continueToApp,
+                  onPressed: _backToLogin,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF3498DB),
-                    side: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                    foregroundColor: const Color(0xFF7F8C8D),
+                    side: BorderSide(color: const Color(0xFF7F8C8D), width: 2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  icon: Icon(Icons.arrow_forward, size: 20),
+                  icon: Icon(Icons.arrow_back, size: 20),
                   label: Text(
-                    'Continue to App',
+                    'Back to Login',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
@@ -313,7 +315,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
               // Help text
               Text(
-                'Didn\'t receive the email? Check your spam folder or try resending.',
+                'Please verify your email before logging in. Check your spam folder if you don\'t see the email.',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 14,

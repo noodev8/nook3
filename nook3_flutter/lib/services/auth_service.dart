@@ -36,13 +36,11 @@ class AuthService {
       final data = jsonDecode(response.body);
 
       if (data['return_code'] == 'SUCCESS') {
-        // Set current user data (without auth token since registration doesn't auto-login)
-        _currentUser = User.fromJson(data['user']);
-        
+        // Don't store user data during registration - require email verification first
         return AuthResult(
           success: true,
           message: data['message'],
-          user: _currentUser,
+          user: User.fromJson(data['user']),
           requiresEmailVerification: true,
         );
       } else {
