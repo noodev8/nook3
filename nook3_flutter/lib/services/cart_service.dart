@@ -49,11 +49,21 @@ class CartService {
       print('[DEBUG] Response body: ${response.body}');
 
       final data = jsonDecode(response.body);
+      print('[DEBUG] Parsed JSON data: $data');
+      print('[DEBUG] Return code: ${data['return_code']}');
 
       if (data['return_code'] == 'SUCCESS') {
+        print('[DEBUG] Success response - processing cart items');
+        print('[DEBUG] Cart items raw: ${data['cart_items']}');
+        
         final List<CartItem> cartItems = (data['cart_items'] as List)
-            .map((itemJson) => CartItem.fromJson(itemJson))
+            .map((itemJson) {
+              print('[DEBUG] Processing cart item: $itemJson');
+              return CartItem.fromJson(itemJson);
+            })
             .toList();
+        
+        print('[DEBUG] Processed ${cartItems.length} cart items successfully');
         
         return CartResult(
           success: true,
