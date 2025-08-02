@@ -3,7 +3,8 @@ Node.js - Server
 Express.js - Server
 Resend - Emails
 JWT - Auth
-BCrypt - Auth
+BCrypt - Password hashing and comparison
+Crypto - verification token generation
 Visual Studio Code - IDE
 Claude - AI Dev
 Augment - AI Dev

@@ -9,6 +9,9 @@ personalized features like order history and saved preferences.
 
 import 'package:flutter/material.dart';
 import 'main_menu_screen.dart';
+import '../services/auth_service.dart';
+import 'email_verification_screen.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,6 +22,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLogin = true;
+  bool _isLoading = false;
+  String _errorMessage = '';
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
@@ -26,15 +31,141 @@ class _LoginScreenState extends State<LoginScreen> {
   void _toggleMode() {
     setState(() {
       _isLogin = !_isLogin;
+      _errorMessage = '';
     });
   }
 
-  void _submit() {
-    // TODO: Implement authentication logic
-    // For wireframe, just navigate to main menu
-    Navigator.pushReplacement(
+  void _submit() async {
+    // Clear previous error
+    setState(() {
+      _errorMessage = '';
+      _isLoading = true;
+    });
+
+    // Basic validation
+    if (_emailController.text.trim().isEmpty || _passwordController.text.trim().isEmpty) {
+      setState(() {
+        _errorMessage = 'Email and password are required';
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (!_isLogin && _nameController.text.trim().isEmpty) {
+      setState(() {
+        _errorMessage = 'Display name is required';
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (_passwordController.text.length < 8) {
+      setState(() {
+        _errorMessage = 'Password must be at least 8 characters long';
+        _isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      AuthResult result;
+      
+      if (_isLogin) {
+        // Login
+        result = await AuthService.login(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+      } else {
+        // Register
+        result = await AuthService.register(
+          email: _emailController.text.trim(),
+          displayName: _nameController.text.trim(),
+          password: _passwordController.text,
+        );
+      }
+
+      if (result.success) {
+        if (_isLogin) {
+          // Successful login - go to main menu
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+          );
+        } else {
+          // Successful registration - go to email verification
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EmailVerificationScreen(
+                email: _emailController.text.trim(),
+              ),
+            ),
+          );
+        }
+      } else {
+        if (result.requiresEmailVerification) {
+          // Email not verified - show verification screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EmailVerificationScreen(
+                email: result.email ?? _emailController.text.trim(),
+              ),
+            ),
+          );
+        } else {
+          // Show error message
+          setState(() {
+            _errorMessage = result.message;
+          });
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'An unexpected error occurred. Please try again.';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _continueAsGuest() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Create a guest name prompt
+    String guestName = 'Guest';
+    final nameResult = await showDialog<String>(
+      context: context,
+      builder: (context) => _GuestNameDialog(),
+    );
+
+    if (nameResult != null && nameResult.isNotEmpty) {
+      guestName = nameResult;
+    }
+
+    final result = await AuthService.continueAsGuest(guestName);
+    
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (result.success) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+      );
+    }
+  }
+
+  void _forgotPassword() {
+    Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+      MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
     );
   }
 
@@ -130,7 +261,40 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 32),
+
+              // Error message display
+              if (_errorMessage.isNotEmpty) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.red.shade200, width: 1),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.red.shade700, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _errorMessage,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.red.shade700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+
+              const SizedBox(height: 16),
 
               // Form fields container
               Container(
@@ -307,6 +471,26 @@ class _LoginScreenState extends State<LoginScreen> {
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           ),
                         ),
+                        
+                        // Forgot password link (only for login)
+                        if (_isLogin) ...[
+                          const SizedBox(height: 16),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: _forgotPassword,
+                              child: Text(
+                                'Forgot Password?',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF3498DB),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -330,7 +514,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 child: ElevatedButton.icon(
-                  onPressed: _submit,
+                  onPressed: _isLoading ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3498DB),
                     foregroundColor: Colors.white,
@@ -339,12 +523,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     elevation: 0,
                   ),
-                  icon: Icon(
-                    _isLogin ? Icons.login_outlined : Icons.person_add_outlined,
-                    size: 20,
-                  ),
+                  icon: _isLoading 
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Icon(
+                        _isLogin ? Icons.login_outlined : Icons.person_add_outlined,
+                        size: 20,
+                      ),
                   label: Text(
-                    _isLogin ? 'Sign In' : 'Create Account',
+                    _isLoading 
+                      ? (_isLogin ? 'Signing In...' : 'Creating Account...')
+                      : (_isLogin ? 'Sign In' : 'Create Account'),
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
@@ -398,12 +593,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Skip login with sophisticated styling
               TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-                  );
-                },
+                onPressed: _isLoading ? null : _continueAsGuest,
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
@@ -430,6 +620,114 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
+    super.dispose();
+  }
+}
+
+class _GuestNameDialog extends StatefulWidget {
+  @override
+  _GuestNameDialogState createState() => _GuestNameDialogState();
+}
+
+class _GuestNameDialogState extends State<_GuestNameDialog> {
+  final _guestNameController = TextEditingController(text: 'Guest');
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        'Welcome, Guest!',
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFF2C3E50),
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'What would you like us to call you?',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF7F8C8D),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _guestNameController,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF2C3E50),
+            ),
+            decoration: InputDecoration(
+              labelText: 'Display Name',
+              labelStyle: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF7F8C8D),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            'Cancel',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF7F8C8D),
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(_guestNameController.text.trim()),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF3498DB),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Text(
+            'Continue',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _guestNameController.dispose();
     super.dispose();
   }
 }

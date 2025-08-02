@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'share_box_screen.dart';
 import 'buffet_selection_screen.dart';
 import 'login_screen.dart';
+import 'profile_screen.dart';
+import '../services/auth_service.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
@@ -163,6 +165,43 @@ class MainMenuScreen extends StatelessWidget {
         shadowColor: Colors.black.withOpacity( 0.1),
         surfaceTintColor: Colors.transparent,
         actions: [
+          // Profile button
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+            icon: Stack(
+              children: [
+                Icon(
+                  AuthService.currentUser?.isAnonymous == true 
+                    ? Icons.person_outline 
+                    : Icons.person,
+                  size: 24,
+                ),
+                // Show notification dot if user is not verified
+                if (AuthService.currentUser != null && 
+                    !AuthService.currentUser!.isAnonymous && 
+                    !AuthService.currentUser!.emailVerified)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE67E22),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            tooltip: 'Profile',
+          ),
+          const SizedBox(width: 8),
           Container(
             margin: const EdgeInsets.only(right: 8),
             decoration: BoxDecoration(

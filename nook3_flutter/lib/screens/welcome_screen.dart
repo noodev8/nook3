@@ -8,11 +8,105 @@ Shows app branding and basic information about the buffet ordering service.
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'login_screen.dart';
 import 'main_menu_screen.dart';
+import '../services/version_service.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAppVersion();
+  }
+
+  /// Check app version on startup
+  Future<void> _checkAppVersion() async {
+    // Get app version from pubspec.yaml (1.0.0)
+    const String appVersion = '1.0.0';
+    
+    try {
+      final result = await VersionService.checkVersion(appVersion);
+      
+      if (result.isUpdateRequired) {
+        _showUpdateRequiredDialog(result);
+      } else if (result.hasError) {
+        // For network/server errors, we'll allow the app to continue
+        // but could show a warning if needed
+        _showErrorMessage(result.message);
+      }
+      // If success, do nothing - app continues normally
+    } catch (e) {
+      // Handle any unexpected errors
+      _showErrorMessage('Unable to verify app version. Please check your connection.');
+    }
+  }
+
+  /// Show blocking dialog for required updates
+  void _showUpdateRequiredDialog(VersionCheckResult result) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // User cannot dismiss this dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Update Required',
+            style: TextStyle(
+              color: Color(0xFFE67E22), // Orange color for attention
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(result.message),
+              const SizedBox(height: 16),
+              Text(
+                'Current Version: ${result.currentVersion}',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              Text(
+                'Required Version: ${result.requiredVersion}',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Close the app
+                SystemNavigator.pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE67E22),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Exit App'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Show non-blocking error message
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.orange,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
