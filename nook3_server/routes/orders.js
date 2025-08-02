@@ -3,7 +3,7 @@
 API Route: Order Submission
 =======================================================================================================================================
 Method: POST
-Purpose: Convert cart to confirmed order and update database with correct total
+Purpose: Convert cart to pending order and update database with correct total
 =======================================================================================================================================
 Request Payload:
 {
@@ -42,7 +42,7 @@ const router = express.Router();
 const db = require('../utils/database');
 const { sendOrderConfirmationEmail } = require('../services/emailService');
 
-// Submit order - convert cart to confirmed order
+// Submit order - convert cart to pending order
 router.post('/submit', async (req, res) => {
   try {
     const { user_id, session_id, delivery_type, delivery_address, phone_number, 
@@ -99,7 +99,7 @@ router.post('/submit', async (req, res) => {
     // Calculate total amount
     const totalAmount = cartItems.reduce((total, item) => total + (parseFloat(item.total_price) || 0), 0);
 
-    // Update cart order to confirmed order
+    // Update cart order to pending order
     const confirmedOrder = await db.updateOrderToConfirmed({
       orderId: cartOrder.id,
       totalAmount: totalAmount,
@@ -235,7 +235,7 @@ Success Response:
     "id": 456,
     "order_number": "NK000456",
     "total_amount": 59.50,
-    "order_status": "confirmed",
+    "order_status": "pending",
     "delivery_type": "delivery",
     "items": [...],                              // array of order items
     "status_history": [...]                      // array of status changes

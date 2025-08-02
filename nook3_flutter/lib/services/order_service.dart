@@ -211,8 +211,8 @@ class OrderSummary {
   /// Get formatted order status for display
   String get statusDisplay {
     switch (orderStatus.toLowerCase()) {
-      case 'confirmed':
-        return 'Confirmed';
+      case 'pending':
+        return 'Pending';
       case 'preparing':
         return 'Preparing';
       case 'ready':
@@ -229,7 +229,7 @@ class OrderSummary {
   /// Get status color for UI
   String get statusColor {
     switch (orderStatus.toLowerCase()) {
-      case 'confirmed':
+      case 'pending':
         return '#3498DB'; // Blue
       case 'preparing':
         return '#F39C12'; // Orange
@@ -309,8 +309,8 @@ class OrderDetail {
   /// Get formatted order status for display
   String get statusDisplay {
     switch (orderStatus.toLowerCase()) {
-      case 'confirmed':
-        return 'Confirmed';
+      case 'pending':
+        return 'Pending';
       case 'preparing':
         return 'Preparing';
       case 'ready':
@@ -327,7 +327,7 @@ class OrderDetail {
   /// Get status color for UI
   String get statusColor {
     switch (orderStatus.toLowerCase()) {
-      case 'confirmed':
+      case 'pending':
         return '#3498DB'; // Blue
       case 'preparing':
         return '#F39C12'; // Orange
@@ -457,8 +457,8 @@ class OrderStatusHistory {
   /// Get formatted status for display
   String get statusDisplay {
     switch (status.toLowerCase()) {
-      case 'confirmed':
-        return 'Order Confirmed';
+      case 'pending':
+        return 'Order Pending';
       case 'preparing':
         return 'Preparing Your Order';
       case 'ready':

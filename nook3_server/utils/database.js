@@ -286,7 +286,7 @@ const db = {
     await pool.query(query, [orderId]);
   },
 
-  // Update cart order to confirmed order
+  // Update cart order to pending order
   async updateOrderToConfirmed(orderData) {
     const { orderId, totalAmount, deliveryType, deliveryAddress, 
             phoneNumber, email, requestedDate, requestedTime, specialInstructions } = orderData;
@@ -298,7 +298,7 @@ const db = {
     const query = `
       UPDATE orders 
       SET total_amount = $2,
-          order_status = 'confirmed',
+          order_status = 'pending',
           delivery_type = $3,
           delivery_address = $4,
           guest_phone = $5,

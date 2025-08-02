@@ -114,7 +114,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       return Container();
     }
 
-    final statusOrder = ['confirmed', 'preparing', 'ready', 'completed'];
+    final statusOrder = ['pending', 'preparing', 'ready', 'completed'];
     final currentStatusIndex = statusOrder.indexOf(_order!.orderStatus.toLowerCase());
     
     return Container(
@@ -157,8 +157,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               
               String statusDisplay;
               switch (status) {
-                case 'confirmed':
-                  statusDisplay = 'Order Confirmed';
+                case 'pending':
+                  statusDisplay = 'Order Pending';
                   break;
                 case 'preparing':
                   statusDisplay = 'Preparing Your Order';
