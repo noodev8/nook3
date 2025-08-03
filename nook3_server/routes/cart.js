@@ -145,13 +145,7 @@ async function addItemToCart(data, res) {
     });
   }
 
-  // Store additional metadata in order notes if needed (only deluxe_format now)
-  if (deluxe_format) {
-    const metadata = {
-      deluxe_format: deluxe_format
-    };
-    await db.updateOrderMetadata(orderCategory.id, metadata);
-  }
+  // Note: deluxe_format is no longer stored in notes to keep Special Notes clean
 
   // Return updated cart
   const cartItems = await getCartContents(user_id, session_id);
