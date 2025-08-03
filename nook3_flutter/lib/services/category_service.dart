@@ -264,7 +264,6 @@ class ProductCategory {
   final String name;
   final String? description;
   final double? pricePerHead;
-  final int minimumQuantity;
   final bool isActive;
   final DateTime createdAt;
 
@@ -273,7 +272,6 @@ class ProductCategory {
     required this.name,
     this.description,
     this.pricePerHead,
-    required this.minimumQuantity,
     required this.isActive,
     required this.createdAt,
   });
@@ -286,7 +284,6 @@ class ProductCategory {
       pricePerHead: json['price_per_head'] != null 
           ? double.parse(json['price_per_head'].toString())
           : null,
-      minimumQuantity: json['minimum_quantity'] ?? 1,
       isActive: json['is_active'] ?? true,
       createdAt: DateTime.parse(json['created_at']),
     );
@@ -298,7 +295,6 @@ class ProductCategory {
       'name': name,
       'description': description,
       'price_per_head': pricePerHead,
-      'minimum_quantity': minimumQuantity,
       'is_active': isActive,
       'created_at': createdAt.toIso8601String(),
     };

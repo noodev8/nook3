@@ -32,7 +32,6 @@ class _CartScreenState extends State<CartScreen> {
   bool _isDeleting = false;
   double _totalAmount = 0.0;
   String? _errorMessage;
-  Map<int, int> _minimumQuantities = {}; // categoryId -> minimum quantity
   Map<int, String> _categoryNames = {}; // categoryId -> category name
 
   @override
@@ -71,7 +70,6 @@ class _CartScreenState extends State<CartScreen> {
           
           // Load validation info if available
           if (validationResult.success) {
-            _minimumQuantities = validationResult.minimumQuantities ?? {};
             _categoryNames = validationResult.categoryNames ?? {};
           }
           
@@ -174,15 +172,17 @@ class _CartScreenState extends State<CartScreen> {
     List<String> errors = [];
     final categoryQuantities = _getCategoryQuantities();
     
-    for (var entry in categoryQuantities.entries) {
-      final categoryId = entry.key;
-      final totalQuantity = entry.value;
-      final minimumRequired = _minimumQuantities[categoryId] ?? 1;
-      final categoryName = _categoryNames[categoryId] ?? 'Unknown Category';
-      
-      if (totalQuantity < minimumRequired) {
-        errors.add('$categoryName requires a minimum of $minimumRequired ${minimumRequired == 1 ? 'item' : 'portions'}. You currently have $totalQuantity.');
-      }
+    // Calculate total buffet quantities (categories 3, 4, 5)
+    final buffetCategoryIds = [3, 4, 5]; // Classic, Enhanced, Deluxe buffets
+    int totalBuffetQuantity = 0;
+    
+    for (int categoryId in buffetCategoryIds) {
+      totalBuffetQuantity += categoryQuantities[categoryId] ?? 0;
+    }
+    
+    // Check if there are any buffet items and if they meet minimum of 5
+    if (totalBuffetQuantity > 0 && totalBuffetQuantity < 5) {
+      errors.add('Buffets require a minimum of 5 people total. You currently have $totalBuffetQuantity people across all buffet selections.');
     }
     
     return errors;

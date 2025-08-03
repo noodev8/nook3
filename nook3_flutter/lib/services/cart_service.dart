@@ -233,20 +233,17 @@ class CartService {
       final data = jsonDecode(response.body);
 
       if (data['return_code'] == 'SUCCESS') {
-        final Map<int, int> minimumQuantities = {};
         final Map<int, String> categoryNames = {};
         
-        // Parse minimum quantities for each category
+        // Parse category names
         if (data['categories'] != null) {
           for (var category in data['categories']) {
-            minimumQuantities[category['id']] = category['minimum_quantity'] ?? 1;
             categoryNames[category['id']] = category['name'] ?? 'Unknown';
           }
         }
         
         return CartValidationResult(
           success: true,
-          minimumQuantities: minimumQuantities,
           categoryNames: categoryNames,
         );
       } else {
@@ -374,13 +371,11 @@ class CartResult {
 class CartValidationResult {
   final bool success;
   final String message;
-  final Map<int, int>? minimumQuantities; // categoryId -> minimum quantity
   final Map<int, String>? categoryNames;   // categoryId -> category name
 
   CartValidationResult({
     required this.success,
     this.message = '',
-    this.minimumQuantities,
     this.categoryNames,
   });
 }

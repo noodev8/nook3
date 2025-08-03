@@ -247,8 +247,7 @@ async function getCartValidation(data, res) {
       message: 'Validation info retrieved successfully',
       categories: categories.map(cat => ({
         id: cat.id,
-        name: cat.name,
-        minimum_quantity: cat.minimum_quantity || 1
+        name: cat.name
       }))
     });
   } catch (error) {
