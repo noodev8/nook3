@@ -476,36 +476,12 @@ class _CartScreenState extends State<CartScreen> {
                                   if (item.departmentLabel != null && item.departmentLabel!.isNotEmpty) ...[
                                     const SizedBox(height: 12),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF3498DB).withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: const Color(0xFF3498DB).withValues(alpha: 0.2),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Department: ${item.departmentLabel}',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 12,
-                                          color: const Color(0xFF3498DB),
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-
-                                  if (item.departmentLabel != null && item.departmentLabel!.isNotEmpty) ...[
-                                    const SizedBox(height: 12),
-                                    Container(
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFF0F8FF),
+                                        color: const Color(0xFFF8F9FA),
                                         borderRadius: BorderRadius.circular(8),
                                         border: Border.all(
-                                          color: const Color(0xFF3498DB),
+                                          color: const Color(0xFFE0E6ED),
                                           width: 1,
                                         ),
                                       ),
@@ -514,8 +490,8 @@ class _CartScreenState extends State<CartScreen> {
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: const Color(0xFF2C3E50),
+                                          fontStyle: FontStyle.italic,
+                                          color: const Color(0xFF7F8C8D),
                                         ),
                                       ),
                                     ),
