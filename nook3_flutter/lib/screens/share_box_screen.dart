@@ -25,6 +25,8 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
   String _selectedType = '';
   int _quantity = 1;
   bool _isLoadingPrices = true;
+  String _departmentLabel = '';
+  String _notes = '';
   Map<String, double> _shareBoxPrices = {
     'Traditional': 12.50, // Default fallback prices
     'Vegetarian': 11.50,
@@ -95,8 +97,9 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
         categoryId: categoryId,
         quantity: _quantity,
         unitPrice: unitPrice,
+        departmentLabel: _departmentLabel.isNotEmpty ? _departmentLabel : null,
+        notes: _notes.isNotEmpty ? _notes : null,
         includedItemIds: [], // Share boxes don't have customizable items
-        notes: '$_selectedType Share Box',
       );
 
       // Close loading dialog
@@ -237,6 +240,8 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                       setState(() {
                         _selectedType = 'Traditional';
                         _quantity = 1; // Reset quantity when switching
+                        _departmentLabel = ''; // Reset department label when switching
+                        _notes = ''; // Reset notes when switching
                       });
                     },
                     borderRadius: BorderRadius.circular(20),
@@ -564,6 +569,8 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                       setState(() {
                         _selectedType = 'Vegetarian';
                         _quantity = 1; // Reset quantity when switching
+                        _departmentLabel = ''; // Reset department label when switching
+                        _notes = ''; // Reset notes when switching
                       });
                     },
                     borderRadius: BorderRadius.circular(20),
@@ -846,6 +853,172 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
               ],
               
               const SizedBox(height: 32),
+
+              // Department Label and Notes Section
+              if (_selectedType.isNotEmpty) ...[
+                // Department Label Field
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(20),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                        spreadRadius: 0,
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withAlpha(10),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Department Label (Optional):',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF2C3E50),
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            onChanged: (value) {
+                              _departmentLabel = value;
+                            },
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF2C3E50),
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'e.g., Marketing Team, HR Department...',
+                              hintStyle: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFF7F8C8D),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                              ),
+                              filled: true,
+                              fillColor: const Color(0xFFF8F9FA),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 24),
+
+                // Special Notes Field
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(20),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                        spreadRadius: 0,
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withAlpha(10),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Special Notes (Optional):',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF2C3E50),
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            onChanged: (value) {
+                              _notes = value;
+                            },
+                            maxLines: 3,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF2C3E50),
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Any special requirements or notes...',
+                              hintStyle: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFF7F8C8D),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
+                              ),
+                              filled: true,
+                              fillColor: const Color(0xFFF8F9FA),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 32),
+              ],
 
               // Add to Cart Button with sophisticated styling
               Container(
