@@ -31,6 +31,7 @@ class DeliveryOptionsScreen extends StatefulWidget {
 class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
   String _selectedOption = '';
   final _addressController = TextEditingController();
+  final _deliveryNotesController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   DateTime? _selectedDate;
@@ -286,6 +287,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
           sessionId: sessionId,
           deliveryType: _selectedOption.toLowerCase(),
           deliveryAddress: _selectedOption == 'Delivery' ? _addressController.text.trim() : null,
+          deliveryNotes: _selectedOption == 'Delivery' ? _deliveryNotesController.text.trim() : null,
           phoneNumber: phone,
           email: email,
           requestedDate: _selectedDate!,
@@ -716,6 +718,48 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                     ),
                                     maxLines: 3,
                                   ),
+                                  const SizedBox(height: 20),
+                                  TextField(
+                                    controller: _deliveryNotesController,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                      color: const Color(0xFF2C3E50),
+                                    ),
+                                    decoration: InputDecoration(
+                                      labelText: 'Delivery Notes (Optional)',
+                                      hintText: 'e.g., Ring doorbell, Leave at front door...',
+                                      labelStyle: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        color: const Color(0xFF7F8C8D),
+                                      ),
+                                      hintStyle: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        color: const Color(0xFFBDC3C7),
+                                        fontSize: 14,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(
+                                          color: const Color(0xFFE0E6ED),
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(
+                                          color: const Color(0xFFE67E22),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      prefixIcon: Icon(
+                                        Icons.note_alt_outlined,
+                                        color: const Color(0xFFE67E22),
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFFAFAFA),
+                                    ),
+                                    maxLines: 2,
+                                  ),
                                 ],
                               ],
                             ),
@@ -1012,6 +1056,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
   @override
   void dispose() {
     _addressController.dispose();
+    _deliveryNotesController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
     super.dispose();

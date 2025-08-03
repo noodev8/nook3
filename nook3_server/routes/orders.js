@@ -45,7 +45,7 @@ const { sendOrderConfirmationEmail } = require('../services/emailService');
 // Submit order - convert cart to pending order
 router.post('/submit', async (req, res) => {
   try {
-    const { user_id, session_id, delivery_type, delivery_address, phone_number, 
+    const { user_id, session_id, delivery_type, delivery_address, delivery_notes, phone_number, 
             email, requested_date, requested_time, special_instructions } = req.body;
     
     // Validate user identification
@@ -105,6 +105,7 @@ router.post('/submit', async (req, res) => {
       totalAmount: totalAmount,
       deliveryType: delivery_type,
       deliveryAddress: delivery_address,
+      deliveryNotes: delivery_notes,
       phoneNumber: phone_number,
       email: email,
       requestedDate: requested_date,

@@ -5,7 +5,7 @@
 -- Dumped from database version 16.9 (Ubuntu 16.9-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 17.4
 
--- Started on 2025-08-03 16:31:29
+-- Started on 2025-08-03 16:47:02
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -266,7 +266,6 @@ CREATE TABLE public.orders (
     requested_time timestamp with time zone NOT NULL,
     delivery_address text,
     delivery_notes text,
-    special_instructions text,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     confirmed_at timestamp with time zone,
     completed_at timestamp with time zone,
@@ -690,7 +689,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENC
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLES TO nook_prod_user;
 
 
--- Completed on 2025-08-03 16:31:31
+-- Completed on 2025-08-03 16:47:04
 
 --
 -- PostgreSQL database dump complete

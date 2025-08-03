@@ -289,7 +289,7 @@ const db = {
 
   // Update cart order to pending order
   async updateOrderToConfirmed(orderData) {
-    const { orderId, totalAmount, deliveryType, deliveryAddress, 
+    const { orderId, totalAmount, deliveryType, deliveryAddress, deliveryNotes,
             phoneNumber, email, requestedDate, requestedTime, specialInstructions } = orderData;
     
     // Combine requestedDate and requestedTime into a proper timestamp
@@ -302,11 +302,12 @@ const db = {
           order_status = 'pending',
           delivery_type = $3,
           delivery_address = $4,
-          guest_phone = $5,
-          guest_email = $6,
-          requested_date = $7,
-          requested_time = $8::timestamp,
-          special_instructions = $9,
+          delivery_notes = $5,
+          guest_phone = $6,
+          guest_email = $7,
+          requested_date = $8,
+          requested_time = $9::timestamp,
+          special_instructions = $10,
           confirmed_at = CURRENT_TIMESTAMP,
           updated_at = CURRENT_TIMESTAMP
       WHERE id = $1
@@ -314,7 +315,7 @@ const db = {
     `;
     
     const result = await pool.query(query, [
-      orderId, totalAmount, deliveryType, deliveryAddress,
+      orderId, totalAmount, deliveryType, deliveryAddress, deliveryNotes,
       phoneNumber, email, requestedDate, combinedDateTime, specialInstructions
     ]);
     
