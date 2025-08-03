@@ -90,11 +90,9 @@ router.post('/', async (req, res) => {
         });
     }
   } catch (error) {
-    console.error('Cart request error:', error);
     res.status(500).json({
       return_code: 'SERVER_ERROR',
-      message: 'Failed to process cart request',
-      error: error.message
+      message: 'Failed to process cart request'
     });
   }
 });
@@ -163,30 +161,17 @@ async function addItemToCart(data, res) {
 
 // Get cart items
 async function getCartItems(data, res) {
-  try {
-    const { user_id, session_id } = data;
+  const { user_id, session_id } = data;
 
-    console.log('Getting cart for user_id:', user_id, 'session_id:', session_id);
-    
-    const cartItems = await getCartContents(user_id, session_id);
-    const totalAmount = calculateCartTotal(cartItems);
+  const cartItems = await getCartContents(user_id, session_id);
+  const totalAmount = calculateCartTotal(cartItems);
 
-    console.log('Cart items retrieved:', cartItems.length, 'items, total:', totalAmount);
-
-    return res.json({
-      return_code: 'SUCCESS',
-      message: 'Cart retrieved successfully',
-      cart_items: cartItems,
-      total_amount: totalAmount
-    });
-  } catch (error) {
-    console.error('Error in getCartItems:', error);
-    return res.status(500).json({
-      return_code: 'SERVER_ERROR',
-      message: 'Failed to retrieve cart items',
-      error: error.message
-    });
-  }
+  return res.json({
+    return_code: 'SUCCESS',
+    message: 'Cart retrieved successfully',
+    cart_items: cartItems,
+    total_amount: totalAmount
+  });
 }
 
 // Delete cart item
