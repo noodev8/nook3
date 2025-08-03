@@ -332,8 +332,8 @@ async function sendOrderConfirmationEmail(email, orderDetails) {
   
   // Format the cart items for display
   const itemsHtml = cartItems.map(item => {
-    // Parse metadata from notes to get department_label and deluxe_format
-    let departmentLabel = null;
+    // Get department_label from dedicated column and deluxe_format from metadata
+    const departmentLabel = item.department_label;
     let deluxeFormat = null;
     
     if (item.notes) {
@@ -342,7 +342,6 @@ async function sendOrderConfirmationEmail(email, orderDetails) {
         const metadataMatch = item.notes.match(/Metadata:\s*({.*})/);
         if (metadataMatch) {
           const metadata = JSON.parse(metadataMatch[1]);
-          departmentLabel = metadata.department_label;
           deluxeFormat = metadata.deluxe_format;
         }
       } catch (e) {
@@ -372,8 +371,8 @@ async function sendOrderConfirmationEmail(email, orderDetails) {
   }).join('');
 
   const itemsText = cartItems.map(item => {
-    // Parse metadata for text version too
-    let departmentLabel = null;
+    // Get department_label from dedicated column and deluxe_format from metadata (text version)
+    const departmentLabel = item.department_label;
     let deluxeFormat = null;
     
     if (item.notes) {
@@ -381,7 +380,6 @@ async function sendOrderConfirmationEmail(email, orderDetails) {
         const metadataMatch = item.notes.match(/Metadata:\s*({.*})/);
         if (metadataMatch) {
           const metadata = JSON.parse(metadataMatch[1]);
-          departmentLabel = metadata.department_label;
           deluxeFormat = metadata.deluxe_format;
         }
       } catch (e) {
@@ -546,7 +544,7 @@ async function sendOrderConfirmationEmail(email, orderDetails) {
       <div class="container">
         <div class="header">
           <h1>The Nook of Welshpool</h1>
-          <div class="success-badge">✓ Order Confirmed</div>
+          <div class="success-badge">✓ Order Received</div>
         </div>
         <div class="content">
           <h2>Thank you for your order!</h2>

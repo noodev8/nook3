@@ -10,12 +10,7 @@ Orders progress through the following statuses:
 | **preparing** | Kitchen is actively preparing your food |
 | **ready** | Food is ready for collection or delivery |
 | **completed** | Order has been collected/delivered |
-
-## Additional Status
-
-| Status | Description |
-|--------|-------------|
-| **cancelled** | Order was cancelled (rare) |
+| **cancelled** | Order was cancelled |
 
 ---
 

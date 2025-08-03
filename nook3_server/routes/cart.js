@@ -132,7 +132,8 @@ async function addItemToCart(data, res) {
     quantity: quantity,
     unit_price: unit_price,
     total_price: total_price,
-    notes: notes || null
+    notes: notes || null,
+    department_label: department_label || null
   });
 
   // Add selected menu items
@@ -144,11 +145,10 @@ async function addItemToCart(data, res) {
     });
   }
 
-  // Store additional metadata in order notes if needed
-  if (department_label || deluxe_format) {
+  // Store additional metadata in order notes if needed (only deluxe_format now)
+  if (deluxe_format) {
     const metadata = {
-      department_label: department_label || null,
-      deluxe_format: deluxe_format || null
+      deluxe_format: deluxe_format
     };
     await db.updateOrderMetadata(orderCategory.id, metadata);
   }
