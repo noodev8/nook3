@@ -497,6 +497,30 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                   ],
 
+                                  if (item.departmentLabel != null && item.departmentLabel!.isNotEmpty) ...[
+                                    const SizedBox(height: 12),
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF0F8FF),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: const Color(0xFF3498DB),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Department: ${item.departmentLabel}',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: const Color(0xFF2C3E50),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+
                                   if (item.notes != null && item.notes!.isNotEmpty && !item.notes!.contains('Metadata:')) ...[
                                     const SizedBox(height: 12),
                                     Container(

@@ -271,6 +271,7 @@ class CartItem {
   final double unitPrice;
   final double totalPrice;
   final String? notes;
+  final String? departmentLabel;
   final List<MenuItem> includedItems;
 
   CartItem({
@@ -282,6 +283,7 @@ class CartItem {
     required this.unitPrice,
     required this.totalPrice,
     this.notes,
+    this.departmentLabel,
     required this.includedItems,
   });
 
@@ -305,11 +307,12 @@ class CartItem {
       unitPrice: double.parse(json['unit_price'].toString()),
       totalPrice: double.parse(json['total_price'].toString()),
       notes: json['notes'],
+      departmentLabel: json['department_label'],
       includedItems: items,
     );
   }
 
-  // Extract metadata from notes field
+  // Extract metadata from notes field (for legacy compatibility)
   Map<String, dynamic> get metadata {
     if (notes == null || !notes!.contains('Metadata:')) {
       return {};
@@ -324,7 +327,6 @@ class CartItem {
     }
   }
 
-  String? get departmentLabel => metadata['department_label'];
   String? get deluxeFormat => metadata['deluxe_format'];
 }
 
