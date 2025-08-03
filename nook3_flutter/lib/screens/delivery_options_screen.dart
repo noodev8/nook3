@@ -344,7 +344,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
         surfaceTintColor: Colors.transparent,
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,11 +362,8 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
               ),
               const SizedBox(height: 40),
               
-              Expanded(
-                child: ListView(
-                  children: [
-                    // Collection Option with sophisticated styling
-                    Container(
+              // Collection Option with sophisticated styling
+              Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
@@ -982,9 +979,6 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                         keyboardType: TextInputType.phone,
                       ),
                     ],
-                  ],
-                ),
-              ),
 
               const SizedBox(height: 32),
 
