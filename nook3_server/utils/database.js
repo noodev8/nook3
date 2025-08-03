@@ -402,39 +402,11 @@ const db = {
     // Get order items with details
     order.items = await this.getCartItemsWithDetails(orderId);
     
-    // Get order status history
-    order.status_history = await this.getOrderStatusHistory(orderId);
-
     return order;
   },
 
-  // Get order status history
-  async getOrderStatusHistory(orderId) {
-    const query = `
-      SELECT 
-        status,
-        notes,
-        created_at
-      FROM order_status_history
-      WHERE order_id = $1
-      ORDER BY created_at ASC
-    `;
-    const result = await pool.query(query, [orderId]);
-    return result.rows;
-  },
 
-  // Add order status to history
-  async addOrderStatusHistory(orderId, status, notes = null) {
-    const query = `
-      INSERT INTO order_status_history (order_id, status, notes, created_at)
-      VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
-      RETURNING *
-    `;
-    const result = await pool.query(query, [orderId, status, notes]);
-    return result.rows[0];
-  },
-
-  // Update order status and add to history
+  // Update order status
   async updateOrderStatus(orderId, newStatus, notes = null) {
     // Update the main order status
     const updateQuery = `
@@ -446,8 +418,6 @@ const db = {
     const updateResult = await pool.query(updateQuery, [orderId, newStatus]);
     
     if (updateResult.rows.length > 0) {
-      // Add to status history
-      await this.addOrderStatusHistory(orderId, newStatus, notes);
       return updateResult.rows[0];
     }
     

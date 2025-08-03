@@ -14,7 +14,7 @@ import 'profile_screen.dart';
 import 'cart_screen.dart';
 import '../services/auth_service.dart';
 import '../services/store_info_service.dart';
-import '../config/app_config.dart';
+import '../services/promotion_tracking_service.dart';
 
 class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({super.key});
@@ -23,74 +23,182 @@ class MainMenuScreen extends StatefulWidget {
   State<MainMenuScreen> createState() => _MainMenuScreenState();
 }
 
-class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStateMixin {
-  bool _showAdvert = AppConfig.showPromotionalOverlay;
+class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStateMixin, WidgetsBindingObserver {
+  bool _showAdvert = false; // Will be loaded from server
+  String _promotionalText = ''; // Will be loaded from server
   late AnimationController _slideController;
   late AnimationController _wobbleController;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _wobbleAnimation;
+  bool _isLoading = true;
   
   @override
   void initState() {
     super.initState();
-    
-    // Slide-in animation controller
-    _slideController = AnimationController(
-      duration: Duration(milliseconds: AppConfig.slideAnimationMs),
-      vsync: this,
-    );
-    
-    // Wobble animation controller
-    _wobbleController = AnimationController(
-      duration: Duration(milliseconds: AppConfig.wobbleAnimationMs),
-      vsync: this,
-    );
-    
-    // Slide animation from bottom
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 1.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.elasticOut,
-    ));
-    
-    // Wobble rotation animation
-    _wobbleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _wobbleController,
-      curve: Curves.elasticInOut,
-    ));
-    
-    // Start animations with delay
-    if (_showAdvert) {
-      Future.delayed(Duration(milliseconds: AppConfig.overlayDelayMs), () {
-        if (mounted) {
-          _slideController.forward();
-          Future.delayed(const Duration(milliseconds: 300), () {
-            if (mounted) {
-              _wobbleController.forward();
-            }
-          });
-        }
+    WidgetsBinding.instance.addObserver(this);
+    _loadPromotionalSettings();
+  }
+  
+  Future<void> _loadPromotionalSettings() async {
+    try {
+      // Record app start for tracking
+      await PromotionTrackingService.recordAppStart();
+      
+      // Load promotional settings from server
+      final promotionalText = await StoreInfoService.getPromotionalText();
+      final delayMs = await StoreInfoService.getPromotionalDelayMs();
+      final slideAnimationMs = await StoreInfoService.getPromotionalSlideAnimationMs();
+      final wobbleAnimationMs = await StoreInfoService.getPromotionalWobbleAnimationMs();
+      
+      // Check if we should show this promotion
+      final shouldShow = await PromotionTrackingService.shouldShowPromotion(promotionalText);
+      
+      if (!mounted) return;
+      
+      setState(() {
+        // Show advert if we have promotional text and user hasn't seen it
+        _showAdvert = promotionalText.isNotEmpty && shouldShow;
+        _promotionalText = promotionalText;
+        _isLoading = false;
       });
+      
+      // Initialize animation controllers with server values
+      _slideController = AnimationController(
+        duration: Duration(milliseconds: slideAnimationMs),
+        vsync: this,
+      );
+      
+      _wobbleController = AnimationController(
+        duration: Duration(milliseconds: wobbleAnimationMs),
+        vsync: this,
+      );
+      
+      // Slide animation from bottom
+      _slideAnimation = Tween<Offset>(
+        begin: const Offset(0.0, 1.0),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(
+        parent: _slideController,
+        curve: Curves.elasticOut,
+      ));
+      
+      // Wobble rotation animation
+      _wobbleAnimation = Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(CurvedAnimation(
+        parent: _wobbleController,
+        curve: Curves.elasticInOut,
+      ));
+      
+      // Start animations with server-defined delay
+      if (_showAdvert) {
+        Future.delayed(Duration(milliseconds: delayMs), () {
+          if (mounted) {
+            _slideController.forward();
+            Future.delayed(const Duration(milliseconds: 300), () {
+              if (mounted) {
+                _wobbleController.forward();
+              }
+            });
+          }
+        });
+      }
+    } catch (e) {
+      // Fall back to defaults if server request fails
+      if (!mounted) return;
+      
+      setState(() {
+        _showAdvert = false; // Don't show popup on server error
+        _isLoading = false;
+      });
+      
+      // Initialize with fallback values
+      _slideController = AnimationController(
+        duration: const Duration(milliseconds: 800),
+        vsync: this,
+      );
+      
+      _wobbleController = AnimationController(
+        duration: const Duration(milliseconds: 1200),
+        vsync: this,
+      );
+      
+      _slideAnimation = Tween<Offset>(
+        begin: const Offset(0.0, 1.0),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(
+        parent: _slideController,
+        curve: Curves.elasticOut,
+      ));
+      
+      _wobbleAnimation = Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(CurvedAnimation(
+        parent: _wobbleController,
+        curve: Curves.elasticInOut,
+      ));
     }
   }
   
   @override
   void dispose() {
-    _slideController.dispose();
-    _wobbleController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    if (!_isLoading) {
+      _slideController.dispose();
+      _wobbleController.dispose();
+    }
     super.dispose();
+  }
+  
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    
+    // Check for promotional content when app resumes from background
+    if (state == AppLifecycleState.resumed) {
+      _checkPromotionalOnResume();
+    }
+  }
+  
+  Future<void> _checkPromotionalOnResume() async {
+    try {
+      // Load promotional text from server
+      final promotionalText = await StoreInfoService.getPromotionalText();
+      
+      // Check if we should show this promotion
+      final shouldShow = await PromotionTrackingService.shouldShowPromotion(promotionalText);
+      
+      if (!mounted) return;
+      
+      // Only show if there's new content to display
+      if (promotionalText.isNotEmpty && shouldShow && !_showAdvert) {
+        setState(() {
+          _showAdvert = true;
+          _promotionalText = promotionalText;
+        });
+        
+        // Start animations
+        _slideController.reset();
+        _wobbleController.reset();
+        _slideController.forward();
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (mounted) {
+            _wobbleController.forward();
+          }
+        });
+      }
+    } catch (e) {
+      // Silently handle errors during promotional check
+    }
   }
 
   Widget _buildLeafletOverlay() {
     if (!_showAdvert) return const SizedBox.shrink();
     
     return Material(
-      color: Colors.black.withValues(alpha: 0.7),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Stack(
         children: [
           // Background overlay - tap to dismiss
@@ -102,7 +210,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
               color: Colors.transparent,
             ),
           ),
-          // Animated leaflet
+          // Animated promotional card
           Center(
             child: SlideTransition(
               position: _slideAnimation,
@@ -110,73 +218,213 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
                 animation: _wobbleAnimation,
                 builder: (context, child) {
                   return Transform.rotate(
-                    angle: (_wobbleAnimation.value * 0.1) * 
+                    angle: (_wobbleAnimation.value * 0.05) * 
                            (1.0 - _wobbleAnimation.value) * 
                            4.0 * 3.14159,
                     child: Container(
-                      margin: const EdgeInsets.all(32),
+                      margin: const EdgeInsets.all(24),
+                      constraints: const BoxConstraints(
+                        maxWidth: 400,
+                        maxHeight: 500,
+                      ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white,
+                            const Color(0xFFF8F9FA),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: const Color(0xFF3498DB).withValues(alpha: 0.3),
+                          width: 2,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
+                            color: Colors.black.withValues(alpha: 0.25),
+                            blurRadius: 30,
+                            offset: const Offset(0, 15),
                             spreadRadius: 5,
+                          ),
+                          BoxShadow(
+                            color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 5),
+                            spreadRadius: 0,
                           ),
                         ],
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Stack(
-                          children: [
-                            // Full leaflet image
-                            Image.asset(
-                              AppConfig.promotionalImagePath,
-                              width: double.infinity,
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 400,
-                                  color: const Color(0xFFF8F9FA),
-                                  child: const Center(
-                                    child: Text(
-                                      'Special Offers Available\nTap anywhere to close',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF27AE60),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Header with icon and close button
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  const Color(0xFF3498DB),
+                                  const Color(0xFF2980B9),
+                                ],
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(22),
+                                topRight: Radius.circular(22),
+                              ),
                             ),
-                            // Close button
-                            Positioned(
-                              top: 12,
-                              right: 12,
-                              child: GestureDetector(
-                                onTap: _dismissAdvert,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.7),
+                                    color: Colors.white.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: const Icon(
-                                    Icons.close,
+                                    Icons.announcement_outlined,
                                     color: Colors.white,
-                                    size: 24,
+                                    size: 32,
                                   ),
                                 ),
-                              ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    'Special Announcement',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      letterSpacing: -0.5,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: _dismissAdvert,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          // Content area
+                          Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              children: [
+                                // Main promotional text
+                                Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF8F9FA),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: const Color(0xFFE1E8ED),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    _promotionalText,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xFF2C3E50),
+                                      height: 1.6,
+                                      letterSpacing: 0.2,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                // "I have seen this" button
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: _markAsSeenAndDismiss,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF3498DB),
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      elevation: 2,
+                                    ),
+                                    child: Text(
+                                      'I have seen this',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.3,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                // Decorative elements
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF3498DB),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF3498DB),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFE67E22),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                // Tap to close instruction
+                                Text(
+                                  'Tap anywhere to close',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFF7F8C8D),
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -190,6 +438,16 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
   }
   
   void _dismissAdvert() {
+    setState(() {
+      _showAdvert = false;
+    });
+  }
+  
+  Future<void> _markAsSeenAndDismiss() async {
+    // Mark this promotional content as seen
+    await PromotionTrackingService.markPromotionAsSeen(_promotionalText);
+    
+    // Dismiss the popup
     setState(() {
       _showAdvert = false;
     });

@@ -81,6 +81,35 @@ class StoreInfoService {
            'Local food business specializing in buffets and share boxes for groups and events.';
   }
   
+  /// Promotional settings - server controlled  
+  static Future<String> getPromotionalImagePath() async {
+    return await getStoreInfoValue('promotional_image_path') ?? 'assets/images/Leaflet-1.png';
+  }
+  
+  static Future<int> getPromotionalDelayMs() async {
+    final value = await getStoreInfoValue('promotional_delay_ms');
+    return int.tryParse(value ?? '500') ?? 500;
+  }
+  
+  static Future<int> getPromotionalSlideAnimationMs() async {
+    final value = await getStoreInfoValue('promotional_slide_animation_ms');
+    return int.tryParse(value ?? '800') ?? 800;
+  }
+  
+  static Future<int> getPromotionalWobbleAnimationMs() async {
+    final value = await getStoreInfoValue('promotional_wobble_animation_ms');
+    return int.tryParse(value ?? '1200') ?? 1200;
+  }
+  
+  static Future<String> getPromotionalText() async {
+    final value = await getStoreInfoValue('promotion');
+    // Only show if the 'promotion' setting_key exists in database
+    if (value == null) {
+      return '';
+    }
+    return value;
+  }
+  
   /// Clear cache to force refresh on next request
   static void clearCache() {
     _cachedStoreInfo = null;

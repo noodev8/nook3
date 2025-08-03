@@ -140,12 +140,6 @@ class _CartScreenState extends State<CartScreen> {
           _totalAmount = result.totalAmount ?? 0.0;
           _isDeleting = false;
         });
-        
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Item removed from cart')),
-          );
-        }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

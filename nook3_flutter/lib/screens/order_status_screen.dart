@@ -9,7 +9,9 @@ Users can see their order number, estimated time, and track progress.
 
 import 'package:flutter/material.dart';
 import 'main_menu_screen.dart';
+import 'order_history_screen.dart';
 import '../services/store_info_service.dart';
+import '../services/auth_service.dart';
 
 class OrderStatusScreen extends StatefulWidget {
   final String orderNumber;
@@ -343,7 +345,7 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                           ),
                         ),
                         child: Text(
-                          'Place Another Order',
+                          'Home',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 16,
@@ -359,19 +361,78 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                       height: 56,
                       child: OutlinedButton(
                         onPressed: () {
-                          // TODO: Implement order tracking/history
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Order tracking feature coming soon!',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                ),
+                          // Check if user is logged in
+                          final currentUser = AuthService.currentUser;
+                          
+                          if (currentUser != null && !currentUser.isAnonymous) {
+                            // User is logged in - navigate to order history
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const OrderHistoryScreen(),
                               ),
-                              backgroundColor: const Color(0xFF3498DB),
-                            ),
-                          );
+                            );
+                          } else {
+                            // Guest user - show message about creating account
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                title: Text(
+                                  'Track Your Orders',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF2C3E50),
+                                  ),
+                                ),
+                                content: Text(
+                                  'Create an account to track your orders and view your order history.',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16,
+                                    color: const Color(0xFF7F8C8D),
+                                    height: 1.4,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text(
+                                      'Maybe Later',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        color: const Color(0xFF7F8C8D),
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      // Navigate to profile/login screen
+                                      Navigator.pushReplacementNamed(context, '/profile');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF3498DB),
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Create Account',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF3498DB),
