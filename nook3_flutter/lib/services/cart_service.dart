@@ -330,7 +330,6 @@ class CartItem {
     }
   }
 
-  String? get deluxeFormat => metadata['deluxe_format'];
 }
 
 /// Menu item model for cart
