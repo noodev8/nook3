@@ -1,8 +1,8 @@
 /*
 =======================================================================================================================================
-Buffet Customization Screen - The Nook of Welshpool
+Buffet Customisation Screen - The Nook of Welshpool
 =======================================================================================================================================
-This screen allows users to customize their selected buffet by:
+This screen allows users to customise their selected buffet by:
 - Setting number of people
 - Removing items (minimum 1 must remain)
 - Adding department labels and notes
@@ -17,21 +17,21 @@ import '../services/category_service.dart';
 import '../services/cart_service.dart';
 import '../services/auth_service.dart';
 
-class BuffetCustomizationScreen extends StatefulWidget {
+class BuffetCustomisationScreen extends StatefulWidget {
   final String buffetType;
   final double pricePerHead;
 
-  const BuffetCustomizationScreen({
+  const BuffetCustomisationScreen({
     super.key,
     required this.buffetType,
     required this.pricePerHead,
   });
 
   @override
-  State<BuffetCustomizationScreen> createState() => _BuffetCustomizationScreenState();
+  State<BuffetCustomisationScreen> createState() => _BuffetCustomisationScreenState();
 }
 
-class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
+class _BuffetCustomisationScreenState extends State<BuffetCustomisationScreen> {
   int _numberOfPeople = 1; // Changed to allow 1+ people per buffet
   String _departmentLabel = '';
   String _notes = '';
@@ -399,7 +399,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                 const SizedBox(height: 24),
               ],
 
-              // Customize Items
+              // Customise Items
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -427,7 +427,7 @@ class _BuffetCustomizationScreenState extends State<BuffetCustomizationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Customize Items:',
+                          'Customise Items:',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 20,

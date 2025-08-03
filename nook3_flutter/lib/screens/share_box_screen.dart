@@ -464,7 +464,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFF81C784),
+                              color: const Color(0xFF3498DB),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: IconButton(
@@ -486,7 +486,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: const Color(0xFF81C784)),
+                              border: Border.all(color: const Color(0xFF3498DB)),
                             ),
                             child: Text(
                               '$_quantity',
@@ -500,7 +500,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFF81C784),
+                              color: const Color(0xFF3498DB),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: IconButton(
@@ -793,7 +793,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFF81C784),
+                              color: const Color(0xFF3498DB),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: IconButton(
@@ -815,7 +815,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: const Color(0xFF81C784)),
+                              border: Border.all(color: const Color(0xFF3498DB)),
                             ),
                             child: Text(
                               '$_quantity',
@@ -829,7 +829,7 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFF81C784),
+                              color: const Color(0xFF3498DB),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: IconButton(

@@ -292,7 +292,6 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
           email: email,
           requestedDate: _selectedDate!,
           requestedTime: '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}',
-          specialInstructions: null, // TODO: Add special instructions field if needed
         );
         
         if (result.success) {

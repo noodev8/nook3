@@ -46,7 +46,7 @@ const { sendOrderConfirmationEmail } = require('../services/emailService');
 router.post('/submit', async (req, res) => {
   try {
     const { user_id, session_id, delivery_type, delivery_address, delivery_notes, phone_number, 
-            email, requested_date, requested_time, special_instructions } = req.body;
+            email, requested_date, requested_time } = req.body;
     
     // Validate user identification
     if (!user_id && !session_id) {
@@ -109,8 +109,7 @@ router.post('/submit', async (req, res) => {
       phoneNumber: phone_number,
       email: email,
       requestedDate: requested_date,
-      requestedTime: requested_time,
-      specialInstructions: special_instructions
+      requestedTime: requested_time
     });
 
     // Send order confirmation email using order ID as order number

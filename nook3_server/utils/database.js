@@ -150,19 +150,19 @@ const db = {
   async createOrder(orderData) {
     const { app_user_id, guest_email, total_amount, order_status, 
             delivery_type, requested_date, requested_time, delivery_address, 
-            delivery_notes, special_instructions } = orderData;
+            delivery_notes } = orderData;
     
     const query = `
       INSERT INTO orders (app_user_id, guest_email, total_amount, order_status, 
                          delivery_type, requested_date, requested_time, delivery_address, 
-                         delivery_notes, special_instructions, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP)
+                         delivery_notes, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP)
       RETURNING *
     `;
     const result = await pool.query(query, [
       app_user_id, guest_email, total_amount, order_status,
       delivery_type, requested_date, requested_time, delivery_address,
-      delivery_notes, special_instructions
+      delivery_notes
     ]);
     return result.rows[0];
   },
@@ -290,7 +290,7 @@ const db = {
   // Update cart order to pending order
   async updateOrderToConfirmed(orderData) {
     const { orderId, totalAmount, deliveryType, deliveryAddress, deliveryNotes,
-            phoneNumber, email, requestedDate, requestedTime, specialInstructions } = orderData;
+            phoneNumber, email, requestedDate, requestedTime } = orderData;
     
     // Combine requestedDate and requestedTime into a proper timestamp
     // requestedDate comes as YYYY-MM-DD, requestedTime as HH:MM
@@ -307,7 +307,6 @@ const db = {
           guest_email = $7,
           requested_date = $8,
           requested_time = $9::timestamp,
-          special_instructions = $10,
           confirmed_at = CURRENT_TIMESTAMP,
           updated_at = CURRENT_TIMESTAMP
       WHERE id = $1
@@ -316,7 +315,7 @@ const db = {
     
     const result = await pool.query(query, [
       orderId, totalAmount, deliveryType, deliveryAddress, deliveryNotes,
-      phoneNumber, email, requestedDate, combinedDateTime, specialInstructions
+      phoneNumber, email, requestedDate, combinedDateTime
     ]);
     
     return result.rows[0];
@@ -363,7 +362,6 @@ const db = {
         o.requested_date,
         o.requested_time,
         o.delivery_address,
-        o.special_instructions,
         o.created_at,
         o.confirmed_at,
         o.completed_at,
@@ -373,7 +371,7 @@ const db = {
       WHERE o.app_user_id = $1 AND o.order_status != 'cart'
       GROUP BY o.id, o.total_amount, o.order_status, o.delivery_type, 
                o.requested_date, o.requested_time, o.delivery_address,
-               o.special_instructions, o.created_at, o.confirmed_at, o.completed_at
+               o.created_at, o.confirmed_at, o.completed_at
       ORDER BY o.created_at DESC
       LIMIT $2 OFFSET $3
     `;

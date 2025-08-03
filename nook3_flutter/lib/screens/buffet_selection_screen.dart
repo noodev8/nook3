@@ -8,7 +8,7 @@ Users can see pricing and what's included in each buffet type.
 */
 
 import 'package:flutter/material.dart';
-import 'buffet_customization_screen.dart';
+import 'buffet_customisation_screen.dart';
 import 'cart_screen.dart';
 import 'profile_screen.dart';
 import '../services/category_service.dart';
@@ -54,7 +54,7 @@ class _BuffetSelectionScreenState extends State<BuffetSelectionScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BuffetCustomizationScreen(
+        builder: (context) => BuffetCustomisationScreen(
           buffetType: buffetType,
           pricePerHead: price,
         ),

@@ -3,7 +3,7 @@
 Order Detail Screen - The Nook of Welshpool
 =======================================================================================================================================
 This screen displays detailed information for a specific order including:
-- Order items and customization details
+- Order items and customisation details
 - Delivery/collection information
 - Status tracking timeline
 - Contact information for order issues

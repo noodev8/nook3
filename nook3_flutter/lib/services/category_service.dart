@@ -191,7 +191,7 @@ class CategoryService {
     }
   }
 
-  /// Get buffet items for customization by buffet type
+  /// Get buffet items for customisation by buffet type
   static Future<List<BuffetItem>> getBuffetItemsWithIds(String buffetType) async {
     try {
       final response = await AppConfig.post(
@@ -219,7 +219,7 @@ class CategoryService {
     }
   }
 
-  /// Get buffet items for customization by buffet type (legacy method)
+  /// Get buffet items for customisation by buffet type (legacy method)
   static Future<Map<String, bool>> getBuffetItems(String buffetType) async {
     final items = await getBuffetItemsWithIds(buffetType);
     final Map<String, bool> itemMap = {};

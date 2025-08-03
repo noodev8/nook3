@@ -16,7 +16,6 @@ class OrderService {
     required String email,
     required DateTime requestedDate,
     required String requestedTime,
-    String? specialInstructions,
   }) async {
     try {
       final response = await AppConfig.post(
@@ -32,7 +31,6 @@ class OrderService {
           'email': email,
           'requested_date': '${requestedDate.year}-${requestedDate.month.toString().padLeft(2, '0')}-${requestedDate.day.toString().padLeft(2, '0')}',
           'requested_time': requestedTime,
-          'special_instructions': specialInstructions,
         }),
       );
 
@@ -299,7 +297,7 @@ class OrderDetail {
       requestedDate: DateTime.parse(json['requested_date']),
       requestedTime: DateTime.parse(json['requested_time']),
       deliveryAddress: json['delivery_address'],
-      specialInstructions: json['special_instructions'],
+      specialInstructions: null,
       createdAt: DateTime.parse(json['created_at']),
       confirmedAt: json['confirmed_at'] != null ? DateTime.parse(json['confirmed_at']) : null,
       completedAt: json['completed_at'] != null ? DateTime.parse(json['completed_at']) : null,
