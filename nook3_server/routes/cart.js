@@ -133,7 +133,8 @@ async function addItemToCart(data, res) {
     unit_price: unit_price,
     total_price: total_price,
     notes: notes || null,
-    department_label: department_label || null
+    department_label: department_label || null,
+    deluxe_format: deluxe_format || null
   });
 
   // Add selected menu items

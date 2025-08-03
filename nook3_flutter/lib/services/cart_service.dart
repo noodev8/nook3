@@ -272,6 +272,7 @@ class CartItem {
   final double totalPrice;
   final String? notes;
   final String? departmentLabel;
+  final String? deluxeFormat;
   final List<MenuItem> includedItems;
 
   CartItem({
@@ -284,6 +285,7 @@ class CartItem {
     required this.totalPrice,
     this.notes,
     this.departmentLabel,
+    this.deluxeFormat,
     required this.includedItems,
   });
 
@@ -308,6 +310,7 @@ class CartItem {
       totalPrice: double.parse(json['total_price'].toString()),
       notes: json['notes'],
       departmentLabel: json['department_label'],
+      deluxeFormat: json['deluxe_format'],
       includedItems: items,
     );
   }

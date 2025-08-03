@@ -355,24 +355,28 @@ class _BuffetCustomisationScreenState extends State<BuffetCustomisationScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          ...['Mixed (75% Sandwiches)', 'All Sandwiches', 'All Wraps'].map((format) {
+                          ...[
+                            {'display': 'Mixed (75% Sandwiches)', 'value': 'Mixed'},
+                            {'display': 'All Sandwiches', 'value': 'All Sandwiches'},
+                            {'display': 'All Wraps', 'value': 'All Wraps'}
+                          ].map((format) {
                             return Container(
                               margin: const EdgeInsets.only(bottom: 8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: _deluxeFormat == format.split(' ')[0]
+                                  color: _deluxeFormat == format['value']
                                       ? const Color(0xFF9B59B6)
                                       : const Color(0xFFE9ECEF),
                                   width: 2,
                                 ),
-                                color: _deluxeFormat == format.split(' ')[0]
+                                color: _deluxeFormat == format['value']
                                     ? const Color.fromARGB(25, 155, 89, 182)
                                     : Colors.white,
                               ),
                               child: RadioListTile<String>(
                                 title: Text(
-                                  format,
+                                  format['display']!,
                                   style: TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 16,
@@ -380,7 +384,7 @@ class _BuffetCustomisationScreenState extends State<BuffetCustomisationScreen> {
                                     color: const Color(0xFF2C3E50),
                                   ),
                                 ),
-                                value: format.split(' ')[0],
+                                value: format['value']!,
                                 groupValue: _deluxeFormat,
                                 activeColor: const Color(0xFF9B59B6),
                                 onChanged: (value) {

@@ -183,14 +183,14 @@ const db = {
 
   // Add order category
   async addOrderCategory(categoryData) {
-    const { order_id, category_id, quantity, unit_price, total_price, notes, department_label } = categoryData;
+    const { order_id, category_id, quantity, unit_price, total_price, notes, department_label, deluxe_format } = categoryData;
     
     const query = `
-      INSERT INTO order_categories (order_id, category_id, quantity, unit_price, total_price, notes, department_label, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP)
+      INSERT INTO order_categories (order_id, category_id, quantity, unit_price, total_price, notes, department_label, deluxe_format, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP)
       RETURNING *
     `;
-    const result = await pool.query(query, [order_id, category_id, quantity, unit_price, total_price, notes, department_label]);
+    const result = await pool.query(query, [order_id, category_id, quantity, unit_price, total_price, notes, department_label, deluxe_format]);
     return result.rows[0];
   },
 
@@ -224,6 +224,7 @@ const db = {
         oc.total_price,
         oc.notes,
         oc.department_label,
+        oc.deluxe_format,
         pc.id as category_id,
         pc.name as category_name,
         pc.description as category_description,
@@ -240,7 +241,7 @@ const db = {
       LEFT JOIN order_items oi ON oi.order_category_id = oc.id
       LEFT JOIN menu_items mi ON mi.id = oi.menu_item_id
       WHERE oc.order_id = $1
-      GROUP BY oc.id, oc.quantity, oc.unit_price, oc.total_price, oc.notes, oc.department_label,
+      GROUP BY oc.id, oc.quantity, oc.unit_price, oc.total_price, oc.notes, oc.department_label, oc.deluxe_format,
                pc.id, pc.name, pc.description
       ORDER BY oc.created_at ASC
     `;
