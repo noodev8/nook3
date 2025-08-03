@@ -389,7 +389,7 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                                   ),
                                 ),
                                 content: Text(
-                                  'Create an account to track your orders and view your order history.',
+                                  'Create an account to be able to track your future orders and view your order history.',
                                   style: TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 16,
@@ -397,39 +397,6 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
                                     height: 1.4,
                                   ),
                                 ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: Text(
-                                      'Maybe Later',
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        color: const Color(0xFF7F8C8D),
-                                      ),
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      // Navigate to profile/login screen
-                                      Navigator.pushReplacementNamed(context, '/profile');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF3498DB),
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Create Account',
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
                               ),
                             );
                           }

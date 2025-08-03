@@ -137,28 +137,32 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    // Create a guest name prompt
-    String guestName = 'Guest';
-    final nameResult = await showDialog<String>(
+    // Show guest warning dialog
+    final shouldContinue = await showDialog<bool>(
       context: context,
+      barrierDismissible: true, // Allow tapping outside to dismiss
       builder: (context) => _GuestNameDialog(),
     );
 
-    if (nameResult != null && nameResult.isNotEmpty) {
-      guestName = nameResult;
-    }
+    // Only proceed if user explicitly clicked Continue
+    if (shouldContinue == true) {
+      final result = await AuthService.continueAsGuest('Guest');
+      
+      setState(() {
+        _isLoading = false;
+      });
 
-    final result = await AuthService.continueAsGuest(guestName);
-    
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (result.success) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-      );
+      if (result.success) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+        );
+      }
+    } else {
+      // User cancelled or tapped outside - stay on login page
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -630,7 +634,6 @@ class _GuestNameDialog extends StatefulWidget {
 }
 
 class _GuestNameDialogState extends State<_GuestNameDialog> {
-  final _guestNameController = TextEditingController(text: 'Guest');
 
   @override
   Widget build(BuildContext context) {
@@ -644,87 +647,39 @@ class _GuestNameDialogState extends State<_GuestNameDialog> {
           color: const Color(0xFF2C3E50),
         ),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'What name shall we use?',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF7F8C8D),
+      content: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF8E1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFFFD54F), width: 1),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.info_outline,
+              size: 20,
+              color: const Color(0xFFE65100),
             ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _guestNameController,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xFF2C3E50),
-            ),
-            decoration: InputDecoration(
-              labelText: 'Display Name',
-              labelStyle: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: const Color(0xFF7F8C8D),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: const Color(0xFFE9ECEF)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: const Color(0xFF3498DB), width: 2),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFFFD54F), width: 1),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  size: 20,
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Guest data will be lost when you logout or the app resets. Data is also deleted after a period of inactivity.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
                   color: const Color(0xFFE65100),
+                  height: 1.4,
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Guest data will be lost when you logout or the app resets. Data is also deleted after a period of inactivity.',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFFE65100),
-                      height: 1.4,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(false),
           child: Text(
             'Cancel',
             style: TextStyle(
@@ -736,7 +691,7 @@ class _GuestNameDialogState extends State<_GuestNameDialog> {
           ),
         ),
         ElevatedButton(
-          onPressed: () => Navigator.of(context).pop(_guestNameController.text.trim()),
+          onPressed: () => Navigator.of(context).pop(true),
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF3498DB),
             foregroundColor: Colors.white,
@@ -757,9 +712,4 @@ class _GuestNameDialogState extends State<_GuestNameDialog> {
     );
   }
 
-  @override
-  void dispose() {
-    _guestNameController.dispose();
-    super.dispose();
-  }
 }
