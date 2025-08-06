@@ -32,6 +32,7 @@ Return Codes:
 "SUCCESS"
 "MISSING_USER_SESSION"
 "MISSING_REQUIRED_FIELDS"
+"INSUFFICIENT_ADVANCE_NOTICE"
 "CART_EMPTY"
 "SERVER_ERROR"
 =======================================================================================================================================
@@ -69,6 +70,18 @@ router.post('/submit', async (req, res) => {
       return res.status(400).json({
         return_code: 'MISSING_REQUIRED_FIELDS',
         message: 'delivery_address is required for delivery orders'
+      });
+    }
+
+    // Validate minimum 24-hour advance notice
+    const requestedDateTime = new Date(`${requested_date}T${requested_time}:00`);
+    const now = new Date();
+    const hoursInAdvance = (requestedDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+    
+    if (hoursInAdvance < 24) {
+      return res.status(400).json({
+        return_code: 'INSUFFICIENT_ADVANCE_NOTICE',
+        message: 'Orders must be placed at least 24 hours in advance'
       });
     }
 
