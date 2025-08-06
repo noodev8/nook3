@@ -40,7 +40,7 @@ Return Codes:
 const express = require('express');
 const router = express.Router();
 const db = require('../utils/database');
-const { sendOrderConfirmationEmail } = require('../services/emailService');
+const { sendOrderConfirmationEmail, sendBusinessOrderNotification } = require('../services/emailService');
 
 // Submit order - convert cart to pending order
 router.post('/submit', async (req, res) => {
@@ -112,26 +112,41 @@ router.post('/submit', async (req, res) => {
       requestedTime: requested_time
     });
 
-    // Send order confirmation email using order ID as order number
-    try {
-      const emailResult = await sendOrderConfirmationEmail(email, {
-        orderNumber: `NK${confirmedOrder.id.toString().padStart(6, '0')}`, // Format: NK000123
-        totalAmount: totalAmount,
-        deliveryType: delivery_type,
-        deliveryAddress: delivery_address,
-        requestedDate: requested_date,
-        requestedTime: requested_time,
-        cartItems: cartItems,
-        customerName: null, // We don't have customer name in current flow
-        phoneNumber: phone_number
-      });
+    // Send emails (order confirmation to customer and business notification)
+    const orderDetails = {
+      orderNumber: `NK${confirmedOrder.id.toString().padStart(6, '0')}`, // Format: NK000123
+      totalAmount: totalAmount,
+      deliveryType: delivery_type,
+      deliveryAddress: delivery_address,
+      requestedDate: requested_date,
+      requestedTime: requested_time,
+      cartItems: cartItems,
+      customerName: null, // We don't have customer name in current flow
+      phoneNumber: phone_number,
+      email: email
+    };
 
+    // Send customer confirmation email
+    try {
+      const emailResult = await sendOrderConfirmationEmail(email, orderDetails);
       if (!emailResult.success) {
         console.error('Failed to send order confirmation email:', emailResult.error);
         // Continue with success response even if email fails
       }
     } catch (emailError) {
       console.error('Error sending order confirmation email:', emailError);
+      // Continue with success response even if email fails
+    }
+
+    // Send business notification email
+    try {
+      const businessEmailResult = await sendBusinessOrderNotification(orderDetails);
+      if (!businessEmailResult.success) {
+        console.error('Failed to send business notification email:', businessEmailResult.error);
+        // Continue with success response even if email fails
+      }
+    } catch (businessEmailError) {
+      console.error('Error sending business notification email:', businessEmailError);
       // Continue with success response even if email fails
     }
 

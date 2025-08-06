@@ -324,6 +324,268 @@ For security reasons, this link can only be used once and will expire soon.
 }
 
 /**
+ * Send business notification email for new orders
+ */
+async function sendBusinessOrderNotification(orderDetails) {
+  const { orderNumber, totalAmount, deliveryType, deliveryAddress, requestedDate, 
+          requestedTime, cartItems, customerName, phoneNumber, email } = orderDetails;
+  
+  // Format the cart items for display
+  const itemsHtml = cartItems.map(item => {
+    // Get department_label from dedicated column and deluxe_format from metadata
+    const departmentLabel = item.department_label;
+    let deluxeFormat = null;
+    
+    if (item.notes) {
+      try {
+        // Look for metadata in notes (format: "... | Metadata: {json}")
+        const metadataMatch = item.notes.match(/Metadata:\s*({.*})/);
+        if (metadataMatch) {
+          const metadata = JSON.parse(metadataMatch[1]);
+          deluxeFormat = metadata.deluxe_format;
+        }
+      } catch (e) {
+        // If metadata parsing fails, just continue without it
+      }
+    }
+    
+    // Build additional details string
+    let details = '';
+    if (departmentLabel) {
+      details += `<br><small style="color: #666666;">Department: ${departmentLabel}</small>`;
+    }
+    if (deluxeFormat) {
+      details += `<br><small style="color: #666666;">Format: ${deluxeFormat}</small>`;
+    }
+    
+    return `
+      <tr style="border-bottom: 1px solid #e0e0e0;">
+        <td style="padding: 12px 0; color: #000000; font-weight: 500;">
+          ${item.category_name}
+          ${details}
+        </td>
+        <td style="padding: 12px 0; text-align: center; color: #666666;">x${item.quantity}</td>
+        <td style="padding: 12px 0; text-align: right; color: #000000; font-weight: 500;">£${parseFloat(item.total_price).toFixed(2)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const deliveryInfo = deliveryType === 'delivery' 
+    ? `<strong>Delivery Address:</strong><br>${deliveryAddress}`
+    : `<strong>Collection</strong><br>Customer will collect from The Nook`;
+
+  const htmlTemplate = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Order Received - ${orderNumber}</title>
+      <style>
+        body { 
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; 
+          line-height: 1.6; 
+          margin: 0; 
+          padding: 20px; 
+          background: #ffffff;
+          color: #000000;
+        }
+        .container { 
+          max-width: 600px; 
+          margin: 0 auto; 
+          background: #ffffff; 
+          border: 1px solid #e0e0e0;
+        }
+        .header { 
+          padding: 30px; 
+          text-align: left; 
+          border-bottom: 1px solid #e0e0e0;
+          background: #f8f9fa;
+        }
+        .header h1 { 
+          margin: 0; 
+          font-size: 22px; 
+          font-weight: 600; 
+          color: #000000;
+        }
+        .alert-badge {
+          display: inline-block;
+          background: #E74C3C;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 4px;
+          font-size: 14px;
+          font-weight: 500;
+          margin-top: 8px;
+        }
+        .content { 
+          padding: 30px; 
+        }
+        .content h2 { 
+          color: #000000; 
+          margin: 0 0 24px 0; 
+          font-size: 18px;
+          font-weight: 600;
+        }
+        .content p { 
+          color: #444444; 
+          margin: 0 0 20px 0; 
+          font-size: 16px;
+        }
+        .order-summary {
+          background: #f8f9fa;
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          padding: 24px;
+          margin: 24px 0;
+        }
+        .order-details {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          margin-bottom: 24px;
+        }
+        .detail-item {
+          border-bottom: 1px solid #e0e0e0;
+          padding-bottom: 8px;
+        }
+        .detail-label {
+          font-size: 14px;
+          color: #666666;
+          font-weight: 500;
+        }
+        .detail-value {
+          font-size: 16px;
+          color: #000000;
+          font-weight: 600;
+          margin-top: 4px;
+        }
+        .items-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+        .items-header {
+          background: #e0e0e0;
+          font-weight: 600;
+          font-size: 14px;
+          color: #000000;
+        }
+        .items-header th {
+          padding: 12px 0;
+          text-align: left;
+        }
+        .total-row {
+          background: #f0f0f0;
+          font-weight: 600;
+          font-size: 16px;
+        }
+        .total-row td {
+          padding: 16px 0;
+          border-top: 2px solid #000000;
+        }
+        .customer-info {
+          background: #fff3cd;
+          border: 1px solid #ffeaa7;
+          border-radius: 6px;
+          padding: 16px;
+          margin: 24px 0;
+        }
+        .footer { 
+          padding: 20px 30px; 
+          color: #666666; 
+          font-size: 14px;
+          border-top: 1px solid #e0e0e0;
+          background: #f8f9fa;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>The Nook of Welshpool</h1>
+          <div class="alert-badge">🔔 New Order Received</div>
+        </div>
+        <div class="content">
+          <h2>New Order Alert!</h2>
+          <p>You have received a new order that requires preparation.</p>
+          
+          <div class="order-summary">
+            <div class="order-details">
+              <div class="detail-item">
+                <div class="detail-label">Order Number</div>
+                <div class="detail-value">${orderNumber}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Date & Time</div>
+                <div class="detail-value">${requestedDate} at ${requestedTime}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Order Type</div>
+                <div class="detail-value">${deliveryType === 'delivery' ? 'Delivery' : 'Collection'}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Order Value</div>
+                <div class="detail-value">£${parseFloat(totalAmount).toFixed(2)}</div>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              ${deliveryInfo}
+            </div>
+            
+            <table class="items-table">
+              <thead class="items-header">
+                <tr>
+                  <th>Item</th>
+                  <th style="text-align: center;">Qty</th>
+                  <th style="text-align: right;">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+                <tr class="total-row">
+                  <td colspan="2"><strong>Total</strong></td>
+                  <td style="text-align: right;"><strong>£${parseFloat(totalAmount).toFixed(2)}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="customer-info">
+            <strong>Customer Information:</strong><br>
+            ${customerName ? `Name: ${customerName}<br>` : ''}
+            Phone: ${phoneNumber}<br>
+            Email: ${email}
+          </div>
+          
+        </div>
+        <div class="footer">
+          <p>This is an automated notification from your ordering system.</p>
+          <p>&copy; 2025 The Nook of Welshpool. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  try {
+    const result = await resend.emails.send({
+      from: `The Nook Orders <${process.env.EMAIL_FROM}>`,
+      to: process.env.BUSINESS_EMAIL,
+      subject: `🔔 New Order ${orderNumber} - £${parseFloat(totalAmount).toFixed(2)}`,
+      html: htmlTemplate
+    });
+
+    console.log('Business order notification sent successfully:', result);
+    return { success: true, messageId: result.id };
+  } catch (error) {
+    console.error('Error sending business order notification:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
  * Send order confirmation email
  */
 async function sendOrderConfirmationEmail(email, orderDetails) {
@@ -670,5 +932,6 @@ Thank you for choosing The Nook of Welshpool!
 module.exports = {
   sendVerificationEmail,
   sendPasswordResetEmail,
-  sendOrderConfirmationEmail
+  sendOrderConfirmationEmail,
+  sendBusinessOrderNotification
 };
