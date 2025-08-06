@@ -106,14 +106,6 @@ class _ShareBoxScreenState extends State<ShareBoxScreen> {
       Navigator.pop(context);
 
       if (result.success) {
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('$_selectedType Share Box added to cart!'),
-            backgroundColor: const Color(0xFF27AE60),
-          ),
-        );
-
         // Navigate to cart to show the added item
         Navigator.push(
           context,
