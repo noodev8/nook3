@@ -140,13 +140,10 @@ router.post('/submit', async (req, res) => {
 
     // Send business notification email
     try {
-      console.log('Attempting to send business notification email to:', process.env.BUSINESS_EMAIL);
       const businessEmailResult = await sendBusinessOrderNotification(orderDetails);
       if (!businessEmailResult.success) {
         console.error('Failed to send business notification email:', businessEmailResult.error);
         // Continue with success response even if email fails
-      } else {
-        console.log('Business notification email sent successfully:', businessEmailResult.messageId);
       }
     } catch (businessEmailError) {
       console.error('Error sending business notification email:', businessEmailError);
